@@ -1,0 +1,95 @@
+﻿<!--ADMIN Customer -->
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout_ADMIN.cshtml";
+}
+
+<style>
+    .stickyTable {
+        height: calc(100vh - 330px);
+        overflow: auto;
+    }
+
+        .stickyTable thead {
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+        }
+</style>
+<div class="row">
+    <div class="card">
+        <div class="card-header">
+            <h1>Customer manager</h1>
+        </div>
+        <div class="card-body">
+            <div class="row m-2">
+                <div class="col-xl-1 col-md-2">
+                    <button id="btnAddCustomer" class="btn btn-primary" data-bs-focus="false" data-bs-toggle="modal" data-bs-target="#modalCustomer">Thêm</button>
+                </div>
+                <div class="col-xl-4 col-md-4">
+                    <input type="text" id="searchContent" placeholder="search" class="form-control">
+                </div>
+            </div>
+            <div class="stickyTable">
+                <table class="table table-bordered table-responsive table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer Name</th>
+                            <th>Description</th>
+                            <th>Created Date</th>
+                            <th>Updated Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblCustomer">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            @System.Configuration.ConfigurationManager.AppSettings["SystemName"]
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Modal Customer -->
+<div class="modal fade" data-bs-backdrop="false" id="modalCustomer" data-bs-focus="false" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Form Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body overflow-auto">
+                <form>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-3 col-form-label">Customer Name<span class="text-danger">(*):</span></label>
+                        <div class="col-sm-9">
+                            <input type="text" id="customerName" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Description:</label>
+                        <div class="col-sm-9">
+                            <textarea cols="5" rows="4" id="customerDescription" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="btnSaveCustomer" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Assets/MSC/js/Area/ADMIN/Customer.js?v=@Guid.NewGuid()"></script>
+
+}
+
+
