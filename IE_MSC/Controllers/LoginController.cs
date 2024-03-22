@@ -1,4 +1,5 @@
 ﻿using IE_MSC.Commons;
+using IE_MSC.Commons;
 using IE_MSC.Models.Dao;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace IE_MSC.Controllers
                 int checkLogin = loginDao.checkLogin(username, password);
                 if (checkLogin == -1)// Login fail
                 {
-                    return JavaScript("endload();Swal.fire(\"Login Fail!\", \"Check again username and password!\", \"error\");");
+                    return JavaScript("");
                 }
                 else
                 {
@@ -48,7 +49,7 @@ namespace IE_MSC.Controllers
                         //employeeSession.DepartmentType = employee.Department.Type;
                         Session.Add(CommonConstant.USER_SESSION, employeeSession);
 
-                        return JavaScript("endload();Swal.fire(\"Success!\", \"Đang đăng nhập! Vui lòng chờ trong giây lát...\", \"success\");window.location = '/ADMIN/Home/Index';");
+                        return JavaScript("window.location = '/Dashboard/Dashboard/Index';");
                     }
                     else
                     if (checkLogin == 1)//Boss
@@ -68,7 +69,7 @@ namespace IE_MSC.Controllers
 
                         Session.Add(CommonConstant.USER_SESSION, employeeSession);
 
-                        return JavaScript("endload();Swal.fire(\"Success!\", \"Đang đăng nhập! Vui lòng chờ trong giây lát...\", \"success\");window.location = '/Boss/Home/Index';");
+                        return JavaScript("window.location = '/Dashboard/Dashboard/Index';");
                     }
                     else
                     if (checkLogin == 2)//IE
@@ -87,7 +88,7 @@ namespace IE_MSC.Controllers
 
                         Session.Add(CommonConstant.USER_SESSION, employeeSession);
 
-                        return JavaScript("endload();Swal.fire(\"Success!\", \"Đang đăng nhập! Vui lòng chờ trong giây lát...\", \"success\");window.location = '/IE/Home/Index';");
+                        return JavaScript("window.location = '/Dashboard/Dashboard/Index';");
 
                     }
                     else
@@ -106,7 +107,7 @@ namespace IE_MSC.Controllers
                         employeeSession.ViewLogin = 3;// Dept Normal
                         Session.Add(CommonConstant.USER_SESSION, employeeSession);
 
-                        return JavaScript("endload();Swal.fire(\"Success!\", \"Đang đăng nhập! Vui lòng chờ trong giây lát...\", \"success\");window.location = '/DepartmentNormal/Home/Index';");
+                        return JavaScript("window.location = '/Dashboard/Dashboard/Index';");
                     }
                 }
                 

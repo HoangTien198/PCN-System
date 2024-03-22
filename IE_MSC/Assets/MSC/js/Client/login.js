@@ -1,14 +1,14 @@
 ﻿var filterReworkSelected = "";
 
 $(document).ready(function () {
-    bindingChartByStatus(filterReworkSelected);
-    bindingChartCreatedByDept(filterReworkSelected);
-    btnShowLoginOnClick();
-    btnBackToDashBoardOnClick();
-    setInterval(function () {
-        bindingChartByStatus(filterReworkSelected);
-        bindingChartCreatedByDept(filterReworkSelected);
-    }, 60000);
+    //bindingChartByStatus(filterReworkSelected);
+    //bindingChartCreatedByDept(filterReworkSelected);
+    //btnShowLoginOnClick();
+    //btnBackToDashBoardOnClick();
+    //setInterval(function () {
+    //    bindingChartByStatus(filterReworkSelected);
+    //    bindingChartCreatedByDept(filterReworkSelected);
+    //}, 60000);
     $(document).on('click', '#btn-login', function () {
         login();
     })
@@ -23,7 +23,7 @@ $(document).ready(function () {
 })
 
 function login() {
-    onload();
+    //onload();
     var username = $("#username").val();
     var password = $("#password").val();
     if (!(username.trim())) {
@@ -39,7 +39,7 @@ function login() {
             var data = {};
             data.username = username.trim();
             data.password = password.trim();
-            onload();
+            //onload();
             $.ajax({
                 type: "POST",
                 url: "/Login/CheckLogin",
@@ -47,10 +47,10 @@ function login() {
                 dataType: "script",//Kieu du lieu tra ve
                 contentType: "application/json",
                 success: function (response) {
-                    endload();
+                    //endload();
                 },
                 error: function (res) {
-                    endload();
+                    //endload();
                 }
             });
         }
@@ -58,7 +58,7 @@ function login() {
 }
 
 function bindingChartByStatus(type) {
-    onload();
+    //onload();
     $.ajax({
         type: "GET",
         url: "/MSC/GetByFilter",
@@ -67,7 +67,7 @@ function bindingChartByStatus(type) {
         },
         dataType: "text",
         success: function (response) {
-            endload();
+            //endload();
             var dt = JSON.parse(response);
             var lstAllApplication = groupBy(dt, i => i.Status);
             var lstApproved = (lstAllApplication.get(2)) ? lstAllApplication.get(2).length : 0;
@@ -114,7 +114,7 @@ function bindingChartByStatus(type) {
             });
         },
         error: function (res) {
-            endload();
+            //endload();
             Swal.fire("Error", "Do not get input data", "warning");
         }
     });
@@ -131,7 +131,7 @@ function bindingChartCreatedByDept(type) {
         },
         dataType: "text",
         success: function (response) {
-            endload();
+            //endload();
             var dt = JSON.parse(response);
             var lstAllApplication = groupBy(dt, i => i.DeptNameCreated);
             var seriesArray = [];
@@ -181,7 +181,7 @@ function bindingChartCreatedByDept(type) {
             });
         },
         error: function (res) {
-            endload();
+            //endload();
             Swal.fire("Error", "Do not get input data", "warning");
         }
     });

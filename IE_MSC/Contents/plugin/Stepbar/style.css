@@ -1,0 +1,198 @@
+.step-bar {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  *zoom: 1;
+  counter-reset: step-number;
+}
+@media (min-width: 768px) {
+  .step-bar {
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    display: -moz-flex;
+    display: flex;
+    box-orient: horizontal;
+    box-direction: normal;
+    -moz-flex-direction: row;
+    flex-direction: row;
+  }
+}
+.step-bar > li {
+  width: 100%;
+  position: relative;
+  background-color: #eee;
+  font-size: 12px;
+  font-weight: 500;
+}
+@media (max-width: 767px) {
+  .step-bar > li {
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+}
+.step-bar > li > a {
+  transition: none !important;
+  text-decoration: none;
+  display: block;
+  color: white;
+}
+.step-bar > li > a:before {
+  counter-increment: step-number;
+  content: counter(step-number) ". ";
+}
+.step-bar > li:before, .step-bar > li:after {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: #eee;
+  border-left: 4px solid #FFF;
+  top: 0;
+}
+.step-bar > li:after {
+  transform: skew(-30deg);
+}
+.step-bar > li:before {
+  transform: skew(30deg);
+}
+.step-bar > li:first-child:before, .step-bar > li:first-child:after {
+  background: white;
+  content: none;
+}
+.step-bar > li.active {
+  background-color: #337ab7;
+}
+.step-bar > li.active:before, .step-bar > li.active:after {
+  background-color: #337ab7;
+}
+.step-bar > li.active:hover {
+  background-color: #285f8f;
+}
+.step-bar > li.active:hover:before, .step-bar > li.active:hover:after {
+  background-color: #285f8f;
+}
+.step-bar > li.complete {
+  background-color: #5cb85c;
+}
+.step-bar > li.complete:before, .step-bar > li.complete:after {
+  background-color: #5cb85c;
+}
+.step-bar > li.complete:hover {
+  background: #449d44;
+}
+.step-bar > li.complete:hover:before, .step-bar > li.complete:hover:after {
+  background-color: #449d44;
+}
+.step-bar > li.danger {
+  background-color: #d9534f;
+}
+.step-bar > li.danger:before, .step-bar > li.danger:after {
+  background-color: #d9534f;
+}
+.step-bar > li.danger:hover {
+  background: #c9302c;
+}
+.step-bar > li.danger:hover:before, .step-bar > li.danger:hover:after {
+  background-color: #c9302c;
+}
+.step-bar > li.warning {
+  background-color: #fd8c4a;
+}
+.step-bar > li.warning:before, .step-bar > li.warning:after {
+  background-color: #fd8c4a;
+}
+.step-bar > li.disabled {
+  pointer-events: none;
+}
+.step-bar > li.disabled > a {
+  color: #a2a2a2;
+}
+@media (min-width: 768px) {
+  .step-bar > li {
+    line-height: 32px;
+    padding: 0 24px 0 16px;
+  }
+  .step-bar > li:before, .step-bar > li:after {
+    left: -8px;
+    width: 16px;
+    height: 16px;
+  }
+  .step-bar > li:after {
+    top: 16px;
+  }
+}
+@media (min-width: 768px) and (min-width: 768px) {
+  .step-bar > li:first-child {
+    padding-left: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .step-bar.sm > li {
+    line-height: 24px;
+    padding: 0 18px 0 12px;
+  }
+  .step-bar.sm > li:before, .step-bar.sm > li:after {
+    left: -6px;
+    width: 12px;
+    height: 12px;
+  }
+  .step-bar.sm > li:after {
+    top: 12px;
+  }
+}
+@media (min-width: 768px) and (min-width: 768px) {
+  .step-bar.sm > li:first-child {
+    padding-left: 12px;
+  }
+}
+.step-bar.sm > li {
+  font-size: 12px;
+}
+@media (min-width: 768px) {
+  .step-bar.md > li {
+    line-height: 40px;
+    padding: 0 30px 0 20px;
+  }
+  .step-bar.md > li:before, .step-bar.md > li:after {
+    left: -10px;
+    width: 20px;
+    height: 20px;
+  }
+  .step-bar.md > li:after {
+    top: 20px;
+  }
+}
+@media (min-width: 768px) and (min-width: 768px) {
+  .step-bar.md > li:first-child {
+    padding-left: 20px;
+  }
+}
+.step-bar.md > li {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  .step-bar.lg > li {
+    line-height: 80px;
+    padding: 0 60px 0 40px;
+  }
+  .step-bar.lg > li:before, .step-bar.lg > li:after {
+    left: -20px;
+    width: 40px;
+    height: 40px;
+  }
+  .step-bar.lg > li:after {
+    top: 40px;
+  }
+}
+@media (min-width: 768px) and (min-width: 768px) {
+  .step-bar.lg > li:first-child {
+    padding-left: 40px;
+  }
+}
+.step-bar.lg > li {
+  font-size: 16px;
+}
