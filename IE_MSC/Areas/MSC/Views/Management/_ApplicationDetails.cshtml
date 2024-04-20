@@ -1,0 +1,156 @@
+﻿<div class="modal fade" id="ApplicationDetailsModal" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-uppercase">application details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-center text-theme">標准方法變更通知書<br />(MSC)Thông báo thay đổi phương pháp làm việc tiêu chuẩn (MSC)</h4>
+
+                <!-- Information -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">制作人 <span class="text-theme">/</span> Người đề nghị</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-UserCreated" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">制作部門 <span class="text-theme">/</span> Bộ phận</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-Department" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">日期 <span class="text-theme">/</span> Ngày</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-DateCreated" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">審核 <span class="text-theme">/</span> Phê duyệt</label>
+                            <input type="text" class="form-control text-truncate bg-opacity-10" id="ApplicationDetailsModal-ApplicationStatus" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">MSC單號 <span class="text-theme">/</span> Mã số</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-CodeMSC" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">主題 <span class="text-theme">/</span> Chủ đề</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-Title" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">过程 <span class="text-theme">/</span> Process</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-Process" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">模型 <span class="text-theme">/</span> Model</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationDetailsModal-Model" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">現行作業方式 <span class="text-theme">/</span> Phương thức làm việc hiện hành</label>
+                            <div class="form-control overflow-auto" id="ApplicationDetailsModal-BeforeChange" style="height: 8rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">變更后的方式 <span class="text-theme">/</span> Phương thức sau khi thay đổi</label>
+                            <div class="form-control overflow-auto" id="ApplicationDetailsModal-AfterChange" style="height: 8rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="mb-3">
+                            <label class="form-label"> <span class="text-theme">/</span> Tài liệu phương thức làm việc hiện hành</label>
+                            <a class="form-control text-truncate" id="ApplicationDetailsModal-BeforeChangeFile" download>No file</a>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="mb-3">
+                            <label class="form-label"> <span class="text-theme">/</span> Tài liệu phương thức sau khi thay đổi</label>
+                            <a class="form-control text-truncate" id="ApplicationDetailsModal-AfterChangeFile" download>No file</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">變更原因 <span class="text-theme">/</span> Nguyên nhân thay đổi</label>
+                            <div class="form-control overflow-auto" id="ApplicationDetailsModal-Reason" style="height: 8rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">制造成本計算 <span class="text-theme">/</span> Tính toán giá thành sản xuất (IE)</label>
+                            <div class="form-control overflow-auto" id="ApplicationDetailsModal-Cost" style="height: 8rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12" >
+                        <div class="card">
+                            <div class="widget-reminder" id="ApplicationDetailsModal-sign">
+
+                            </div>
+
+                            <div class="card-arrow">
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">核准 <span class="text-theme">/</span> Phê chuẩn</label>
+                            <input type="text" class="form-control" id="ApplicationDetailsModal-StatusMSC" readonly disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">生效日期 <span class="text-theme">/</span> Ngày có hiệu lực</label>
+                            <input type="text" class="form-control" id="ApplicationDetailsModal-DateActived" readonly disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">保存期限:二年 <span class="text-theme">/</span> Thời hạn bảo lưu</label>
+                            <input type="text" class="form-control" value="5 năm (5 年)" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">表單編號 <span class="text-theme">/</span> Mã bảng biểu</label>
+                            <input type="text" class="form-control" value="FM3NVA002001A" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

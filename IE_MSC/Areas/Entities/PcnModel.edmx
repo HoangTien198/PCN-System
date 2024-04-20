@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PcnModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PcnModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Customers">
           <Key>
             <PropertyRef Name="CustomerID" />
@@ -204,8 +204,7 @@
             <End Role="PCNConfirms" EntitySet="PCNConfirms" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PcnModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -248,32 +247,6 @@
           <Property Name="CreatedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Customer" Relationship="Self.FK_Departments_Customers" FromRole="Departments" ToRole="Customers" />
         </EntityType>
-        <EntityType Name="Employee_">
-          <Key>
-            <PropertyRef Name="EmployeeID" />
-          </Key>
-          <Property Name="EmployeeID" Type="String" MaxLength="36" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="EmployeeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeCNName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmployeeVNName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmployeeAvatar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Gender" Type="Int32" />
-          <Property Name="HireDate" Type="DateTime" Precision="3" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="DeskPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MobilePhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DepartmentByAPI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="IsAdmin" Type="Boolean" />
-          <Property Name="IsBoss" Type="Boolean" />
-          <Property Name="Position" Type="Int32" />
-        </EntityType>
         <EntityType Name="PCNConfirm_">
           <Key>
             <PropertyRef Name="EmployeeID" />
@@ -288,7 +261,7 @@
           <Property Name="RejectedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
           <Property Name="RejectedDate" Type="DateTime" Precision="3" />
           <Property Name="ReasonReject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_PCNConfirms_Employees" FromRole="PCNConfirms" ToRole="Employees" />
+          <NavigationProperty Name="Employee" Relationship="PcnModel.FK_PCNConfirms_Employees" FromRole="PCNConfirm_" ToRole="Employee" />
         </EntityType>
         <EntityType Name="PCN_">
           <Key>
@@ -348,30 +321,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DepartmentEmployee_Employees">
-          <End Role="Employees" Type="PcnModel.Employee_" Multiplicity="1" />
-          <End Role="DepartmentEmployees" Type="PcnModel.DepartmentEmployee_" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Employees">
-              <PropertyRef Name="EmployeeID" />
-            </Principal>
-            <Dependent Role="DepartmentEmployees">
-              <PropertyRef Name="EmployeeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PCNConfirms_Employees">
-          <End Role="Employees" Type="PcnModel.Employee_" Multiplicity="1" />
-          <End Role="PCNConfirms" Type="PcnModel.PCNConfirm_" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Employees">
-              <PropertyRef Name="EmployeeID" />
-            </Principal>
-            <Dependent Role="PCNConfirms">
-              <PropertyRef Name="EmployeeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PCNConfirms_PCNs">
           <End Role="PCNs" Type="PcnModel.PCN_" Multiplicity="1" />
           <End Role="PCNConfirms" Type="PcnModel.PCNConfirm_" Multiplicity="*" />
@@ -388,7 +337,6 @@
           <EntitySet Name="Customer_Set" EntityType="PcnModel.Customer_" />
           <EntitySet Name="DepartmentEmployee_Set" EntityType="PcnModel.DepartmentEmployee_" />
           <EntitySet Name="Department_Set" EntityType="PcnModel.Department_" />
-          <EntitySet Name="Employee_Set" EntityType="PcnModel.Employee_" />
           <EntitySet Name="PCNConfirm_Set" EntityType="PcnModel.PCNConfirm_" />
           <EntitySet Name="PCN_Set" EntityType="PcnModel.PCN_" />
           <AssociationSet Name="FK_Departments_Customers" Association="Self.FK_Departments_Customers">
@@ -399,19 +347,71 @@
             <End Role="Departments" EntitySet="Department_Set" />
             <End Role="DepartmentEmployees" EntitySet="DepartmentEmployee_Set" />
           </AssociationSet>
-          <AssociationSet Name="FK_DepartmentEmployee_Employees" Association="Self.FK_DepartmentEmployee_Employees">
-            <End Role="Employees" EntitySet="Employee_Set" />
-            <End Role="DepartmentEmployees" EntitySet="DepartmentEmployee_Set" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PCNConfirms_Employees" Association="Self.FK_PCNConfirms_Employees">
-            <End Role="Employees" EntitySet="Employee_Set" />
-            <End Role="PCNConfirms" EntitySet="PCNConfirm_Set" />
-          </AssociationSet>
           <AssociationSet Name="FK_PCNConfirms_PCNs" Association="Self.FK_PCNConfirms_PCNs">
             <End Role="PCNs" EntitySet="PCN_Set" />
             <End Role="PCNConfirms" EntitySet="PCNConfirm_Set" />
           </AssociationSet>
+          <EntitySet Name="Employee_Set" EntityType="PcnModel.Employee_" />
+          <AssociationSet Name="FK_DepartmentEmployee_Employees" Association="PcnModel.FK_DepartmentEmployee_Employees">
+            <End Role="Employee" EntitySet="Employee_Set" />
+            <End Role="DepartmentEmployee_" EntitySet="DepartmentEmployee_Set" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PCNConfirms_Employees" Association="PcnModel.FK_PCNConfirms_Employees">
+            <End Role="Employee" EntitySet="Employee_Set" />
+            <End Role="PCNConfirm_" EntitySet="PCNConfirm_Set" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Employee_">
+          <Key>
+            <PropertyRef Name="EmployeeID" />
+          </Key>
+          <Property Name="EmployeeID" Type="String" Nullable="false" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="EmployeeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeCNName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmployeeVNName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmployeeAvatar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="Int32" />
+          <Property Name="HireDate" Type="DateTime" Precision="3" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DeskPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MobilePhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DepartmentByAPI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="IsAdmin" Type="Boolean" />
+          <Property Name="IsBoss" Type="Boolean" />
+          <Property Name="Position" Type="Int32" />
+          <NavigationProperty Name="DepartmentEmployees" Relationship="PcnModel.FK_DepartmentEmployee_Employees" FromRole="Employee" ToRole="DepartmentEmployee_" />
+        </EntityType>
+        <Association Name="FK_DepartmentEmployee_Employees">
+          <End Type="PcnModel.Employee_" Role="Employee" Multiplicity="1" />
+          <End Type="PcnModel.DepartmentEmployee_" Role="DepartmentEmployee_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="DepartmentEmployee_">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PCNConfirms_Employees">
+          <End Type="PcnModel.Employee_" Role="Employee" Multiplicity="1" />
+          <End Type="PcnModel.PCNConfirm_" Role="PCNConfirm_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeID" />
+            </Principal>
+            <Dependent Role="PCNConfirm_">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -454,33 +454,6 @@
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Employee_Set">
-            <EntityTypeMapping TypeName="PcnModel.Employee_">
-              <MappingFragment StoreEntitySet="Employees">
-                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
-                <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
-                <ScalarProperty Name="EmployeeCNName" ColumnName="EmployeeCNName" />
-                <ScalarProperty Name="EmployeeVNName" ColumnName="EmployeeVNName" />
-                <ScalarProperty Name="EmployeeAvatar" ColumnName="EmployeeAvatar" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HireDate" ColumnName="HireDate" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="DeskPhone" ColumnName="DeskPhone" />
-                <ScalarProperty Name="MobilePhone" ColumnName="MobilePhone" />
-                <ScalarProperty Name="DepartmentByAPI" ColumnName="DepartmentByAPI" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
-                <ScalarProperty Name="IsBoss" ColumnName="IsBoss" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -530,6 +503,33 @@
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employee_Set">
+            <EntityTypeMapping TypeName="PcnModel.Employee_">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="IsBoss" ColumnName="IsBoss" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="DepartmentByAPI" ColumnName="DepartmentByAPI" />
+                <ScalarProperty Name="MobilePhone" ColumnName="MobilePhone" />
+                <ScalarProperty Name="DeskPhone" ColumnName="DeskPhone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="HireDate" ColumnName="HireDate" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="EmployeeAvatar" ColumnName="EmployeeAvatar" />
+                <ScalarProperty Name="EmployeeVNName" ColumnName="EmployeeVNName" />
+                <ScalarProperty Name="EmployeeCNName" ColumnName="EmployeeCNName" />
+                <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

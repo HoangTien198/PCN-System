@@ -14,6 +14,12 @@ namespace IE_MSC.Areas.Entities
     
     public partial class Employee_
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Employee_()
+        {
+            this.DepartmentEmployees = new HashSet<DepartmentEmployee_>();
+        }
+    
         public string EmployeeID { get; set; }
         public string EmployeeCode { get; set; }
         public string EmployeeCNName { get; set; }
@@ -35,5 +41,8 @@ namespace IE_MSC.Areas.Entities
         public Nullable<bool> IsAdmin { get; set; }
         public Nullable<bool> IsBoss { get; set; }
         public Nullable<int> Position { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DepartmentEmployee_> DepartmentEmployees { get; set; }
     }
 }

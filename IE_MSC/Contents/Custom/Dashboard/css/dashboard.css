@@ -1,2 +1,19 @@
-﻿body {
+﻿.apexcharts-tooltip {
+    background: rgba(48, 190, 255, 0.59) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(8.2px) !important;
+    border: 1px solid rgba(48, 190, 255, 0.46) !important;
+    border-radius: 0 !important;
+    color: white !important;
+}
+    .apexcharts-tooltip .apexcharts-tooltip-title {
+        color: white !important;
+    }
+#department-tbody tr {
+    font-size: 0.86rem;
+}
+.text-table-ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

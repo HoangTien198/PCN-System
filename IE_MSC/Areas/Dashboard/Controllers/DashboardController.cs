@@ -19,7 +19,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         public JsonResult GetPcnWeekData() {
             try
             {
-                object result = R_PCN.GetPcnWeekData();
+                object result = R_Dashboard.GetPcnWeekData();
 
                 return Json(new {status = true, data = result}, JsonRequestBehavior.AllowGet);
             }
@@ -32,7 +32,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         {
             try
             {
-                object result = R_PCN.GetPcnData();
+                object result = R_Dashboard.GetPcnData();
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }
@@ -41,6 +41,72 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
+        public JsonResult GetPcnDataByCustomer()
+        {
+            try
+            {
+                object result = R_Dashboard.GetPcnDataByCustomer();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetPcnMonthOfYearData()
+        {
+            try
+            {
+                object result = R_Dashboard.GetPcnMonthOfYearData();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetPcnMonthOfYearDataByDepartment()
+        {
+            try
+            {
+                object result = R_Dashboard.GetPcnMonthOfYearDataByDepartment();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetTop10Pcn()
+        {
+            try
+            {
+                object result = R_Dashboard.GetTop10Pcn();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetTop10Action()
+        {
+            try
+            {
+                object result = R_Dashboard.GetTop10Action();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
     }
 }

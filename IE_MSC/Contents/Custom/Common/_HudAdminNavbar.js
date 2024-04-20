@@ -1,10 +1,9 @@
 ﻿$(document).ready(function () {
     var pathName = location.pathname;
-    var sidebar = $('#sidebar');
 
-    var menuItems = sidebar.find('.menu-item');
+    var menuItems = $('#sidebar .menu-item');
 
-    $(menuItems).each(function (index, item) {
+    $(menuItems).each(function (i, item) {
         var link = $(item).find('a').attr('href');
         if (link === pathName) {
             var submenu = $(item).closest('.menu-submenu');

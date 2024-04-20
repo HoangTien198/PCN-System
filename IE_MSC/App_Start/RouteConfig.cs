@@ -16,8 +16,8 @@ namespace IE_MSC
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-                namespaces: new[] { "IE_MSC.Controllers" }
+                defaults: new { controller = "Authentication", action = "Index", id = UrlParameter.Optional },
+                namespaces: new[] { "IE_MSC.Areas" }
             );
         }
     }

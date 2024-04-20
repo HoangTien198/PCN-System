@@ -55,12 +55,27 @@
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=7.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.7.5.1\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=7.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.7.5.1\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=7.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.7.5.1\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=7.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.7.5.1\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=7.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.7.5.1\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -162,25 +177,28 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\ADMIN\ADMINAreaRegistration.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\BaseADMINController.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\CustomerController.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\DepartmentController.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\EmployeeController.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\HomeController.cs" />
-    <Compile Include="Areas\ADMIN\Controllers\PCNController.cs" />
-    <Compile Include="Areas\Boss\BossAreaRegistration.cs" />
-    <Compile Include="Areas\Boss\Controllers\BaseBossController.cs" />
-    <Compile Include="Areas\Boss\Controllers\HomeController.cs" />
-    <Compile Include="Areas\Boss\Controllers\MSCController.cs" />
-    <Compile Include="Areas\Boss\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\AuthenticationController.cs" />
+    <Compile Include="Areas\MSC\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\MSC\MSCAreaRegistration.cs" />
+    <Compile Include="Areas\old\ADMIN\ADMINAreaRegistration.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\BaseADMINController.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\DepartmentController.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\EmployeeController.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\HomeController.cs" />
+    <Compile Include="Areas\old\ADMIN\Controllers\PCNController.cs" />
+    <Compile Include="Areas\old\Boss\BossAreaRegistration.cs" />
+    <Compile Include="Areas\old\Boss\Controllers\BaseBossController.cs" />
+    <Compile Include="Areas\old\Boss\Controllers\HomeController.cs" />
+    <Compile Include="Areas\old\Boss\Controllers\MSCController.cs" />
+    <Compile Include="Areas\old\Boss\Controllers\ProfileController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
-    <Compile Include="Areas\DepartmentNormal\Controllers\BaseDepartmentController.cs" />
-    <Compile Include="Areas\DepartmentNormal\Controllers\HomeController.cs" />
-    <Compile Include="Areas\DepartmentNormal\Controllers\MSCController.cs" />
-    <Compile Include="Areas\DepartmentNormal\Controllers\ProfileController.cs" />
-    <Compile Include="Areas\DepartmentNormal\DepartmentNormalAreaRegistration.cs" />
+    <Compile Include="Areas\old\DepartmentNormal\Controllers\BaseDepartmentController.cs" />
+    <Compile Include="Areas\old\DepartmentNormal\Controllers\HomeController.cs" />
+    <Compile Include="Areas\old\DepartmentNormal\Controllers\MSCController.cs" />
+    <Compile Include="Areas\old\DepartmentNormal\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\old\DepartmentNormal\DepartmentNormalAreaRegistration.cs" />
     <Compile Include="Areas\Entities\Customer_.cs">
       <DependentUpon>PcnModel.tt</DependentUpon>
     </Compile>
@@ -214,12 +232,14 @@
     <Compile Include="Areas\Entities\PCN_.cs">
       <DependentUpon>PcnModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Areas\IE\Controllers\BaseIEController.cs" />
-    <Compile Include="Areas\IE\Controllers\HomeController.cs" />
-    <Compile Include="Areas\IE\Controllers\MSCController.cs" />
-    <Compile Include="Areas\IE\Controllers\ProfileController.cs" />
-    <Compile Include="Areas\IE\IEAreaRegistration.cs" />
-    <Compile Include="Areas\Repositories\R_PCN.cs" />
+    <Compile Include="Areas\old\IE\Controllers\BaseIEController.cs" />
+    <Compile Include="Areas\old\IE\Controllers\HomeController.cs" />
+    <Compile Include="Areas\old\IE\Controllers\MSCController.cs" />
+    <Compile Include="Areas\old\IE\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\old\IE\IEAreaRegistration.cs" />
+    <Compile Include="Areas\Repositories\R_User.cs" />
+    <Compile Include="Areas\Repositories\R_MSC.cs" />
+    <Compile Include="Areas\Repositories\R_Dashboard.cs" />
     <Compile Include="Commons\AccountLogin.cs" />
     <Compile Include="Commons\CommonConstant.cs" />
     <Compile Include="Commons\FormatUnicode.cs" />
@@ -271,8 +291,8 @@
       <DependentUpon>PcnModel.edmx</DependentUpon>
       <LastGenOutput>PcnModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Areas\Shared\_HudAdminNavbar.css" />
-    <Content Include="Areas\Shared\_HudAdminNavbar.js" />
+    <Content Include="Contents\Custom\Common\_HudAdminNavbar.css" />
+    <Content Include="Contents\Custom\Common\_HudAdminNavbar.js" />
     <Content Include="Assets\MSC\images\bg-login\login-background.jpg" />
     <Content Include="Assets\MSC\images\CPD-unscreen.gif" />
     <Content Include="Assets\MSC\images\Double-Ring-loading.gif" />
@@ -790,11 +810,14 @@
     <Content Include="Assets\Template\assets\vendor\tinymce\themes\silver\theme.min.js" />
     <Content Include="Assets\Template\assets\vendor\tinymce\tinymce.js" />
     <Content Include="Assets\Template\assets\vendor\tinymce\tinymce.min.js" />
-    <Content Include="Contents\Custom\Common\LayoutCommon.css" />
-    <Content Include="Contents\Custom\Common\LayoutCommon.js" />
-    <Content Include="Contents\Custom\Common\_PartialNavbar.js" />
+    <Content Include="Contents\Custom\Authentication\Authentication.js" />
+    <Content Include="Contents\Custom\Common\Common.css" />
+    <Content Include="Contents\Custom\Common\Common.js" />
     <Content Include="Contents\Custom\Dashboard\css\dashboard.css" />
     <Content Include="Contents\Custom\Dashboard\js\dashboard.js" />
+    <Content Include="Contents\Custom\MSC\css\_ApplicationDetails.css" />
+    <Content Include="Contents\Custom\MSC\js\Application_Promise.js" />
+    <Content Include="Contents\Custom\MSC\js\_ApplicationDetails.js" />
     <Content Include="Contents\Image\backgound_auto.jpg" />
     <Content Include="Contents\Image\Backgrounds\1.jpg" />
     <Content Include="Contents\Image\Backgrounds\10.jpg" />
@@ -933,9 +956,9 @@
     <Content Include="Contents\plugin\Font-Awesome-640-Pro\caret-down-solid.svg" />
     <Content Include="Contents\plugin\Font-Awesome-640-Pro\css\all.css" />
     <Content Include="Contents\plugin\Font\Rubik\Font_Rubik.css" />
-    <Content Include="Areas\DepartmentNormal\Views\Shared\_DepartmentNormal_View_old.cshtml" />
+    <Content Include="Areas\old\DepartmentNormal\Views\Shared\_DepartmentNormal_View_old.cshtml" />
     <Content Include="Areas\Shared\_PcnLayoutShare.cshtml" />
-    <Content Include="Areas\Shared\_DepartmentNormal_View_old.cshtml" />
+    <Content Include="Areas\old\_DepartmentNormal_View_old.cshtml" />
     <Content Include="Areas\Dashboard\Views\web.config" />
     <EntityDeploy Include="Areas\Entities\PcnModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -945,6 +968,11 @@
       <DependentUpon>PcnModel.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Dashboard\Views\Dashboard\Index.cshtml" />
+    <Content Include="Areas\MSC\Views\web.config" />
+    <Content Include="Areas\MSC\Views\Management\Management.cshtml" />
+    <Content Include="Areas\MSC\Views\Management\_ApplicationDetails.cshtml" />
+    <Content Include="Areas\Shared\_PcnLayoutShareNavbar.cshtml" />
+    <Content Include="Areas\Shared\web.config" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -1587,25 +1615,26 @@
     <Content Include="Assets\MSC\library\multiselect\bootstrap-select-1.13.14\README.md" />
     <Content Include="Assets\MSC\library\multiselect\bootstrap-select-1.13.14\sass\bootstrap-select.scss" />
     <Content Include="Assets\MSC\library\multiselect\bootstrap-select-1.13.14\sass\variables.scss" />
-    <Content Include="Areas\DepartmentNormal\Views\web.config" />
-    <Content Include="Areas\DepartmentNormal\Views\Shared\_DepartmentNormal_View.cshtml" />
-    <Content Include="Areas\DepartmentNormal\Views\Home\Index.cshtml" />
-    <Content Include="Areas\IE\Views\web.config" />
-    <Content Include="Areas\IE\Views\Shared\_IE_Layout.cshtml" />
-    <Content Include="Areas\IE\Views\Home\Index.cshtml" />
-    <Content Include="Areas\Boss\Views\web.config" />
-    <Content Include="Areas\Boss\Views\Shared\_BossLayout.cshtml" />
-    <Content Include="Areas\Boss\Views\Home\Index.cshtml" />
-    <Content Include="Areas\ADMIN\Views\web.config" />
-    <Content Include="Areas\ADMIN\Views\Shared\_Layout_ADMIN.cshtml" />
-    <Content Include="Areas\ADMIN\Views\Home\Index.cshtml" />
-    <Content Include="Areas\ADMIN\Views\Department\Index.cshtml" />
-    <Content Include="Areas\ADMIN\Views\Employee\Index.cshtml" />
-    <Content Include="Areas\DepartmentNormal\Views\Profile\Index.cshtml" />
-    <Content Include="Areas\IE\Views\Profile\Index.cshtml" />
-    <Content Include="Areas\Boss\Views\Profile\Index.cshtml" />
-    <Content Include="Areas\ADMIN\Views\Customer\Index.cshtml" />
-    <Content Include="Areas\ADMIN\Views\PCN\Index.cshtml" />
+    <Content Include="Areas\old\DepartmentNormal\Views\web.config" />
+    <Content Include="Areas\old\DepartmentNormal\Views\Shared\_DepartmentNormal_View.cshtml" />
+    <Content Include="Areas\old\DepartmentNormal\Views\Home\Index.cshtml" />
+    <Content Include="Areas\old\IE\Views\web.config" />
+    <Content Include="Areas\old\IE\Views\Shared\_IE_Layout.cshtml" />
+    <Content Include="Areas\old\IE\Views\Home\Index.cshtml" />
+    <Content Include="Areas\old\Boss\Views\web.config" />
+    <Content Include="Areas\old\Boss\Views\Shared\_BossLayout.cshtml" />
+    <Content Include="Areas\old\Boss\Views\Home\Index.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\web.config" />
+    <Content Include="Areas\old\ADMIN\Views\Shared\_Layout_ADMIN.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\Home\Index.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\Department\Index.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\Employee\Index.cshtml" />
+    <Content Include="Areas\old\DepartmentNormal\Views\Profile\Index.cshtml" />
+    <Content Include="Areas\old\IE\Views\Profile\Index.cshtml" />
+    <Content Include="Areas\old\Boss\Views\Profile\Index.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\old\ADMIN\Views\PCN\Index.cshtml" />
+    <Content Include="Views\Authentication\Index.cshtml" />
     <None Include="Views\Home\index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -1622,20 +1651,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\ADMIN\Data\" />
-    <Folder Include="Areas\ADMIN\Views\BaseADMIN\" />
-    <Folder Include="Areas\Boss\Data\" />
-    <Folder Include="Areas\Boss\Views\BaseBoss\" />
-    <Folder Include="Areas\Boss\Views\MSC\" />
     <Folder Include="Areas\Dashboard\Data\" />
-    <Folder Include="Areas\Dashboard\Views\Shared\" />
-    <Folder Include="Areas\DepartmentNormal\Data\" />
-    <Folder Include="Areas\DepartmentNormal\Views\BaseDepartment\" />
-    <Folder Include="Areas\DepartmentNormal\Views\DepartmentNormal\" />
-    <Folder Include="Areas\DepartmentNormal\Views\MSC\" />
-    <Folder Include="Areas\IE\Data\" />
-    <Folder Include="Areas\IE\Views\BaseIE\" />
-    <Folder Include="Areas\IE\Views\MSC\" />
+    <Folder Include="Areas\MSC\Data\" />
+    <Folder Include="Areas\old\ADMIN\Data\" />
+    <Folder Include="Areas\old\ADMIN\Views\BaseADMIN\" />
+    <Folder Include="Areas\old\Boss\Data\" />
+    <Folder Include="Areas\old\Boss\Views\BaseBoss\" />
+    <Folder Include="Areas\old\Boss\Views\MSC\" />
+    <Folder Include="Areas\old\DepartmentNormal\Data\" />
+    <Folder Include="Areas\old\DepartmentNormal\Views\BaseDepartment\" />
+    <Folder Include="Areas\old\DepartmentNormal\Views\DepartmentNormal\" />
+    <Folder Include="Areas\old\DepartmentNormal\Views\MSC\" />
+    <Folder Include="Areas\old\IE\Data\" />
+    <Folder Include="Areas\old\IE\Views\BaseIE\" />
+    <Folder Include="Areas\old\IE\Views\MSC\" />
     <Folder Include="Assets\Media\FileMSC\" />
     <Folder Include="Assets\MSC\images\employee\" />
     <Folder Include="Views\Customer\" />

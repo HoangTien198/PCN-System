@@ -1,0 +1,14 @@
+﻿.form-control{
+    color: var(--bs-theme);
+}
+    .form-control > * {
+        color: var(--bs-theme) !important;
+        font-size: 0.875rem !important;
+        font-family: var(--bs-body-font-family) !important;
+    }
+.widget-reminder-time {
+    width: 160px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -28,8 +28,8 @@ namespace IE_MSC.Areas.Entities
         public virtual DbSet<Customer_> Customer_Set { get; set; }
         public virtual DbSet<DepartmentEmployee_> DepartmentEmployee_Set { get; set; }
         public virtual DbSet<Department_> Department_Set { get; set; }
-        public virtual DbSet<Employee_> Employee_Set { get; set; }
         public virtual DbSet<PCNConfirm_> PCNConfirm_Set { get; set; }
         public virtual DbSet<PCN_> PCN_Set { get; set; }
+        public virtual DbSet<Employee_> Employee_Set { get; set; }
     }
 }

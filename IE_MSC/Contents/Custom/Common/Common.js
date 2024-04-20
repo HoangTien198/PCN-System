@@ -38,16 +38,3 @@ function CalTableHeight() {
     }
     return result;
 }
-function Logout() {
-    $.ajax({
-        type: "POST",
-        url: "/Login/Logout",
-        contentType: "application/json",
-        datatype: "text",
-        success: function (data) {
-        },
-        error: function (returnval) {
-            window.location.replace("/Home/Index");
-        }
-    });
-}
