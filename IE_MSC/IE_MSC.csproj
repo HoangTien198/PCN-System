@@ -178,6 +178,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\AuthenticationController.cs" />
+    <Compile Include="Areas\Common.cs" />
     <Compile Include="Areas\MSC\Controllers\ManagementController.cs" />
     <Compile Include="Areas\MSC\MSCAreaRegistration.cs" />
     <Compile Include="Areas\old\ADMIN\ADMINAreaRegistration.cs" />
@@ -240,6 +241,8 @@
     <Compile Include="Areas\Repositories\R_User.cs" />
     <Compile Include="Areas\Repositories\R_MSC.cs" />
     <Compile Include="Areas\Repositories\R_Dashboard.cs" />
+    <Compile Include="Areas\User\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\User\UserAreaRegistration.cs" />
     <Compile Include="Commons\AccountLogin.cs" />
     <Compile Include="Commons\CommonConstant.cs" />
     <Compile Include="Commons\FormatUnicode.cs" />
@@ -815,9 +818,14 @@
     <Content Include="Contents\Custom\Common\Common.js" />
     <Content Include="Contents\Custom\Dashboard\css\dashboard.css" />
     <Content Include="Contents\Custom\Dashboard\js\dashboard.js" />
-    <Content Include="Contents\Custom\MSC\css\_ApplicationDetails.css" />
+    <Content Include="Contents\Custom\MSC\css\MSC_Application.css" />
+    <Content Include="Contents\Custom\MSC\css\_ApplicationCreate.css" />
+    <Content Include="Contents\Custom\MSC\css\_ApplicationDetail.css" />
     <Content Include="Contents\Custom\MSC\js\Application_Promise.js" />
-    <Content Include="Contents\Custom\MSC\js\_ApplicationDetails.js" />
+    <Content Include="Contents\Custom\MSC\js\MSC_Application.js" />
+    <Content Include="Contents\Custom\MSC\js\_ApplicationCreate.js" />
+    <Content Include="Contents\Custom\MSC\js\_ApplicationDetail.js" />
+    <Content Include="Contents\Custom\User\User_Promise.js" />
     <Content Include="Contents\Image\backgound_auto.jpg" />
     <Content Include="Contents\Image\Backgrounds\1.jpg" />
     <Content Include="Contents\Image\Backgrounds\10.jpg" />
@@ -970,9 +978,11 @@
     <Content Include="Areas\Dashboard\Views\Dashboard\Index.cshtml" />
     <Content Include="Areas\MSC\Views\web.config" />
     <Content Include="Areas\MSC\Views\Management\Management.cshtml" />
-    <Content Include="Areas\MSC\Views\Management\_ApplicationDetails.cshtml" />
+    <Content Include="Areas\MSC\Views\Management\_ApplicationDetail.cshtml" />
     <Content Include="Areas\Shared\_PcnLayoutShareNavbar.cshtml" />
     <Content Include="Areas\Shared\web.config" />
+    <Content Include="Areas\MSC\Views\Management\_ApplicationCreate.cshtml" />
+    <Content Include="Areas\User\Views\web.config" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -1017,6 +1027,7 @@
     <Content Include="Contents\plugin\Viewer JS\viewer.min.js" />
     <Content Include="Contents\plugin\Wave\style.css" />
     <Content Include="Contents\template\HUD_Admin\assets\css\app.min.css" />
+    <Content Include="Contents\template\HUD_Admin\assets\css\app.min.default.css" />
     <Content Include="Contents\template\HUD_Admin\assets\css\images\cover-2.jpg" />
     <Content Include="Contents\template\HUD_Admin\assets\css\images\cover-3.jpg" />
     <Content Include="Contents\template\HUD_Admin\assets\css\images\cover-4.jpg" />
@@ -1026,6 +1037,7 @@
     <Content Include="Contents\template\HUD_Admin\assets\css\images\logo.png" />
     <Content Include="Contents\template\HUD_Admin\assets\css\images\pattern.png" />
     <Content Include="Contents\template\HUD_Admin\assets\css\vendor.min.css" />
+    <Content Include="Contents\template\HUD_Admin\assets\css\vendor.min.default.css" />
     <Content Include="Contents\template\HUD_Admin\assets\img\cover\cover-thumb-1.jpg" />
     <Content Include="Contents\template\HUD_Admin\assets\img\cover\cover-thumb-2.jpg" />
     <Content Include="Contents\template\HUD_Admin\assets\img\cover\cover-thumb-3.jpg" />
@@ -1665,6 +1677,9 @@
     <Folder Include="Areas\old\IE\Data\" />
     <Folder Include="Areas\old\IE\Views\BaseIE\" />
     <Folder Include="Areas\old\IE\Views\MSC\" />
+    <Folder Include="Areas\User\Data\" />
+    <Folder Include="Areas\User\Views\Management\" />
+    <Folder Include="Areas\User\Views\Shared\" />
     <Folder Include="Assets\Media\FileMSC\" />
     <Folder Include="Assets\MSC\images\employee\" />
     <Folder Include="Views\Customer\" />

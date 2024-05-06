@@ -7,3 +7,37 @@
     border-color: #b56e00;
     position: relative;
 }
+.swal2-popup {
+    background: rgb(0 0 0 / 20%) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+.btn-group .btn-sm i {
+    width: 12px;
+}
+table tbody tr:hover {
+    background-color: rgba(48, 190, 255, 0.2) !important;
+    
+}
+.dataTables_filter {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+    .dataTables_filter label {       
+        padding-left: 0.5rem;
+    }
+
+        .dataTables_filter label input {
+            border: 0;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            width: 250px !important;
+        }
+.modal-xxl {
+    --bs-modal-width: 95%;
+}
+.note-editor.note-frame {
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}

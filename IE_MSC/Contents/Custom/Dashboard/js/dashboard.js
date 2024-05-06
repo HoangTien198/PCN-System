@@ -24,7 +24,8 @@ async function GetAndInitData() {
 		CreateTop10ActionTable();
 
 	} catch (e) {
-		console.log(e);
+		Swal.fire('error', `${e}`, 'error');
+		console.error(e);
     }
 }
 
@@ -799,7 +800,7 @@ function CreateDepartmentChart() {
 			var options = {
 				chart: {
 					height: '100%',
-					type: 'donut',
+					type: 'pie',
 					foreColor: '#FFF',
 					sparkline: {
 						enabled: true,
@@ -824,30 +825,7 @@ function CreateDepartmentChart() {
 					width: 1,
 					colors: undefined
 				},
-				plotOptions: {
-					pie: {
-						donut: {
-							labels: {
-								show: true,
-								name: {
-									show: true,
-									fontSize: '0.5rem'	
-								},
-								value: {
-									show: true,
-									fontSize: '1rem',
-									fontWeight: 'bold'
-								},
-								total: {
-									show: true,
-									fontSize: '1rem'
-								},
-								
-							}
-						}
-					}
-				}
-
+				
 			};
 
 			_chart.DepartmentDetailsChart = new ApexCharts(document.querySelector("#department-details-chart"), options);
@@ -898,7 +876,7 @@ function CreateTop10PcnTable() {
 	
 		var btnAction = $(`<a href="javascript:;" class="text-decoration-none text-white"><i class="bi bi-search"></i></a>`);
 		btnAction.click(function () {
-			ApplicationDetails(item.PCNID);
+			ApplicationDetail(item.PCNID);
 		});
 		tr.append($('<td></td>').append(btnAction));
 
@@ -936,7 +914,7 @@ function CreateTop10ActionTable() {
 
 		tr.append(`<td>${moment(item.Date).format('YYYY-MM-DD HH:mm')}</td>`);
 		tr.append(`<td>${item.User.CardId} - ${item.User.Name}</td>`);		
-		tr.append(`<td title="${item.PCNID}">${item.PCNID}</td>`);
+		tr.append(`<td title="${item.PCNCode}">${item.PCNCode}</td>`);
 
 		switch (item.Status) {
 			case -1:
@@ -952,7 +930,7 @@ function CreateTop10ActionTable() {
 
 		var btnAction = $(`<a href="javascript:;" class="text-decoration-none text-white"><i class="bi bi-search"></i></a>`);
 		btnAction.click(function () {
-			console.log(item.PCNID);
+			ApplicationDetail(item.PCNID);
 		});
 		tr.append($('<td></td>').append(btnAction));
 

@@ -92,8 +92,151 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             {
                 throw ex;
             }
-        }
+        }       
+        public static object GetUser(string Id)
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
 
+                    var user = context.Employee_Set.Select(u => new
+                    {
+                        Id = u.EmployeeID,
+                        CardID = u.EmployeeCode,
+                        VnName = u.EmployeeVNName,
+                        CnName = u.EmployeeCNName,
+                        Email = u.Email,
+                        Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
+                    }).FirstOrDefault(u => u.Id.ToUpper() == Id.ToUpper());
+
+                    return user;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetSessionUser()
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var sessionUser = Common.GetSessionUser();
+
+                    if(sessionUser != null)
+                    {
+                        var user = context.Employee_Set.Select(u => new
+                        {
+                            Id = u.EmployeeID,
+                            CardID = u.EmployeeCode,
+                            VnName = u.EmployeeVNName,
+                            CnName = u.EmployeeCNName,
+                            Email = u.Email,
+                            Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
+                        }).FirstOrDefault(u => u.Id.ToUpper() == sessionUser.EmployeeID.ToUpper());
+
+                        return user;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetUsers()
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var users = context.Employee_Set.Select(u => new
+                    {
+                        Id = u.EmployeeID,
+                        CardID = u.EmployeeCode,
+                        VnName = u.EmployeeVNName,
+                        CnName = u.EmployeeCNName,
+                        Email = u.Email,
+                        Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
+                    }).ToList();
+
+                    return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetCustomerDepartments()
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var customerDepartments = context.Customer_Set.Select(c => new
+                    {
+                        Id = c.CustomerID,
+                        c.CustomerName,
+                        Departments = context.Department_Set.Select(d => new
+                        {
+                            Id = d.DepartmentID,
+                            IdCustomer = d.CustomerID,
+                            DepartmentName = d.DepartmentName
+                        }).Where(d => d.IdCustomer == c.CustomerID).ToList()
+                    }).ToList();
+
+                    return customerDepartments;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public static object GetDepartments()
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var departments = context.Department_Set.Select(d => new
+                    {
+                        Id = d.CustomerID,
+                        d.DepartmentName,
+                        Customer = new
+                        {
+                            Id = d.CustomerID,
+                            CustoemrName = d.Customer.CustomerName
+                        }
+                    }).ToList();
+
+                    return departments;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         // POST
 
 

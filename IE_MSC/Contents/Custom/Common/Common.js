@@ -1,4 +1,26 @@
-﻿function GetAjaxErrorMessage(error) {
+﻿$(document).ready(function () {
+    ToartsConfig();
+});
+function ToartsConfig() {
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+}
+function GetAjaxErrorMessage(error) {
     var regex = new RegExp(`<title>(.*?)<\/title>`);
     var match = regex.exec(error.responseText);
 
@@ -37,4 +59,26 @@ function CalTableHeight() {
         result.lengthMenu = [[15, 25, 50, -1], [15, 25, 50, "All"]]
     }
     return result;
+}
+function GetUserName(user) {
+    if (user) {
+        return `${user.EmployeeCode}${user.EmployeeVNName ? ' - ' + user.EmployeeVNName : ' - ' + user.EmployeeCNName}`;
+    }
+    else {
+        return 'Unknown';
+    }
+}
+function GetUserNameObj(user) {
+    if (user) {
+        return `${user.CardID}${user.VnName ? ' - ' + user.VnName : ' - ' + user.CnName}`;
+    }
+    else {
+        return 'Unknown';
+    }
+} function GetUserDeptObj(user) {
+    var depts = [];
+    user.Departments.forEach(function (department) {
+        depts.push(`${department.Customer.CustomerName} - ${department.Department.DepartmentName}`);
+    });
+    return depts.join(', ');
 }

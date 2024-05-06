@@ -289,6 +289,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     List<object> list = new List<object>();
                     foreach(var item in dbContext.PCNConfirm_Set.OrderByDescending(p => p.ConfirmedDate).Take(10).ToList())
                     {
+                        var PCN = dbContext.PCN_Set.FirstOrDefault(p => p.PCNID == item.PCNID);
                         var data = new
                         {
                             Date = item.ConfirmedDate,
@@ -298,7 +299,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                 CardId = e.EmployeeCode,
                                 Name = e.EmployeeCNName
                             }).FirstOrDefault(e => e.EmployeeID == item.ConfirmedBy),
-                            PCNID = dbContext.PCN_Set.FirstOrDefault(p => p.PCNID == item.PCNID).PCNCode,
+                            PCNID = PCN.PCNID,
+                            PCNCode = PCN.PCNCode,
                             Status = item.Status,
                         };
 

@@ -29,6 +29,19 @@ namespace IE_MSC.Areas.MSC.Controllers
                 return Json(new {status = false, message = ex.Message}, JsonRequestBehavior.AllowGet);
             }
         }
+        public JsonResult GetApplications()
+        {
+            try
+            {
+                var result = R_MSC.GetApplications();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         /* POST */
     }

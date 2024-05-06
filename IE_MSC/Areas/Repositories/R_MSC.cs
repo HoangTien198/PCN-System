@@ -20,8 +20,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     {
                         Id = p.PCNID.ToUpper(),
 
-                        UserCreated = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.RecommendedBy.ToUpper()),
-                        Departments = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.RecommendedBy.ToUpper()).DepartmentEmployees.Select(d => d.Department).ToList(),
+                        UserCreated = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.CreatedBy.ToUpper()),
+                        Departments = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.CreatedBy.ToUpper()).DepartmentEmployees.Select(d => d.Department).ToList(),
                         DateCreated = p.RecommendedDate,
                         ApplicationStatus = (p.Status == 1) ? "Pending" : (p.Status == -1) ? "Rejected" : "Approved",
                         CodeMSC = p.PCNCode,
@@ -52,6 +52,59 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     }).FirstOrDefault(p => p.Id.ToUpper() == IdApplication.ToUpper());
 
                     return pcn;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetApplications()
+        {
+            try
+            {
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var pcns = context.PCN_Set.Select(p => new
+                    {
+                        Id = p.PCNID.ToUpper(),
+
+                        UserCreated = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.CreatedBy.ToUpper()),
+                        Departments = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == p.CreatedBy.ToUpper()).DepartmentEmployees.Select(d => d.Department).ToList(),
+                        DateCreated = p.RecommendedDate,
+                        ApplicationStatus = (p.Status == 1) ? "Pending" : (p.Status == -1) ? "Rejected" : "Approved",
+                        CodeMSC = p.PCNCode,
+                        Title = p.Subject,
+                        Process = p.ProcessTitle,
+                        Model = p.ModelTitle,
+
+                        BeforeChange = p.BeforeChangeDescription,
+                        AfterChange = p.AfterChangeDescription,
+                        BeforeChangeFile = p.BeforeChangeFile,
+                        AfterChangeFile = p.AfterChangeFile,
+
+                        Reason = p.Reason,
+                        Cost = p.CalculateCost,
+
+                        Signs = p.PCNConfirms.OrderBy(pc => pc.SortOrder).Select(pc => new
+                        {
+                            User = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == pc.EmployeeID.ToUpper()),
+                            Departments = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == pc.EmployeeID.ToUpper()).DepartmentEmployees.Select(de => de.Department).ToList(),
+                            DateSigned = (pc.ConfirmedBy != null) ? pc.ConfirmedDate : (pc.RejectedDate != null) ? pc.RejectedDate : null,
+                            Status = (pc.ConfirmedBy != null) ? "Approved" : (pc.RejectedDate != null) ? "Rejected" : "Pending",
+                            Details = (pc.RejectedBy != null) ? pc.ReasonReject : null,
+                            Order = pc.SortOrder,
+                        }),
+
+                        DateActived = p.EffectiveDate,
+
+                    })
+                    .OrderByDescending(msc => msc.DateCreated)
+                    .ToList();
+
+                    return pcns;
                 }
             }
             catch (Exception ex)

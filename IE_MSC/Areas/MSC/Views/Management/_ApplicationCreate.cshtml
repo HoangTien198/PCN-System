@@ -1,0 +1,144 @@
+﻿<div class="modal fade" id="ApplicationCreateModal" role="dialog" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-scrollable modal-xxl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-uppercase">application create</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-center text-theme">標准方法變更通知書<br />(MSC)Thông báo thay đổi phương pháp làm việc tiêu chuẩn (MSC)</h4>
+
+                <!-- Information -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">制作人 <span class="text-theme">/</span> Người đề nghị</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-UserCreated" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">制作部門 <span class="text-theme">/</span> Bộ phận</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Department" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">日期 <span class="text-theme">/</span> Ngày</label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-DateCreated" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3 ">
+                            <label class="form-label">主題 <span class="text-theme">/</span> Chủ đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Title">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">过程 <span class="text-theme">/</span> Process <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Process">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">模型 <span class="text-theme">/</span> Model <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Model">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">現行作業方式 <span class="text-theme">/</span> Phương thức làm việc hiện hành <span class="text-danger">*</span></label>
+                            <div class="form-control overflow-auto" id="ApplicationCreateModal-BeforeChange" style="height: 10rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">變更后的方式 <span class="text-theme">/</span> Phương thức sau khi thay đổi <span class="text-danger">*</span></label>
+                            <div class="form-control overflow-auto" id="ApplicationCreateModal-AfterChange" style="height: 10rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="mb-3">
+                            <label class="form-label"> <span class="text-theme">/</span> Tài liệu phương thức làm việc hiện hành</label>
+                            <input type="file" class="form-control text-truncate" id="ApplicationCreateModal-BeforeChangeFile" />
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="mb-3">
+                            <label class="form-label"> <span class="text-theme">/</span> Tài liệu phương thức sau khi thay đổi</label>
+                            <input type="file" class="form-control text-truncate" id="ApplicationCreateModal-AfterChangeFile" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">變更原因 <span class="text-theme">/</span> Nguyên nhân thay đổi <span class="text-danger">*</span></label>
+                            <div class="form-control overflow-auto" id="ApplicationCreateModal-Reason" style="height: 10rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">制造成本計算 <span class="text-theme">/</span> Tính toán giá thành sản xuất (IE) <span class="text-danger">*</span></label>
+                            <div class="form-control overflow-auto" id="ApplicationCreateModal-Cost" style="height: 10rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign -->
+
+                <hr class="mb-3">
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="d-flex justify-content-end mb-3">
+                            <button class="btn btn-secondary btn-theme btn-sm ms-2" onclick="AddSign()"><i class="fa-duotone fa-plus"></i> Add Sign</button>
+                        </div>
+                        <div class="card">
+                            <div class="widget-reminder" id="ApplicationCreateModal-sign">
+                               
+                            </div>
+
+                            <div class="card-arrow">
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6 col-sm-12">                       
+                        <div class="form-group mb-3">
+                            <label class="form-label">保存期限:二年 <span class="text-theme">/</span> Thời hạn bảo lưu</label>
+                            <input type="text" class="form-control" value="5 năm (5 年)">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">表單編號 <span class="text-theme">/</span> Mã bảng biểu</label>
+                            <input type="text" class="form-control" value="FM3NVA002001A">
+                        </div>
+                    </div>
+                </div>
+
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="ApplicationCreateModal-Save"><i class="fa-duotone fa-floppy-disk"></i> Create Application</button>
+            </div>
+        </div>
+    </div>
+</div>

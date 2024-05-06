@@ -1,0 +1,10 @@
+﻿#ApplicationDetailModal .form-label {
+    color: var(--bs-theme);
+}
+   
+#ApplicationDetailModal .widget-reminder-time {
+    width: 160px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

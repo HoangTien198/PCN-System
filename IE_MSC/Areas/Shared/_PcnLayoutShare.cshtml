@@ -6,19 +6,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Meta -->
     <meta charset="utf-8" />
-    <title>@ViewBag.Title | @System.Configuration.ConfigurationManager.AppSettings["SystemName"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-
+    <!-- Title -->
+    <title>@ViewBag.Title | @System.Configuration.ConfigurationManager.AppSettings["SystemName"]</title>
+    <!-- Icon -->
     <link rel="icon" type="image/x-icon" href="~/Contents/Image/favicon.ico">
-
+    <!-- Plugin -->
     <link href="~/Contents/template/HUD_Admin/assets/css/vendor.min.css" rel="stylesheet" />
     <link href="~/Contents/template/HUD_Admin/assets/css/app.min.css" rel="stylesheet" />
+    <link href="~/Contents/plugin/toats/toastr.min.css" rel="stylesheet" />
+    <link href="~/Contents/plugin/SweetAlert/swal.min.css" rel="stylesheet" />
+    <link href="~/Contents/plugin/Font-Awesome-640-Pro/css/all.css" rel="stylesheet" />
+    <!-- Common -->
     <link href="~/Contents/Custom/Common/_HudAdminNavbar.css" rel="stylesheet" />
     <link href="~/Contents/Custom/Common/Common.css?v=@newGuid" rel="stylesheet" />
-
+    <!-- Customm -->
     <style>
         .header-glass, .footer-glass, .app-sidebar {
             background: rgb(30 41 54 / 20%);
@@ -44,6 +51,8 @@
 
 </head>
 <body class="theme-info">
+
+    <input type="hidden" data-id="@userLogin.EmployeeID" data-card="@userLogin.EmployeeCode" id="SessionUser" />
 
     <div id="app" class="app">
 
@@ -79,9 +88,20 @@
                 <div class="menu-item dropdown dropdown-mobile-full">
                     <a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
                         <div class="menu-img online">
-                            <img src="~/Contents/Image/fii-logo.jpg" alt="Profile" height="60" class="bg-white">
+                            <div class="card">
+                                <div class="card-body p-1">
+                                    <img src="~/Contents/Image/fii-logo.jpg" alt="Profile" class="img-fluid">
+                                </div>
+
+                                <div class="card-arrow">
+                                    <div class="card-arrow-top-left"></div>
+                                    <div class="card-arrow-top-right"></div>
+                                    <div class="card-arrow-bottom-left"></div>
+                                    <div class="card-arrow-bottom-right"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="menu-text d-sm-block d-none"><span class="__cf_email__">[@userLogin.EmployeeVNName]</span></div>
+                        <div class="menu-text d-sm-block d-none"><span class="__cf_email__">[@userLogin.EmployeeCode] - @userLogin.EmployeeCNName</span></div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end me-lg-3 fs-11px mt-1">
                         <a class="dropdown-item d-flex align-items-center" href="profile.html">PROFILE <i class="bi bi-person-circle ms-auto text-theme fs-16px my-n1"></i></a>
@@ -109,11 +129,16 @@
 
     </div>
 
-
+    <!-- plugin -->
     <script src="~/Contents/template/HUD_Admin/assets/js/vendor.min.js" type="text/javascript"></script>
     <script src="~/Contents/template/HUD_Admin/assets/js/app.min.js" type="text/javascript"></script>
+    <script src="~/Contents/plugin/toats/toastr.min.js"></script>
+    <script src="~/Contents/plugin/SweetAlert/swal.min.js"></script>
+    <script src="~/Contents/plugin/MomentJs/moment.min.js"></script>
+    <!-- common -->
     <script src="~/Contents/Custom/Common/_HudAdminNavbar.js"></script>
     <script src="~/Contents/Custom/Common/Common.js?v=@newGuid"></script>
+    <!-- custom -->
 
     @RenderSection("scripts", required: false)
 
