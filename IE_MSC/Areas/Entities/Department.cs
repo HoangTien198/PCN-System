@@ -12,17 +12,12 @@ namespace IE_MSC.Areas.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class Department_
+    public partial class Department
     {
-        public string DepartmentID { get; set; }
+        public string Id { get; set; }
         public string DepartmentName { get; set; }
-        public string CustomerID { get; set; }
-        public Nullable<bool> IsIE { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public string CreatedBy { get; set; }
+        public string IdCustomer { get; set; }
     
-        public virtual Customer_ Customer { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

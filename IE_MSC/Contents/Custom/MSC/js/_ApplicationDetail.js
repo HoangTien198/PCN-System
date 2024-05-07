@@ -1,11 +1,11 @@
 ﻿async function ApplicationDetail(IdApplication) {
     try {
-        var application = await GetApplication(IdApplication);
+        await GetDetailApplication(IdApplication);
 
-        CreateApplicationDetailModal(application);
+        CreateApplicationDetailModal(_datas.Application);
 
     } catch (e) {
-        Swal.fire('error', `${e}`, 'error');
+        Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
         console.error(e);
     }
 }
@@ -36,7 +36,7 @@ function CreateApplicationDetailModal(application) {
     }
 
     $('#ApplicationDetailModal-CodeMSC').val(application.CodeMSC);
-    $('#ApplicationDetailModal-Title').val(application.Title);
+    $('#ApplicationDetailModal-Subject').val(application.Subject);
     $('#ApplicationDetailModal-Process').val(application.Process);
     $('#ApplicationDetailModal-Model').val(application.Model);
 
@@ -54,7 +54,7 @@ function CreateApplicationDetailModal(application) {
     $('#ApplicationDetailModal-Cost').html(application.Cost);
 
     /* Sign */
-    let SignContainer = $('#ApplicationDetailModal-sign');
+    let SignContainer = $('#ApplicationDetailModal-Sign');
     let IsReject = false;
     SignContainer.empty();
     application.Signs.forEach(function (sign) {
@@ -67,7 +67,7 @@ function CreateApplicationDetailModal(application) {
 
             let time = `<span class="text-danger fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
 
-            let item = `<div class="widget-reminder-item">
+            let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
                        <div class="widget-reminder-time">${time}</div>
                        <div class="widget-reminder-divider bg-danger"></div>
                        <div class="widget-reminder-content">
@@ -80,7 +80,7 @@ function CreateApplicationDetailModal(application) {
         }
         else {
             if (IsReject) {
-                let item = `<div class="widget-reminder-item">
+                let item = `<div class="widget-reminder-item bg-secondary bg-opacity-10">
                        <div class="widget-reminder-time"><span class="text-secondary fw-bold">Closed</span></div>
                        <div class="widget-reminder-divider bg-secondary"></div>
                        <div class="widget-reminder-content">
@@ -93,7 +93,7 @@ function CreateApplicationDetailModal(application) {
             else {
                 let time = (sign.Status == 'Pending') ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
 
-                let item = `<div class="widget-reminder-item">
+                let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
                        <div class="widget-reminder-time">${time}</div>
                        <div class="widget-reminder-divider bg-${color}"></div>
                        <div class="widget-reminder-content">
@@ -108,4 +108,14 @@ function CreateApplicationDetailModal(application) {
 
 
     $('#ApplicationDetailModal').modal('show');
+}
+
+/* Other */
+async function GetDetailApplication(IdApplication) {
+    if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
+        _datas.Application = _datas.Applications.find(application => { application.Id.toUpperCase() === IdApplication.toUpperCase() });
+        if (!_datas.Application) {
+            _datas.Application = await GetApplication(IdApplication);
+        }
+    }
 }

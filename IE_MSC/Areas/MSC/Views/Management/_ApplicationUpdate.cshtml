@@ -1,8 +1,8 @@
-﻿<div class="modal fade" id="ApplicationCreateModal" role="dialog" data-bs-backdrop="static">
+﻿<div class="modal fade" id="ApplicationUpdateModal" role="dialog" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-scrollable modal-xxl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-uppercase">create application</h5>
+                <h5 class="modal-title text-uppercase">update application</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -16,29 +16,29 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">制作人 / Người đề nghị</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-UserCreated" disabled>
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-UserCreated" disabled>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">制作部門 / Bộ phận</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Department" disabled>
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-Department" disabled>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">日期 / Ngày</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-DateCreated" disabled>
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-DateCreated" disabled>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3 ">
                             <label class="form-label">主題 / Chủ đề <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Subject" maxlength="250">
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-Subject" maxlength="250">
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">过程 / Process <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Process" maxlength="250">
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-Process" maxlength="250">
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">模型 / Model <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationCreateModal-Model" maxlength="250">
+                            <input type="text" class="form-control text-truncate" id="ApplicationUpdateModal-Model" maxlength="250">
                         </div>
                     </div>
                 </div>
@@ -51,13 +51,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">現行作業方式 / Phương thức làm việc hiện hành <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationCreateModal-BeforeChange" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-BeforeChange" style="height: 10rem;"></div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">變更后的方式 / Phương thức sau khi thay đổi <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationCreateModal-AfterChange" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-AfterChange" style="height: 10rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -66,14 +66,14 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="mb-3">
                             <label class="form-label"> / Tài liệu phương thức làm việc hiện hành</label>
-                            <input type="file" class="form-control text-truncate" id="ApplicationCreateModal-BeforeChangeFile" />
+                            <input type="file" class="form-control text-truncate" id="ApplicationUpdateModal-BeforeChangeFile" />
                         </div>
 
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="mb-3">
                             <label class="form-label"> / Tài liệu phương thức sau khi thay đổi</label>
-                            <input type="file" class="form-control text-truncate" id="ApplicationCreateModal-AfterChangeFile" />
+                            <input type="file" class="form-control text-truncate" id="ApplicationUpdateModal-AfterChangeFile" />
                         </div>
                     </div>
                 </div>
@@ -86,13 +86,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">變更原因 / Nguyên nhân thay đổi <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationCreateModal-Reason" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-Reason" style="height: 10rem;"></div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">制造成本計算 / Tính toán giá thành sản xuất (IE) <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationCreateModal-Cost" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-Cost" style="height: 10rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -105,13 +105,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="d-flex justify-content-between mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="ApplicationCreateModal-SendBoss">
+                                <input class="form-check-input" type="checkbox" value="" id="ApplicationUpdateModal-SendBoss">
                                 <label class="form-check-label">Send to Boss (dai-xin.gao@fii-foxconn.com)</label>
                             </div>
-                            <a class="text-theme" role="button" onclick="AddCreateSign()"><i class="fa-duotone fa-plus"></i> Add Sign</a>
+                            <a class="text-theme" role="button" onclick="AddUpdateSign()"><i class="fa-duotone fa-plus"></i> Add Sign</a>
                         </div>
                         <div class="card">
-                            <div class="widget-reminder" id="ApplicationCreateModal-Sign">
+                            <div class="widget-reminder" id="ApplicationUpdateModal-Sign">
                                
                             </div>
 
@@ -141,7 +141,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="ApplicationCreateModal-Save"><i class="fa-duotone fa-floppy-disk"></i> Create Application</button>
+                <button type="button" class="btn btn-success" id="ApplicationUpdateModal-Save"><i class="fa-duotone fa-floppy-disk"></i> Update Application</button>
             </div>
         </div>
     </div>

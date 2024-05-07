@@ -24,7 +24,7 @@ async function GetAndInitData() {
 		CreateTop10ActionTable();
 
 	} catch (e) {
-		Swal.fire('error', `${e}`, 'error');
+		Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
 		console.error(e);
     }
 }
@@ -905,10 +905,13 @@ function CreateTop10ActionTable() {
 				tr.append(`<td><span><i class="bi bi-circle-fill fs-6px text-danger"></i></span></td>`);
 				break;
 			case 1:
-				tr.append(`<td><span><i class="bi bi-circle-fill fs-6px text-warning"></i></span></td>`);
+				tr.append(`<td><span><i class="bi bi-circle-fill fs-6px text-info"></i></span></td>`);
 				break;
 			case 2:
 				tr.append(`<td><span><i class="bi bi-circle-fill fs-6px text-success"></i></span></td>`);
+				break;
+			default:
+				tr.append(`<td><span><i class="bi bi-circle-fill fs-6px text-info"></i></span></td>`);
 				break;
 		}
 
@@ -921,10 +924,13 @@ function CreateTop10ActionTable() {
 				tr.append(`<td><span class="badge d-block bg-danger text-theme-900 rounded-0 pt-5px w-70px" style="min-height: 18px">Rejected</span></td>`);
 				break;
 			case 1:
-				tr.append(`<td><span class="badge d-block bg-warning text-theme-900 rounded-0 pt-5px w-70px" style="min-height: 18px">Pending</span></td>`);
+				tr.append(`<td><span class="badge d-block bg-info text-theme-900 rounded-0 pt-5px w-70px" style="min-height: 18px">Create</span></td>`);
 				break;
 			case 2:
 				tr.append(`<td><span class="badge d-block bg-success text-theme-900 rounded-0 pt-5px w-70px" style="min-height: 18px">Approved</span></td>`);
+				break;
+			default:
+				tr.append(`<td><span class="badge d-block bg-info text-theme-900 rounded-0 pt-5px w-70px" style="min-height: 18px">Create</span></td>`);
 				break;
 		}
 

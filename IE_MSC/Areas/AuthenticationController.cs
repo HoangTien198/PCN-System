@@ -98,7 +98,7 @@ namespace IE_MSC.Areas
         }
 
         /* Cookies */
-        private void CreateCookieInfo(Employee_ user)
+        private void CreateCookieInfo(Entities.User user)
         {
             HttpCookie rememberSignInCookie = new HttpCookie("UserInfo");
 
@@ -108,7 +108,7 @@ namespace IE_MSC.Areas
 
             Response.Cookies.Add(rememberSignInCookie);
         }
-        private void CreateCookieRemember(Employee_ user)
+        private void CreateCookieRemember(Entities.User user)
         {
             HttpCookie rememberSignInCookie = new HttpCookie("RememberLogin")
             {
@@ -119,7 +119,7 @@ namespace IE_MSC.Areas
         }
 
         /* Session */
-        private void CreateSession(Employee_ user)
+        private void CreateSession(Entities.User user)
         {
             Session["UserSession"] = user;
         }
@@ -135,7 +135,7 @@ namespace IE_MSC.Areas
         {
             return Convert.ToBase64String(Protect(Encoding.UTF8.GetBytes(value), Encoding.UTF8.GetBytes("MSC_ProtectKey")));
         }
-        private Employee_ UnHashValue(string value)
+        private Entities.User UnHashValue(string value)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace IE_MSC.Areas
                     var username = userInfo[0];
                     var password = userInfo[1];
 
-                    var user = R_User.GetUser(username, password, false);
+                    var user = R_User.GetUser(username, password, true);
                     return user;
                 }
                 else

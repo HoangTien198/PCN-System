@@ -179,6 +179,24 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\AuthenticationController.cs" />
     <Compile Include="Areas\Common.cs" />
+    <Compile Include="Areas\Entities\Customer.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\Department.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\MSC.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\SignMSC.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\User.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\UserDepartment.cs">
+      <DependentUpon>PcnModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Areas\MSC\Controllers\ManagementController.cs" />
     <Compile Include="Areas\MSC\MSCAreaRegistration.cs" />
     <Compile Include="Areas\old\ADMIN\ADMINAreaRegistration.cs" />
@@ -200,21 +218,6 @@
     <Compile Include="Areas\old\DepartmentNormal\Controllers\MSCController.cs" />
     <Compile Include="Areas\old\DepartmentNormal\Controllers\ProfileController.cs" />
     <Compile Include="Areas\old\DepartmentNormal\DepartmentNormalAreaRegistration.cs" />
-    <Compile Include="Areas\Entities\Customer_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\DepartmentEmployee_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\Department_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\Employee_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\PCNConfirm_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Entities\PcnModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -229,9 +232,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PcnModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\PCN_.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\old\IE\Controllers\BaseIEController.cs" />
     <Compile Include="Areas\old\IE\Controllers\HomeController.cs" />
@@ -819,11 +819,14 @@
     <Content Include="Contents\Custom\Dashboard\css\dashboard.css" />
     <Content Include="Contents\Custom\Dashboard\js\dashboard.js" />
     <Content Include="Contents\Custom\MSC\css\MSC_Application.css" />
+    <Content Include="Contents\Custom\MSC\css\_ApplicationUpdate.css" />
     <Content Include="Contents\Custom\MSC\css\_ApplicationCreate.css" />
     <Content Include="Contents\Custom\MSC\css\_ApplicationDetail.css" />
     <Content Include="Contents\Custom\MSC\js\Application_Promise.js" />
     <Content Include="Contents\Custom\MSC\js\MSC_Application.js" />
+    <Content Include="Contents\Custom\MSC\js\_ApplicationUpdate.js" />
     <Content Include="Contents\Custom\MSC\js\_ApplicationCreate.js" />
+    <Content Include="Contents\Custom\MSC\js\_ApplicationDelete.js" />
     <Content Include="Contents\Custom\MSC\js\_ApplicationDetail.js" />
     <Content Include="Contents\Custom\User\User_Promise.js" />
     <Content Include="Contents\Image\backgound_auto.jpg" />
@@ -983,6 +986,7 @@
     <Content Include="Areas\Shared\web.config" />
     <Content Include="Areas\MSC\Views\Management\_ApplicationCreate.cshtml" />
     <Content Include="Areas\User\Views\web.config" />
+    <Content Include="Areas\MSC\Views\Management\_ApplicationUpdate.cshtml" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />

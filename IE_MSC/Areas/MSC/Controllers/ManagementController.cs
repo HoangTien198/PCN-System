@@ -1,4 +1,6 @@
 ﻿using IE_MSC.Areas.Dashboard.Controllers;
+using IE_MSC.Areas.Entities;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,7 @@ namespace IE_MSC.Areas.MSC.Controllers
         }
 
         /* GET */
+        [HttpGet]
         public JsonResult GetApplication(string IdApplication)
         {
             try
@@ -29,6 +32,7 @@ namespace IE_MSC.Areas.MSC.Controllers
                 return Json(new {status = false, message = ex.Message}, JsonRequestBehavior.AllowGet);
             }
         }
+        [HttpGet]
         public JsonResult GetApplications()
         {
             try
@@ -44,5 +48,38 @@ namespace IE_MSC.Areas.MSC.Controllers
         }
 
         /* POST */
+        [HttpPost]
+        public JsonResult CreateApplication()
+        {
+            try
+            {
+                var data = JObject.Parse(Request.Form["data"]);
+                var files = Request.Files;
+                bool isSendBoss = bool.Parse(Request.Form["sendToBoss"]);
+
+                var result = R_MSC.CreateApplication(data, files, isSendBoss);
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /* DELETE */
+        [HttpDelete]
+        public JsonResult DeleteApplication(string IdApplication)
+        {
+            try
+            {
+                var result = R_MSC.DeleteApplication(IdApplication);
+                return Json(new { status = true}, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

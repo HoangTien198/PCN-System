@@ -25,11 +25,11 @@ namespace IE_MSC.Areas.Entities
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Customer_> Customer_Set { get; set; }
-        public virtual DbSet<DepartmentEmployee_> DepartmentEmployee_Set { get; set; }
-        public virtual DbSet<Department_> Department_Set { get; set; }
-        public virtual DbSet<PCNConfirm_> PCNConfirm_Set { get; set; }
-        public virtual DbSet<PCN_> PCN_Set { get; set; }
-        public virtual DbSet<Employee_> Employee_Set { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<UserDepartment> UserDepartments { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<SignMSC> SignMSCs { get; set; }
+        public virtual DbSet<MSC> MSCs { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

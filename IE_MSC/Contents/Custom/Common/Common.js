@@ -60,6 +60,8 @@ function CalTableHeight() {
     }
     return result;
 }
+
+/* MSC Common */
 function GetUserName(user) {
     if (user) {
         return `${user.EmployeeCode}${user.EmployeeVNName ? ' - ' + user.EmployeeVNName : ' - ' + user.EmployeeCNName}`;
@@ -75,7 +77,15 @@ function GetUserNameObj(user) {
     else {
         return 'Unknown';
     }
-} function GetUserDeptObj(user) {
+}
+function GetUserDept(user) {
+    var depts = [];
+    user.Departments.forEach(function (department) {
+        depts.push(`${department.Customer.CustomerName} - ${department.Department.DepartmentName}`);
+    });
+    return depts.join(', ');
+}
+function GetUserDeptObj(user) {
     var depts = [];
     user.Departments.forEach(function (department) {
         depts.push(`${department.Customer.CustomerName} - ${department.Department.DepartmentName}`);

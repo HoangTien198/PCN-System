@@ -15,7 +15,19 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             return View();
         }
 
+        public JsonResult GetHeaderData()
+        {
+            try
+            {
+                object result = R_Dashboard.GetHeaderData();
 
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public JsonResult GetPcnWeekData() {
             try
             {
@@ -28,19 +40,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult GetPcnData()
-        {
-            try
-            {
-                object result = R_Dashboard.GetPcnData();
-
-                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        
         public JsonResult GetPcnDataByCustomer()
         {
             try

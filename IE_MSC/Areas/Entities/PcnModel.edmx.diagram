@@ -5,15 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="079836379a384ef89fe146f7b8e78b5e" Name="Diagram1" ZoomLevel="85">
-        <EntityTypeShape EntityType="PcnModel.Customer_" Width="1.5" PointX="4" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="PcnModel.DepartmentEmployee_" Width="2.125" PointX="1.25" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="PcnModel.Department_" Width="1.5" PointX="1" PointY="5.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="PcnModel.PCNConfirm_" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="PcnModel.PCN_" Width="1.5" PointX="12.125" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PcnModel.Customer" Width="1.5" PointX="4" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PcnModel.UserDepartment" Width="2.125" PointX="1.25" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PcnModel.Department" Width="1.5" PointX="1" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PcnModel.SignMSC" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PcnModel.MSC" Width="2.875" PointX="12.125" PointY="4.5" IsExpanded="true" />
         <AssociationConnector Association="PcnModel.FK_Departments_Customers" ManuallyRouted="false" />
         <AssociationConnector Association="PcnModel.FK_DepartmentEmployee_Departments" ManuallyRouted="false" />
         <AssociationConnector Association="PcnModel.FK_PCNConfirms_PCNs" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="PcnModel.Employee_" Width="2.875" PointX="4.375" PointY="1.75" />
+        <EntityTypeShape EntityType="PcnModel.User" Width="2.875" PointX="4.375" PointY="1.75" />
         <AssociationConnector Association="PcnModel.FK_DepartmentEmployee_Employees" />
         <AssociationConnector Association="PcnModel.FK_PCNConfirms_Employees" />
       </Diagram>

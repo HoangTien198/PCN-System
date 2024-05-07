@@ -1,45 +1,59 @@
 ﻿$(document).ready(function () {
-    InitCreateSumernote();   
+    InitUpdateSumernote();   
 });
 
-/* Create Modal */
-function ApplicationCreate(callback) {
-    $('#ApplicationCreateModal-UserCreated').val(GetUserNameObj(_datas.SessionUser));
-    $('#ApplicationCreateModal-Department').val(GetUserDeptObj(_datas.SessionUser));
-    $('#ApplicationCreateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm'));
+/* Create Update Modal */
+async function ApplicationUpdate(IdApplication, callback) {
+    try {
+        await GetUpdateApplication(IdApplication);
 
-    $('#ApplicationCreateModal-Subject').val('');
-    $('#ApplicationCreateModal-Process').val('');
-    $('#ApplicationCreateModal-Model').val('');
+        CreateUpdateModal(_datas.Application);
 
-    $('#ApplicationCreateModal-BeforeChange').summernote('reset');
-    $('#ApplicationCreateModal-AfterChange').summernote('reset');
-    $('#ApplicationCreateModal-Reason').summernote('reset');
-    $('#ApplicationCreateModal-Cost').summernote('reset');
-    $('#ApplicationCreateModal-Cost').summernote('disable');
+        callback(true);
+    } catch (e) {
+        Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
+        console.error(e);
+    }
 
-    $('#ApplicationCreateModal-BeforeChangeFile').val('');
-    $('#ApplicationCreateModal-AfterChangeFile').val('');
+    
 
-    $('#ApplicationCreateModal-SendBoss').prop('checked', false);
-    $('#ApplicationCreateModal-Sign').empty();
-    AddCreateSign();
+    //$('#ApplicationCreateModal-Save').click(async function () {
+    //    let result = await ApplicationCreateSave();
 
-    $('#ApplicationCreateModal').modal('show');
+    //    if (result) {
+    //        $('#ApplicationCreateModal').modal('hide');
+    //        callback(result);
+    //    }
+    //});
+}
+function CreateUpdateModal(application) {
+    $('#ApplicationUpdateModal-UserCreated').val(GetUserName(application.UserCreated));
+    $('#ApplicationUpdateModal-Department').val(GetUserDept(application.UserCreated));
+    $('#ApplicationUpdateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm'));
 
-    $('#ApplicationCreateModal-Save').click(async function () {
-        let result = await ApplicationCreateSave();
+    $('#ApplicationUpdateModal-Subject').val('');
+    $('#ApplicationUpdateModal-Process').val('');
+    $('#ApplicationUpdateModal-Model').val('');
 
-        if (result) {
-            $('#ApplicationCreateModal').modal('hide');
-            callback(result);
-        }
-    });
+    $('#ApplicationUpdateModal-BeforeChange').summernote('reset');
+    $('#ApplicationUpdateModal-AfterChange').summernote('reset');
+    $('#ApplicationUpdateModal-Reason').summernote('reset');
+    $('#ApplicationUpdateModal-Cost').summernote('reset');
+    $('#ApplicationUpdateModal-Cost').summernote('disable');
+
+    $('#ApplicationUpdateModal-BeforeChangeFile').val('');
+    $('#ApplicationUpdateModal-AfterChangeFile').val('');
+
+    $('#ApplicationUpdateModal-SendBoss').prop('checked', false);
+    $('#ApplicationUpdateModal-Sign').empty();
+    AddUpdateSign();
+
+    $('#ApplicationUpdateModal').modal('show');
 }
 $('#ApplicationCreateModal').on('shown.bs.modal', function () {
     $('#ApplicationCreateModal-Title').focus();
 });
-function InitCreateSumernote() {
+function InitUpdateSumernote() {
     $('#ApplicationCreateModal-BeforeChange').summernote({
         height: 200,
         foreColor: 'White',
@@ -91,7 +105,7 @@ function InitCreateSumernote() {
 }
 
 /* Add Sign Event */
-function AddCreateSign() {
+function AddUpdateSign() {
     let container = $('#ApplicationCreateModal-Sign');
     let count = container.find('.widget-reminder-item').length;
 
@@ -241,4 +255,14 @@ function ApplicationValidate(applicationData) {
     }
 
     return true;
+}
+
+/* Other */
+async function GetUpdateApplication(IdApplication) {
+    if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
+        _datas.Application = _datas.Applications.find(application => { application.Id.toUpperCase() === IdApplication.toUpperCase() });
+        if (!_datas.Application) {
+            _datas.Application = await GetApplication(IdApplication);
+        }
+    }
 }

@@ -7,7 +7,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
     internal class R_User
     {
         /* GET FOR AUTHENTICATION */
-        public static Employee_ GetUser(string IdOrUsername, bool IsUsername = false)
+        public static Entities.User GetUser(string IdOrUsername, bool IsUsername = false)
         {
             try
             {
@@ -17,7 +17,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                     if(IsUsername)
                     {
-                        var user = context.Employee_Set.FirstOrDefault(u => u.Username.ToUpper() == IdOrUsername.ToUpper());
+                        var user = context.Users.FirstOrDefault(u => u.Username.ToUpper() == IdOrUsername.ToUpper());
                         if(user != null)
                         {
                             return user;
@@ -29,7 +29,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     }
                     else
                     {
-                        var user = context.Employee_Set.FirstOrDefault(u => u.EmployeeID.ToUpper() == IdOrUsername.ToUpper());
+                        var user = context.Users.FirstOrDefault(u => u.Id.ToUpper() == IdOrUsername.ToUpper());
                         if (user != null)
                         {
                             return user;
@@ -46,7 +46,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static Employee_ GetUser(string Username, string Password, bool IsThrowEx = true)
+        public static Entities.User GetUser(string Username, string Password, bool IsThrowEx = true)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var users = context.Employee_Set.Where(u => u.Username.ToUpper() == Username).ToList();
+                    var users = context.Users.Where(u => u.Username.ToUpper() == Username).ToList();
 
                     if (users != null && users.Count > 0)
                     {
@@ -101,15 +101,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var user = context.Employee_Set.Select(u => new
-                    {
-                        Id = u.EmployeeID,
-                        CardID = u.EmployeeCode,
-                        VnName = u.EmployeeVNName,
-                        CnName = u.EmployeeCNName,
-                        Email = u.Email,
-                        Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
-                    }).FirstOrDefault(u => u.Id.ToUpper() == Id.ToUpper());
+                    var user = context.Users.FirstOrDefault(u => u.Id.ToUpper() == Id.ToUpper());
 
                     return user;
                 }
@@ -131,15 +123,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                     if(sessionUser != null)
                     {
-                        var user = context.Employee_Set.Select(u => new
-                        {
-                            Id = u.EmployeeID,
-                            CardID = u.EmployeeCode,
-                            VnName = u.EmployeeVNName,
-                            CnName = u.EmployeeCNName,
-                            Email = u.Email,
-                            Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
-                        }).FirstOrDefault(u => u.Id.ToUpper() == sessionUser.EmployeeID.ToUpper());
+                        var user = context.Users.FirstOrDefault(u => u.Id.ToUpper() == sessionUser.Id.ToUpper());
 
                         return user;
                     }
@@ -162,15 +146,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var users = context.Employee_Set.Select(u => new
-                    {
-                        Id = u.EmployeeID,
-                        CardID = u.EmployeeCode,
-                        VnName = u.EmployeeVNName,
-                        CnName = u.EmployeeCNName,
-                        Email = u.Email,
-                        Departments = u.DepartmentEmployees.Select(d => new { d.Department, d.Department.Customer }).ToList()
-                    }).ToList();
+                    var users = context.Users.ToList();
 
                     return users;
                 }
@@ -188,17 +164,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var customerDepartments = context.Customer_Set.Select(c => new
-                    {
-                        Id = c.CustomerID,
-                        c.CustomerName,
-                        Departments = context.Department_Set.Select(d => new
-                        {
-                            Id = d.DepartmentID,
-                            IdCustomer = d.CustomerID,
-                            DepartmentName = d.DepartmentName
-                        }).Where(d => d.IdCustomer == c.CustomerID).ToList()
-                    }).ToList();
+                    var customerDepartments = context.Customers.ToList();
 
                     return customerDepartments;
                 }
@@ -217,16 +183,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var departments = context.Department_Set.Select(d => new
-                    {
-                        Id = d.CustomerID,
-                        d.DepartmentName,
-                        Customer = new
-                        {
-                            Id = d.CustomerID,
-                            CustoemrName = d.Customer.CustomerName
-                        }
-                    }).ToList();
+                    var departments = context.Departments.ToList();
 
                     return departments;
                 }

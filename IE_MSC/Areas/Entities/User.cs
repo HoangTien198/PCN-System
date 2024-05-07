@@ -12,37 +12,27 @@ namespace IE_MSC.Areas.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class Employee_
+    public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Employee_()
+        public User()
         {
-            this.DepartmentEmployees = new HashSet<DepartmentEmployee_>();
+            this.UserDepartments = new HashSet<UserDepartment>();
         }
     
-        public string EmployeeID { get; set; }
-        public string EmployeeCode { get; set; }
-        public string EmployeeCNName { get; set; }
-        public string EmployeeVNName { get; set; }
-        public string EmployeeAvatar { get; set; }
-        public Nullable<int> Gender { get; set; }
-        public Nullable<System.DateTime> HireDate { get; set; }
+        public string Id { get; set; }
+        public string CardId { get; set; }
+        public string CnName { get; set; }
+        public string VnName { get; set; }
         public string Email { get; set; }
-        public string DeskPhone { get; set; }
-        public string MobilePhone { get; set; }
-        public string DepartmentByAPI { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public string CreatedBy { get; set; }
         public Nullable<int> Status { get; set; }
         public Nullable<bool> IsAdmin { get; set; }
         public Nullable<bool> IsBoss { get; set; }
         public Nullable<int> Position { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DepartmentEmployee_> DepartmentEmployees { get; set; }
+        public virtual ICollection<UserDepartment> UserDepartments { get; set; }
     }
 }

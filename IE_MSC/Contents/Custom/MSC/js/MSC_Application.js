@@ -20,7 +20,7 @@ function InitDatatable() {
         ],
 		buttons: [{
 			text: '<i class="fa-duotone fa-plus"></i> Create Application',
-			className: 'btn btn-theme btn-sm ms-2',			
+			className: 'btn btn-theme btn-sm ms-2 disabled',			
 			action: function () {
 				CreateMSC();
 			}
@@ -47,6 +47,8 @@ async function CreateDatatable() {
 		_datas.CustomerDepartments = await GetCustomerDepartments();
 		_datas.Users = await GetUsers();
 
+		$('.dt-buttons button').removeClass('disabled');
+
 		let rows = [];
 		_datas.Applications.forEach(function (application) {
 			rows.push(CreateDatatableRow(application));
@@ -56,7 +58,7 @@ async function CreateDatatable() {
 		datatable.columns.adjust().draw(false);
 
 	} catch (e) {
-		Swal.fire('Error!', `${e}`, 'error');
+		Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
 		console.error(e);
     }
 }
@@ -67,7 +69,7 @@ function CreateDatatableRow(application) {
 		application.CodeMSC,
 		moment(application.DateCreated).format('YYYY-MM-DD HH:mm'),
 		GetUserName(application.UserCreated),
-		application.Title,
+		application.Subject,
 		CreateDatatableCellStatus(application),
 		CreateDatatableCellAction(application)
 	]
@@ -93,37 +95,74 @@ function CreateDatatableCellStatus(application) {
 	}
 }
 function CreateDatatableCellAction(application) {
-	if (application.ApplicationStatus == 'Approved') {
-		return `
-		<div class="btn-group">
-			<button type="button" data-id="${application.Id}" onclick="DetailMSC(this, event)" title="Detail" class="btn btn-sm btn-primary"><i class="fa-duotone fa-info"></i></button>
-			<button type="button" data-id="${application.Id}" onclick="UpdateMSC(this, event)" title="Update" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-pen"></i></button>
-			<button type="button" data-id="${application.Id}" onclick="DeleteMSC(this, event)" title="Delete" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-trash"></i></button>
-		</div>`;
+	const button = {
+		detailButton: `<button type="button" data-id="${application.Id}" onclick="DetailMSC(this, event)" title="Detail" class="btn btn-sm btn-primary"><i class="fa-duotone fa-info"></i></button>`,
+		updateButton: `<button type="button" data-id="${application.Id}" onclick="UpdateMSC(this, event)" title="Update" class="btn btn-sm btn-warning"><i class="fa-duotone fa-pen"></i></button>`,
+		deleteButton: `<button type="button" data-id="${application.Id}" onclick="DeleteMSC(this, event)" title="Delete" class="btn btn-sm btn-danger"><i class="fa-duotone fa-trash"></i></button>`,
+		approvButton: `<button type="button" data-id="${application.Id}" onclick="ApprovMSC(this, event)" title="Approv" class="btn btn-sm btn-success"><i class="fa-duotone fa-check"></i></button>`,
+		rejectButton: `<button type="button" data-id="${application.Id}" onclick="RejectMSC(this, event)" title="Reject" class="btn btn-sm btn-danger "><i class="fa-duotone fa-x"></i></button>`,
+		updateDisabledButton: `<button type="button" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-pen"></i></button>`,
+		deleteDisabledButton: `<button type="button" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-trash"></i></button>`,
 	}
-	else {
-		if ($('#SessionUser').data('card') == application.UserCreated.EmployeeCode) {
-			return `
-			<div class="btn-group">
-				<button type="button" data-id="${application.Id}" onclick="DetailMSC(this, event)" title="Detail" class="btn btn-sm btn-primary"><i class="fa-duotone fa-info"></i></button>
-				<button type="button" data-id="${application.Id}" onclick="UpdateMSC(this, event)" title="Update" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-pen"></i></button>
-				<button type="button" data-id="${application.Id}" onclick="DeleteMSC(this, event)" title="Delete" class="btn btn-sm btn-danger"><i class="fa-duotone fa-trash"></i></button>
-			</div>`;
+
+    try {
+		const sessionUserId = $('#SessionUser').data('id');
+		const isSigned = application.Signs.length !== application.Signs.filter(sign => sign.Status === 'Pending').length;
+		const isCreatedCurrentUser = sessionUserId === application.UserCreated.EmployeeID;
+		const isApproved = application.Signs.length === application.Signs.filter(sign => sign.Status === 'Approved').length;
+		const isRejected = application.Signs.filter(sign => sign.Status === 'Rejected').length > 0;
+		const isPendingSignUser = sessionUserId === application.Signs.find(sign => sign.Status === 'Pending')?.User.EmployeeID;
+
+		if (!isSigned) {
+			if (isCreatedCurrentUser) {
+				return `<div class="btn-group">${button.detailButton} ${button.updateButton} ${button.deleteButton}</div>`;
+			}
+			else {
+				if (isPendingSignUser) {
+					return `<div class="btn-group">${button.detailButton} ${button.approvButton} ${button.rejectButton}</div>`;
+				}
+				else {
+					return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteDisabledButton}</div>`;
+				}
+			}
 		}
 		else {
-			return `
-			<div class="btn-group">
-				<button type="button" data-id="${application.Id}" onclick="DetailMSC(this, event)" title="Detail" class="btn btn-sm btn-primary"><i class="fa-duotone fa-info"></i></button>
-				<button type="button" data-id="${application.Id}" onclick="UpdateMSC(this, event)" title="Update" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-pen"></i></button>
-				<button type="button" data-id="${application.Id}" onclick="DeleteMSC(this, event)" title="Delete" class="btn btn-sm btn-default" disabled><i class="fa-duotone fa-trash"></i></button>
-			</div>`;
-		}
-	}
+			if (isRejected) {
+				if (isCreatedCurrentUser) {
+					return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteButton}</div>`;
+				}
+				else {
+					return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteDisabledButton}</div>`;
+				}
+			}
+			else if (isApproved) {
+				return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteDisabledButton}</div>`;
+			}
+			else {
+				if (isPendingSignUser) {
+					return `<div class="btn-group">${button.detailButton} ${button.approvButton} ${button.rejectButton}</div>`;
+				}
+				else {
+					return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteDisabledButton}</div>`;
+				}
+			}
+		}	
+	} catch (e) {
+		console.error(e);
+		return `<div class="btn-group">${button.detailButton} ${button.updateDisabledButton} ${button.deleteDisabledButton}</div>`;
+    }
+	
 }
 
 /* Datatable Event */
 function CreateMSC() {
-	ApplicationCreate();
+	ApplicationCreate(function (result) {
+		_datas.Application = result;
+		_datas.Applications.push(result);
+
+		let rowData = CreateDatatableRow(result);	
+		datatable.row.add(rowData).draw(false);
+	});
 }
 function DetailMSC(elm, e) {
 	let Id = $(elm).data('id');
@@ -131,7 +170,17 @@ function DetailMSC(elm, e) {
 }
 function UpdateMSC(elm, e) {
 	let Id = $(elm).data('id');
+	ApplicationUpdate(Id, function (result) {
+		console.log(result);
+	});
 }
 function DeleteMSC(elm, e) {
 	let Id = $(elm).data('id');
+	let rowIndex = datatable.row($(elm).closest('tr')).index();
+	ApplicationDelete(Id, function (result) {
+		if (result) {		    
+			datatable.row(rowIndex).remove().draw(false);
+		    toastr['success']('Delete Application Success.');
+		}
+	});
 }

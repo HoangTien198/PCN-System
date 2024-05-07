@@ -11,11 +11,11 @@ namespace IE_MSC.Areas
 {
     public class Common
     {
-        public static Employee_ GetSessionUser()
+        public static Entities.User GetSessionUser()
         {
 			try
 			{
-				var user = (Employee_)HttpContext.Current.Session["UserSession"];
+				var user = (Entities.User)HttpContext.Current.Session["UserSession"];
 
 				if (user != null)
 				{

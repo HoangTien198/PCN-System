@@ -12,15 +12,10 @@ namespace IE_MSC.Areas.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class DepartmentEmployee_
+    public partial class Customer
     {
-        public string DepartmentID { get; set; }
-        public string EmployeeID { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public string CreatedBy { get; set; }
-    
-        public virtual Department_ Department { get; set; }
+        public string Id { get; set; }
+        public string CustomerName { get; set; }
+        public string Description { get; set; }
     }
 }

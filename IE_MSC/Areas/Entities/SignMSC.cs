@@ -12,18 +12,15 @@ namespace IE_MSC.Areas.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class PCNConfirm_
+    public partial class SignMSC
     {
-        public string EmployeeID { get; set; }
-        public string PCNID { get; set; }
-        public Nullable<int> SortOrder { get; set; }
+        public string IdUser { get; set; }
+        public string IdMSC { get; set; }
+        public Nullable<int> Order { get; set; }
         public Nullable<int> Status { get; set; }
-        public string ConfirmedBy { get; set; }
-        public Nullable<System.DateTime> ConfirmedDate { get; set; }
-        public string RejectedBy { get; set; }
-        public Nullable<System.DateTime> RejectedDate { get; set; }
-        public string ReasonReject { get; set; }
+        public Nullable<System.DateTime> DateSigned { get; set; }
+        public string Detail { get; set; }
     
-        public virtual Employee_ Employee { get; set; }
+        public virtual User User { get; set; }
     }
 }
