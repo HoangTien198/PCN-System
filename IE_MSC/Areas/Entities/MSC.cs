@@ -35,10 +35,12 @@ namespace IE_MSC.Areas.Entities
         public string CalcCost { get; set; }
         public Nullable<int> Status { get; set; }
         public string IdCustomer { get; set; }
+        public string IdDepartment { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SignMSC> Signs { get; set; }
         public User UserCreated { get; set; }
         public Customer Customer { get; set; }
+        public Department Department { get; set; }
     }
 }

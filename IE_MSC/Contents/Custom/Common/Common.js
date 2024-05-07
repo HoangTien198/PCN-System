@@ -64,7 +64,7 @@ function CalTableHeight() {
 /* MSC Common */
 function GetUserName(user) {
     if (user) {
-        return `${user.EmployeeCode}${user.EmployeeVNName ? ' - ' + user.EmployeeVNName : ' - ' + user.EmployeeCNName}`;
+        return `${user.CardId}${user.VnName ? ' - ' + user.VnName : ' - ' + user.CnName}`;
     }
     else {
         return 'Unknown';

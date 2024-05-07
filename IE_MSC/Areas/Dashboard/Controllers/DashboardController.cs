@@ -28,10 +28,10 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult GetPcnWeekData() {
+        public JsonResult GetWeekData() {
             try
             {
-                object result = R_Dashboard.GetPcnWeekData();
+                object result = R_Dashboard.GetWeekData();
 
                 return Json(new {status = true, data = result}, JsonRequestBehavior.AllowGet);
             }
@@ -41,11 +41,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
         }
         
-        public JsonResult GetPcnDataByCustomer()
+        public JsonResult GetDataByCustomer()
         {
             try
             {
-                object result = R_Dashboard.GetPcnDataByCustomer();
+                object result = R_Dashboard.GetDataByCustomer();
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }
@@ -54,11 +54,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult GetPcnMonthOfYearData()
+        public JsonResult GetMonthOfYearData()
         {
             try
             {
-                object result = R_Dashboard.GetPcnMonthOfYearData();
+                object result = R_Dashboard.GetMonthOfYearData();
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }
@@ -67,11 +67,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult GetPcnMonthOfYearDataByDepartment()
+        public JsonResult GetMonthOfYearDataByDepartment()
         {
             try
             {
-                object result = R_Dashboard.GetPcnMonthOfYearDataByDepartment();
+                object result = R_Dashboard.GetMonthOfYearDataByDepartment();
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }
@@ -80,11 +80,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return Json(new { status = false, message = ex }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult GetTop10Pcn()
+        public JsonResult GetTop10()
         {
             try
             {
-                object result = R_Dashboard.GetTop10Pcn();
+                object result = R_Dashboard.GetTop10();
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }

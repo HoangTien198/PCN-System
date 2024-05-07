@@ -125,16 +125,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         object data = new
                         {
                             Customer = customer.CustomerName,
-                            Pending = context.MSCs.Count(p => p.Status == 1 && context.Users.Any(u => u.Id == p.IdUserCreated && u.UserDepartments.Any(ud => ud.Department.IdCustomer == customer.Id))),
-                            Rejected = context.MSCs.Count(p => p.Status == -1 && context.Users.Any(e => e.Id == p.IdUserCreated && e.UserDepartments.Any(ud => ud.Department.IdCustomer == customer.Id))),
-                            Approved = context.MSCs.Count(p => p.Status == 2 && context.Users.Any(e => e.Id == p.IdUserCreated && e.UserDepartments.Any(ud => ud.Department.IdCustomer == customer.Id))),
+                            Pending = context.MSCs.Count(p => p.Status == 1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Approved = context.MSCs.Count(p => p.Status == 2 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Rejected = context.MSCs.Count(p => p.Status == -1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
                         };
-
                         listDataCustomer.Add(data);
                     }
-
-                    
-
                     return listDataCustomer;
                 }
             }
@@ -143,24 +139,24 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetPcnMonthOfYearData()
+        public static object GetMonthOfYearData()
         {
             try
             {
-                using (PcnEntities dbContext = new PcnEntities())
+                using (PcnEntities context = new PcnEntities())
                 {
-                    dbContext.Configuration.LazyLoadingEnabled = false;
+                    context.Configuration.LazyLoadingEnabled = false;
 
                     DateTime thresholdDate = DateTime.Now.AddMonths(-12);
                     thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
 
-                    var pcns = dbContext.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
+                    var mscs = context.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
 
                     var data = new
                     {
                         Date = new List<string>(),
-                        Approved = new List<int>(),
                         Pending = new List<int>(),
+                        Approved = new List<int>(), 
                         Rejected = new List<int>(),
                         Total = new List<int>(),
                     };
@@ -174,11 +170,10 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
 
                         data.Date.Add(StartDate.ToString("yyyy-MMM"));
-                        data.Approved.Add(pcns.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 2).Count());
-                        data.Pending.Add(pcns.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 1).Count());
-                        data.Rejected.Add(pcns.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == -1).Count());
-                        data.Total.Add(pcns.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).Count());
-
+                        data.Pending.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 1).Count());
+                        data.Approved.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 2).Count());                        
+                        data.Rejected.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == -1).Count());
+                        data.Total.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).Count());
                     }
 
                     return data;
@@ -189,13 +184,13 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetPcnMonthOfYearDataByDepartment()
+        public static object GetMonthOfYearDataByDepartment()
         {
             try
             {
-                using (PcnEntities dbContext = new PcnEntities())
+                using (PcnEntities context = new PcnEntities())
                 {
-                    dbContext.Configuration.LazyLoadingEnabled = false;
+                    context.Configuration.LazyLoadingEnabled = false;
 
                     var data = new
                     {
@@ -204,54 +199,59 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         Series = new List<Serie>(),
 
                     };
-
-                    foreach (var dept in dbContext.Departments.Include(d => d.Customer).ToList())
+                    var departments = context.Departments.Select(d => new
                     {
+                        d.Id,
+                        d.DepartmentName,
+                        d.IdCustomer,
+                        CustomerName = d.Customer.CustomerName
+                    }).Distinct().ToList();
 
-                        var deptCount = dbContext.MSCs.Count(p => p.Status == 1 && 
-                                                                dbContext.Users.Any(e => e.Id == p.IdUserCreated && 
-                                                                e.UserDepartments.FirstOrDefault().Department.Id == dept.Id));
-                        if(deptCount > 0)
+                    if (departments.Count > 0)
+                    {
+                        foreach(var department in departments)
                         {
-                            data.IdDepartments.Add(dept.Id);
+                            data.IdDepartments.Add(department.Id);
                             data.Series.Add(new Serie
                             {
-                                name = $"{dept.DepartmentName} ({dept.Customer.CustomerName})",
+                                name = $"{department.DepartmentName} ({department.CustomerName})",
                                 data = new List<object>(),
                             });
                         }
-                    }
 
-                    DateTime thresholdDate = DateTime.Now.AddMonths(-12);
-                    thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
+                        DateTime thresholdDate = DateTime.Now.AddMonths(-12);
+                        thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
+                        var mscs = context.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
 
-                    var pcns = dbContext.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
-
-                    for (int i = 1; i < 13; i++)
-                    {
-                        DateTime StartDate = thresholdDate.AddMonths(i);
-                        StartDate = new DateTime(StartDate.Year, StartDate.Month, 1);
-
-                        DateTime EndDate = thresholdDate.AddMonths(i + 1);
-                        EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
-
-                        data.Categories.Add(StartDate.ToString("yyyy-MMM"));
-
-                        foreach(var IdDept in data.IdDepartments)
+                        for (int i = 1; i < 13; i++)
                         {
-                            int deptCount = pcns.Where(p => p.DateCreated.HasValue &&
-                                                            p.DateCreated.Value >= StartDate &&
-                                                            p.DateCreated.Value <= EndDate &&
-                                                            dbContext.Users.Any(e => e.Id == p.IdUserCreated &&
-                                                            e.UserDepartments.FirstOrDefault().Department.Id == IdDept)).Count();
+                            DateTime StartDate = thresholdDate.AddMonths(i);
+                            StartDate = new DateTime(StartDate.Year, StartDate.Month, 1);
 
-                            int indexOf = data.IdDepartments.IndexOf(IdDept);
-                            data.Series[indexOf].data.Add(deptCount);
+                            DateTime EndDate = thresholdDate.AddMonths(i + 1);
+                            EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
+
+                            data.Categories.Add(StartDate.ToString("yyyy-MMM"));
+
+                            foreach (var IdDept in data.IdDepartments)
+                            {
+                                int deptCount = mscs.Where(p => p.DateCreated.HasValue && 
+                                                                p.DateCreated.Value >= StartDate && 
+                                                                p.DateCreated.Value <= EndDate && 
+                                                                p.IdDepartment.ToUpper() == IdDept.ToUpper())
+                                                    .Count();
+
+                                int indexOf = data.IdDepartments.IndexOf(IdDept);
+                                data.Series[indexOf].data.Add(deptCount);
+                            }
                         }
 
+                        return data;
                     }
-
-                    return data;
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)
@@ -259,7 +259,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetTop10Pcn()
+        public static object GetTop10()
         {
             try
             {
@@ -282,11 +282,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         {
             try
             {
-                using (PcnEntities dbContext = new PcnEntities())
+                using (PcnEntities context = new PcnEntities())
                 {
-                    dbContext.Configuration.LazyLoadingEnabled = false;
+                    context.Configuration.LazyLoadingEnabled = false;
 
-                    var pcnsQuery = dbContext.MSCs
+                    var pcnsQuery = context.MSCs
                                              .OrderByDescending(p => p.DateCreated)
                                              .Take(50)
                                              .Select(p => new
@@ -295,18 +295,17 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                                  p.Code,
                                                  p.Signs.FirstOrDefault().Status,
                                                  Date = p.DateCreated,
-                                                 User = dbContext.Users.FirstOrDefault(e => e.Id == p.IdUserCreated),
+                                                 User = context.Users.FirstOrDefault(e => e.Id.ToUpper() == p.IdUserCreated.ToUpper()),
                                              });
-                    var confirmsQuery = dbContext.MSCs
-                                                 .OrderByDescending(p => p.DateCreated)
+                    var confirmsQuery = context.SignMSCs.OrderByDescending(p => p.DateSigned)
                                                  .Take(50)
                                                  .Select(c => new
                                                  {
-                                                     c.Id,
-                                                     c.Code,
+                                                     Id = context.MSCs.FirstOrDefault(m => m.Id.ToUpper() == c.IdMSC.ToUpper()).Id,
+                                                     Code = context.MSCs.FirstOrDefault(m => m.Id.ToUpper() == c.IdMSC.ToUpper()).Code,
                                                      c.Status,
-                                                     Date = c.DateCreated,
-                                                     User = dbContext.Users.FirstOrDefault(u => u.Id == c.IdUserCreated)
+                                                     Date = c.DateSigned,
+                                                     User = context.Users.FirstOrDefault(u => u.Id == c.IdUser)
                                                  });
 
                     var combinedQuery = pcnsQuery.Concat(confirmsQuery)

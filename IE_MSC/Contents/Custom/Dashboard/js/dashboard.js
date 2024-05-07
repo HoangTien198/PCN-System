@@ -1,5 +1,5 @@
-﻿var _data = {};
-var _chart = {};
+﻿var _datas = {};
+var _charts = {};
 $(document).ready(function () { 
 
 	GetAndInitData();
@@ -9,18 +9,18 @@ $(document).ready(function () {
 async function GetAndInitData() {
 	try {
 
-		_data.PcnData = await GetPcnData();
-		_data.PcnWeekData = await GetPcnWeekData();
-		_data.PcnDataByCustomer = await GetPcnDataByCustomer();
-		_data.PcnMonthOfYearData = await GetPcnMonthOfYearData();
-		_data.PcnMonthOfYearDataByDepartment = await GetPcnMonthOfYearDataByDepartment();
-		_data.Top10Pcn = await GetTop10Pcn();
-		_data.Top10Action = await GetTop10Action();
+		_datas.HeaderData = await GetHeaderData();
+		_datas.WeekData = await GetWeekData();
+		_datas.DataByCustomer = await GetDataByCustomer();
+		_datas.MonthOfYearData = await GetMonthOfYearData();
+		_datas.MonthOfYearDataByDepartment = await GetMonthOfYearDataByDepartment();
+		_datas.Top10 = await GetTop10();
+		_datas.Top10Action = await GetTop10Action();
 
 		CreateHeaderChart();
 		CreateApplicationChart();
 		CreateDepartmentChart();
-		CreateTop10PcnTable();
+		CreateTop10Table();
 		CreateTop10ActionTable();
 
 	} catch (e) {
@@ -30,10 +30,10 @@ async function GetAndInitData() {
 }
 
 /* GET */
-function GetPcnData() {
+function GetHeaderData() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: `/Dashboard/Dashboard/GetPcnData`,
+			url: `/Dashboard/Dashboard/GetHeaderData`,
 			type: "GET",
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
@@ -51,10 +51,10 @@ function GetPcnData() {
 		});
 	});
 }
-function GetPcnWeekData() {
+function GetWeekData() {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `/Dashboard/Dashboard/GetPcnWeekData`,
+            url: `/Dashboard/Dashboard/GetWeekData`,
             type: "GET",
             contentType: "application/json;charset=utf-8",
             dataType: "json",
@@ -72,10 +72,10 @@ function GetPcnWeekData() {
         });
     });
 }
-function GetPcnDataByCustomer() {
+function GetDataByCustomer() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: `/Dashboard/Dashboard/GetPcnDataByCustomer`,
+			url: `/Dashboard/Dashboard/GetDataByCustomer`,
 			type: "GET",
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
@@ -93,10 +93,10 @@ function GetPcnDataByCustomer() {
 		});
 	});
 }
-function GetPcnMonthOfYearData() {
+function GetMonthOfYearData() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: `/Dashboard/Dashboard/GetPcnMonthOfYearData`,
+			url: `/Dashboard/Dashboard/GetMonthOfYearData`,
 			type: "GET",
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
@@ -114,10 +114,10 @@ function GetPcnMonthOfYearData() {
 		});
 	});
 }
-function GetPcnMonthOfYearDataByDepartment() {
+function GetMonthOfYearDataByDepartment() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: `/Dashboard/Dashboard/GetPcnMonthOfYearDataByDepartment`,
+			url: `/Dashboard/Dashboard/GetMonthOfYearDataByDepartment`,
 			type: "GET",
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
@@ -135,10 +135,10 @@ function GetPcnMonthOfYearDataByDepartment() {
 		});
 	});
 }
-function GetTop10Pcn() {
+function GetTop10() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: `/Dashboard/Dashboard/GetTop10Pcn`,
+			url: `/Dashboard/Dashboard/GetTop10`,
 			type: "GET",
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
@@ -186,15 +186,15 @@ function CreateHeaderChart() {
 	CreateRejectedChart();
 }
 function CreateTotalChart() {
-	$('#total-num').html(_data.PcnData.Total);
+	$('#total-num').html(_datas.HeaderData.Total);
 
-	if (_chart.TotalChartHeader) {
-		_chart.TotalChartHeader.updateOptions({
+	if (_charts.TotalChartHeader) {
+		_charts.TotalChartHeader.updateOptions({
 			series: [{
-				data: _data.PcnWeekData.Total
+				data: _datas.WeekData.Total
 			}],
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 			},
 		});
 	}
@@ -225,7 +225,7 @@ function CreateTotalChart() {
 				}
 			},
 			series: [{
-				data: _data.PcnWeekData.Total
+				data: _datas.WeekData.Total
 			}],
 			grid: {
 				show: false
@@ -244,7 +244,7 @@ function CreateTotalChart() {
 				}
 			},
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 				labels: {
 					show: false
 				}
@@ -256,21 +256,21 @@ function CreateTotalChart() {
 			}
 		};
 
-		_chart.TotalChartHeader = new ApexCharts(document.querySelector("#total-chart"), options);
-		_chart.TotalChartHeader.render();
+		_charts.TotalChartHeader = new ApexCharts(document.querySelector("#total-chart"), options);
+		_charts.TotalChartHeader.render();
 	}
 	
 }
 function CreatePendingChart() {
-	$('#pending-num').html(_data.PcnData.Pending);
+	$('#pending-num').html(_datas.HeaderData.Pending);
 
-	if (_chart.PendingChartHeader) {
-		_chart.PendingChartHeader.updateOptions({
+	if (_charts.PendingChartHeader) {
+		_charts.PendingChartHeader.updateOptions({
 			series: [{
-				data: _data.PcnWeekData.Pending
+				data: _datas.WeekData.Pending
 			}],
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 			},
 		});
 	}
@@ -301,7 +301,7 @@ function CreatePendingChart() {
 				}
 			},
 			series: [{
-				data: _data.PcnWeekData.Pending
+				data: _datas.WeekData.Pending
 			}],
 			grid: {
 				show: false
@@ -320,7 +320,7 @@ function CreatePendingChart() {
 				}
 			},
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 				labels: {
 					show: false
 				}
@@ -332,21 +332,21 @@ function CreatePendingChart() {
 			}
 		};
 
-		_chart.PendingChartHeader = new ApexCharts(document.querySelector("#pending-chart"), options);
-		_chart.PendingChartHeader.render();
+		_charts.PendingChartHeader = new ApexCharts(document.querySelector("#pending-chart"), options);
+		_charts.PendingChartHeader.render();
 	}
 	
 }
 function CreateApprovedChart() {
-	$('#approved-num').html(_data.PcnData.Approved);
+	$('#approved-num').html(_datas.HeaderData.Approved);
 
-	if (_chart.ApprovedChartHeader) {
-		_chart.ApprovedChartHeader.updateOptions({
+	if (_charts.ApprovedChartHeader) {
+		_charts.ApprovedChartHeader.updateOptions({
 			series: [{
-				data: _data.PcnWeekData.Approved
+				data: _datas.WeekData.Approved
 			}],
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 			},
 		});
 	}
@@ -377,7 +377,7 @@ function CreateApprovedChart() {
 				}
 			},
 			series: [{
-				data: _data.PcnWeekData.Approved
+				data: _datas.WeekData.Approved
 			}],
 			grid: {
 				show: false
@@ -396,7 +396,7 @@ function CreateApprovedChart() {
 				}
 			},
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 				labels: {
 					show: false
 				}
@@ -408,21 +408,21 @@ function CreateApprovedChart() {
 			}
 		};
 
-		_chart.ApprovedChartHeader = new ApexCharts(document.querySelector("#approved-chart"), options);
-		_chart.ApprovedChartHeader.render();
+		_charts.ApprovedChartHeader = new ApexCharts(document.querySelector("#approved-chart"), options);
+		_charts.ApprovedChartHeader.render();
 	}
 	
 }
 function CreateRejectedChart() {
-	$('#rejected-num').html(_data.PcnData.Rejected);
+	$('#rejected-num').html(_datas.HeaderData.Rejected);
 
-	if (_chart.RejectedChartHeader) {
-		_chart.RejectedChartHeader.updateOptions({
+	if (_charts.RejectedChartHeader) {
+		_charts.RejectedChartHeader.updateOptions({
 			series: [{
-				data: _data.PcnWeekData.Rejected
+				data: _datas.WeekData.Rejected
 			}],
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 			},
 		});
 	}
@@ -453,7 +453,7 @@ function CreateRejectedChart() {
 				}
 			},
 			series: [{
-				data: _data.PcnWeekData.Rejected
+				data: _datas.WeekData.Rejected
 			}],
 			grid: {
 				show: false
@@ -472,7 +472,7 @@ function CreateRejectedChart() {
 				}
 			},
 			xaxis: {
-				categories: _data.PcnWeekData.Categories,
+				categories: _datas.WeekData.Categories,
 				labels: {
 					show: false
 				}
@@ -484,8 +484,8 @@ function CreateRejectedChart() {
 			}
 		};
 
-		_chart.RejectedChartHeader = new ApexCharts(document.querySelector("#rejected-chart"), options);
-		_chart.RejectedChartHeader.render();
+		_charts.RejectedChartHeader = new ApexCharts(document.querySelector("#rejected-chart"), options);
+		_charts.RejectedChartHeader.render();
 	}
 	
 }
@@ -502,13 +502,13 @@ function CreateApplicationChart() {
 	{
 		var container = $('#application-num-pending');
 
-		container.find('[per]').text(`${_data.PcnData.Pending} / ${_data.PcnData.Total}`);
-		container.find('[rate]').css('width', `${parseFloat((_data.PcnData.Pending / _data.PcnData.Total) * 100).toFixed(2)}%`);
+		container.find('[per]').text(`${_datas.HeaderData.Pending} / ${_datas.HeaderData.Total}`);
+		container.find('[rate]').css('width', `${parseFloat((_datas.HeaderData.Pending / _datas.HeaderData.Total) * 100).toFixed(2)}%`);
 
 		var textContainer = container.find('[customer]');
 
 		textContainer.empty();
-		$(_data.PcnDataByCustomer).each(function (index, item) {
+		$(_datas.DataByCustomer).each(function (index, item) {
 			var html = `<div class="d-flex align-items-center small">
                            <i class="bi bi-circle-fill fs-6px me-2 text-warning"></i>
                            <div class="flex-1">${item.Customer}</div>
@@ -519,11 +519,11 @@ function CreateApplicationChart() {
 			sum.Pending += item.Pending;
 		});
 
-		if (sum.Pending != _data.PcnData.Pending) {
+		if (sum.Pending != _datas.HeaderData.Pending) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-warning"></i>
 						    <div class="flex-1">UNKNOWN</div>
-						    <div>${_data.PcnData.Pending - sum.Pending}</div>
+						    <div>${_datas.HeaderData.Pending - sum.Pending}</div>
 						</div>`;
 			textContainer.append(html);
 		}
@@ -533,14 +533,14 @@ function CreateApplicationChart() {
 	{
 		var container = $('#application-num-approved');
 
-		container.find('[per]').text(`${_data.PcnData.Approved} / ${_data.PcnData.Total}`);
-		container.find('[rate]').css('width', `${parseFloat((_data.PcnData.Approved / _data.PcnData.Total) * 100).toFixed(2)}%`);
+		container.find('[per]').text(`${_datas.HeaderData.Approved} / ${_datas.HeaderData.Total}`);
+		container.find('[rate]').css('width', `${parseFloat((_datas.HeaderData.Approved / _datas.HeaderData.Total) * 100).toFixed(2)}%`);
 
 		var textContainer = container.find('[customer]');
 
 
 		textContainer.empty();
-		$(_data.PcnDataByCustomer).each(function (index, item) {
+		$(_datas.DataByCustomer).each(function (index, item) {
 			var html = `<div class="d-flex align-items-center small">
                            <i class="bi bi-circle-fill fs-6px me-2 text-success"></i>
                            <div class="flex-1">${item.Customer}</div>
@@ -551,11 +551,11 @@ function CreateApplicationChart() {
 			sum.Approved += item.Approved;
 		});
 
-		if (sum.Approved != _data.PcnData.Approved) {
+		if (sum.Approved != _datas.HeaderData.Approved) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-success"></i>
 						    <div class="flex-1">UNKNOWN</div>
-						    <div>${_data.PcnData.Approved - sum.Approved}</div>
+						    <div>${_datas.HeaderData.Approved - sum.Approved}</div>
 						</div>`;
 			textContainer.append(html);
 		}
@@ -565,13 +565,13 @@ function CreateApplicationChart() {
 	{
 		var container = $('#application-num-rejected');
 
-		container.find('[per]').text(`${_data.PcnData.Rejected} / ${_data.PcnData.Total}`);
-		container.find('[rate]').css('width', `${parseFloat((_data.PcnData.Rejected / _data.PcnData.Total) * 100).toFixed(2)}%`);
+		container.find('[per]').text(`${_datas.HeaderData.Rejected} / ${_datas.HeaderData.Total}`);
+		container.find('[rate]').css('width', `${parseFloat((_datas.HeaderData.Rejected / _datas.HeaderData.Total) * 100).toFixed(2)}%`);
 
 		var textContainer = container.find('[customer]');
 
 		textContainer.empty();
-		$(_data.PcnDataByCustomer).each(function (index, item) {
+		$(_datas.DataByCustomer).each(function (index, item) {
 			var html = `<div class="d-flex align-items-center small">
                            <i class="bi bi-circle-fill fs-6px me-2 text-danger"></i>
                            <div class="flex-1">${item.Customer}</div>
@@ -582,11 +582,11 @@ function CreateApplicationChart() {
 			sum.Rejected += item.Rejected;
 		});
 
-		if (sum.Rejected != _data.PcnData.Rejected) {
+		if (sum.Rejected != _datas.HeaderData.Rejected) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-danger"></i>
 						    <div class="flex-1">UNKNOWN</div>
-						    <div>${_data.PcnData.Rejected - sum.Rejected}</div>
+						    <div>${_datas.HeaderData.Rejected - sum.Rejected}</div>
 						</div>`;
 			textContainer.append(html);
 		}
@@ -594,23 +594,23 @@ function CreateApplicationChart() {
 
 	// Chart
 	{
-		if (_chart.ApplicationChart) {
-			_chart.ApplicationChart.updateOptions({
+		if (_charts.ApplicationChart) {
+			_charts.ApplicationChart.updateOptions({
 				series: [
 					{
 						name: 'PENDING',
-						data: _data.PcnMonthOfYearData.Pending
+						data: _datas.MonthOfYearData.Pending
 					},
 					{
 						name: 'APPROVED',
-						data: _data.PcnMonthOfYearData.Approved
+						data: _datas.MonthOfYearData.Approved
 					},
 					{
 						name: 'REJECTED',
-						data: _data.PcnMonthOfYearData.Rejected
+						data: _datas.MonthOfYearData.Rejected
 					}],
 				xaxis: {
-					categories: _data.PcnMonthOfYearData.Date,
+					categories: _datas.MonthOfYearData.Date,
 				},
 			});
 		}
@@ -651,18 +651,18 @@ function CreateApplicationChart() {
 				series: [
 					{
 						name: 'PENDING',
-						data: _data.PcnMonthOfYearData.Pending
+						data: _datas.MonthOfYearData.Pending
 					},
 					{
 						name: 'APPROVED',
-						data: _data.PcnMonthOfYearData.Approved
+						data: _datas.MonthOfYearData.Approved
 					},
 					{
 						name: 'REJECTED',
-						data: _data.PcnMonthOfYearData.Rejected
+						data: _datas.MonthOfYearData.Rejected
 					}],
 				xaxis: {
-					categories: _data.PcnMonthOfYearData.Date,
+					categories: _datas.MonthOfYearData.Date,
 					labels: {
 						rotate: -45,
 						rotateAlways: true
@@ -675,8 +675,8 @@ function CreateApplicationChart() {
 					show: false
 				}
 			};
-			_chart.ApplicationChart = new ApexCharts(document.querySelector('#application-chart'), options);
-			_chart.ApplicationChart.render();
+			_charts.ApplicationChart = new ApexCharts(document.querySelector('#application-chart'), options);
+			_charts.ApplicationChart.render();
 		}
 		
 	}
@@ -686,11 +686,11 @@ function CreateApplicationChart() {
 function CreateDepartmentChart() {
 	// Chart
 	{
-		if (_chart.DepartmentChart) {
-			_chart.DepartmentChart.updateOptions({
-				series: _data.PcnMonthOfYearDataByDepartment.Series,
+		if (_charts.DepartmentChart) {
+			_charts.DepartmentChart.updateOptions({
+				series: _datas.MonthOfYearDataByDepartment.Series,
 				xaxis: {
-					categories: _data.PcnMonthOfYearDataByDepartment.Categories,
+					categories: _datas.MonthOfYearDataByDepartment.Categories,
 				},
 			});
 		}
@@ -727,9 +727,9 @@ function CreateDepartmentChart() {
 					width: 1,
 					colors: undefined
 				},
-				series: _data.PcnMonthOfYearDataByDepartment.Series,
+				series: _datas.MonthOfYearDataByDepartment.Series,
 				xaxis: {
-					categories: _data.PcnMonthOfYearDataByDepartment.Categories,
+					categories: _datas.MonthOfYearDataByDepartment.Categories,
 					labels: {
 						rotate: -45,
 						rotateAlways: true
@@ -742,15 +742,15 @@ function CreateDepartmentChart() {
 					show: false
 				},
 			};
-			_chart.DepartmentChart = new ApexCharts(document.querySelector('#department-chart'), options);
-			_chart.DepartmentChart.render();
+			_charts.DepartmentChart = new ApexCharts(document.querySelector('#department-chart'), options);
+			_charts.DepartmentChart.render();
 		}
 		
 	}
 
 	// Table
 	{
-		var sums = _data.PcnMonthOfYearDataByDepartment.Series.map(item => ({
+		var sums = _datas.MonthOfYearDataByDepartment.Series.map(item => ({
 			name: item.name,
 			sum: item.data.reduce((acc, curr) => acc + curr, 0),
 			ratio: 0
@@ -763,15 +763,15 @@ function CreateDepartmentChart() {
 			item.ratio = parseFloat((item.sum / totalSum) * 100).toFixed(2);
 		});
 
-		_data.TotalDepartment = sums;
+		_datas.TotalDepartment = sums;
 
 
 
-		_data.Top5Department = sums.slice(0, 5);
+		_datas.Top5Department = sums.slice(0, 5);
 
 		var table = $('#department-tbody');
 		table.empty();
-		$(_data.Top5Department).each(function (index, item) {
+		$(_datas.Top5Department).each(function (index, item) {
 			var html = `<tr>
                             <td class="">${item.name}</td>
                             <td class="text-end">${item.sum}</td>
@@ -790,8 +790,8 @@ function CreateDepartmentChart() {
 			Series.push(item.sum);
 		});
 
-		if (_chart.DepartmentDetailsChart) {
-			_chart.DepartmentDetailsChart.updateOptions({
+		if (_charts.DepartmentDetailsChart) {
+			_charts.DepartmentDetailsChart.updateOptions({
 				series: Series,
 				labels: Categories,
 			});
@@ -828,22 +828,22 @@ function CreateDepartmentChart() {
 				
 			};
 
-			_chart.DepartmentDetailsChart = new ApexCharts(document.querySelector("#department-details-chart"), options);
-			_chart.DepartmentDetailsChart.render();
+			_charts.DepartmentDetailsChart = new ApexCharts(document.querySelector("#department-details-chart"), options);
+			_charts.DepartmentDetailsChart.render();
 		}
 		
 	}
 }
 
 /* TABLE */
-function CreateTop10PcnTable() {
+function CreateTop10Table() {
 	var table = $('#top10-pcn-tbody');
 	var tableWidth = table.width();
 
 	var maxWidth = 0;
 
 	table.empty();
-	$(_data.Top10Pcn).each(function (index, item) {
+	$(_datas.Top10).each(function (index, item) {
 		var tr = $('<tr></tr>');
 
 		switch (item.Status) {
@@ -858,8 +858,8 @@ function CreateTop10PcnTable() {
 				break;
 		}
 
-		tr.append(`<td>${item.PCNCode}</td>`);
-		tr.append(`<td>${moment(item.CreatedDate).format('YYYY-MM-DD HH:mm')}</td>`);
+		tr.append(`<td>${item.Code}</td>`);
+		tr.append(`<td>${moment(item.DateCreated).format('YYYY-MM-DD HH:mm')}</td>`);
 		tr.append(`<td title="${item.Subject}">${item.Subject}</td>`);
 
 		switch (item.Status) {
@@ -876,7 +876,7 @@ function CreateTop10PcnTable() {
 	
 		var btnAction = $(`<a href="javascript:;" class="text-decoration-none text-white"><i class="bi bi-search"></i></a>`);
 		btnAction.click(function () {
-			ApplicationDetail(item.PCNID);
+			ApplicationDetail(item.Id);
 		});
 		tr.append($('<td></td>').append(btnAction));
 
@@ -897,7 +897,7 @@ function CreateTop10ActionTable() {
 	var maxWidth = 0;
 
 	table.empty();
-	$(_data.Top10Action).each(function (index, item) {
+	$(_datas.Top10Action).each(function (index, item) {
 		var tr = $('<tr></tr>');
 
 		switch (item.Status) {
@@ -916,8 +916,8 @@ function CreateTop10ActionTable() {
 		}
 
 		tr.append(`<td>${moment(item.Date).format('YYYY-MM-DD HH:mm')}</td>`);
-		tr.append(`<td>${item.User.CardId} - ${item.User.Name}</td>`);		
-		tr.append(`<td title="${item.PCNCode}">${item.PCNCode}</td>`);
+		tr.append(`<td>${GetUserName(item.User)}</td>`);		
+		tr.append(`<td title="${item.Code}">${item.Code}</td>`);
 
 		switch (item.Status) {
 			case -1:
@@ -936,7 +936,7 @@ function CreateTop10ActionTable() {
 
 		var btnAction = $(`<a href="javascript:;" class="text-decoration-none text-white"><i class="bi bi-search"></i></a>`);
 		btnAction.click(function () {
-			ApplicationDetail(item.PCNID);
+			ApplicationDetail(item.Id);
 		});
 		tr.append($('<td></td>').append(btnAction));
 
@@ -950,6 +950,10 @@ function CreateTop10ActionTable() {
 			var tdSubject = tr.find('td:nth-child(4)');
 			tdSubject.css('max-width', `${maxWidth}px`);
 			tdSubject.addClass('text-table-ellipsis');
+
+			var tdName = tr.find('td:nth-child(3)');
+			tdName.css('max-width', `${maxWidth * 1.5}px`);
+			tdName.addClass('text-table-ellipsis');
 		}
 
 	});

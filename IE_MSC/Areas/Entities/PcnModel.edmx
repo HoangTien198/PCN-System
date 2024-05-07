@@ -113,7 +113,7 @@
           <Property Name="BossRejectDate" Type="datetime" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="UpdatedBy" Type="char" MaxLength="36" />
+          <Property Name="IdDepartment" Type="char" MaxLength="36" />
           <Property Name="IdCustomer" Type="char" MaxLength="36" />
         </EntityType>
         <Association Name="FK_DepartmentEmployee_Departments">
@@ -269,6 +269,7 @@
           <Property Name="Status" Type="Int32" />
           <NavigationProperty Name="Signs" Relationship="Self.FK_PCNConfirms_PCNs" FromRole="PCNs" ToRole="PCNConfirms" />
           <Property Name="IdCustomer" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="IdDepartment" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
         </EntityType>
         <Association Name="FK_Departments_Customers">
           <End Role="Customers" Type="PcnModel.Customer" Multiplicity="0..1" />
@@ -422,6 +423,7 @@
           <EntitySetMapping Name="MSCs">
             <EntityTypeMapping TypeName="PcnModel.MSC">
               <MappingFragment StoreEntitySet="PCNs">
+                <ScalarProperty Name="IdDepartment" ColumnName="IdDepartment" />
                 <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
                 <ScalarProperty Name="Id" ColumnName="PCNID" />
                 <ScalarProperty Name="Code" ColumnName="PCNCode" />
