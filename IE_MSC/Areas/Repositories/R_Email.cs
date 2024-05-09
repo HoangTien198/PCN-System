@@ -45,7 +45,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 };
                 var fileSizes = new
                 {
-                    BeforeFileSize = File.Exists(filePaths.BeforeFilePath) ? $"{((double)(new FileInfo($"/Assets/Media/FileMSC/{application.BeforeChangeFile}").Length) / (1024 * 1024)):0.##} MB" : null,
+                    BeforeFileSize = File.Exists(filePaths.BeforeFilePath) ? $"{((double)(new FileInfo(filePaths.BeforeFilePath).Length) / (1024 * 1024)):0.##} MB" : null,
                     AfterFileSize = File.Exists(filePaths.AfterFilePath) ? $"{((double)(new FileInfo(filePaths.AfterFilePath).Length) / (1024 * 1024)):0.##} MB" : null,
                 };
 
@@ -65,8 +65,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 htmlBody = htmlBody.Replace("{Model}", Common.RemoveStringAccents(application.Model));
                 htmlBody = htmlBody.Replace("{BeforeChange}", Common.UrlDecode(application.BeforeChange));
                 htmlBody = htmlBody.Replace("{AfterChange}", Common.UrlDecode(application.AfterChange));
-                htmlBody = htmlBody.Replace("{BeforeChangeFile}", $"<a href=\"{filePaths.BeforeFilePath}\">{application.BeforeChangeFile} ({fileSizes.BeforeFileSize})</a>");
-                htmlBody = htmlBody.Replace("{AfterChangeFile}", $"<a href=\"{filePaths.AfterFilePath}\">{application.AfterChange} ({fileSizes.AfterFileSize})</a>");
+                htmlBody = htmlBody.Replace("{BeforeChangeFile}", !string.IsNullOrEmpty(filePaths.BeforeFilePath) ? CreateDownloadElementPath(application.BeforeChangeFile, fileSizes.BeforeFileSize) : ".");
+                htmlBody = htmlBody.Replace("{AfterChangeFile}", !string.IsNullOrEmpty(filePaths.AfterFilePath) ? CreateDownloadElementPath(application.AfterChangeFile, fileSizes.AfterFileSize) : ".");
                 htmlBody = htmlBody.Replace("{Reason}", Common.UrlDecode(application.Reason));
                 htmlBody = htmlBody.Replace("{CalcCost}", Common.UrlDecode(application.CalcCost));
                 htmlBody = htmlBody.Replace("{LinkSign}", $"{url}{code}");
@@ -88,6 +88,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             {
                 throw;
             }
+        }
+
+
+        private static string CreateDownloadElementPath(string filePath, string fileSize)
+        {
+            return  $"<a href=\"{ConfigurationManager.AppSettings["SystemUrl"]}/Assets/Media/FileMSC/{filePath}\">{filePath} ({fileSize})</a>";
         }
     }
 }

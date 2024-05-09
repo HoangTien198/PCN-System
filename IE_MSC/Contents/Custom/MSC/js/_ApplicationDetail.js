@@ -62,7 +62,7 @@ function CreateApplicationDetailModal(application) {
 
     /* Reason */
     $('#ApplicationDetailModal-Reason').html(decodeURIComponent(application.Reason));
-    $('#ApplicationDetailModal-Cost').html(decodeURIComponent(application.CalcCost));
+    $('#ApplicationDetailModal-Cost').html(application.CalcCost ? decodeURIComponent(application.CalcCost) : '');
 
     /* Sign */
     let SignContainer = $('#ApplicationDetailModal-Sign');

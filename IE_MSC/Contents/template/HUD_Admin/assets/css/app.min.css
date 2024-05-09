@@ -1,13 +1,4 @@
 @charset "UTF-8";
-@import url(https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500&amp;display=swap); /*!
- * HUD v1.7.0 (https://seantheme.com/hud/)
- * Copyright 2022 SeanTheme
- */ /*!
- * Bootstrap v5.2.0-beta1 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
 :root {
     --bs-blue: #4e9cff;
     --bs-indigo: #bba4ff;

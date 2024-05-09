@@ -140,7 +140,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     }
 
 
-                    var data = dataQuery.ToList()
+                    var data = dataQuery.Include(m => m.Signs).ToList()
                                         .Select(m => new
                                         {
                                             Id = m.Id,
@@ -150,7 +150,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                             UserCreated = GetUserCreated(context.Users.FirstOrDefault(u => u.Id == m.IdUserCreated)),
                                             Subject = m.Subject,
                                             Status = GetStatusHtml((int)m.Status),
-                                            Button = GetButtonHtml(m.Id)
+                                            Button = GetButtonHtml(m)
                                         })
                                         .ToList();
 
@@ -212,11 +212,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 if (request.Files["BeforeChangeFile"] != null)
                 {
                     var file = request.Files["BeforeChangeFile"];
-
-                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                    string fileExtention = Path.GetExtension(file.FileName);
-
-                    string path = HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{fileName}_{Guid.NewGuid()}.{fileExtention}");
+                    string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    string path = HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{fileName}");
                     file.SaveAs(path);
 
                     application.BeforeChangeFile = fileName;
@@ -226,11 +223,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 if (request.Files["AfterChangeFile"] != null)
                 {
                     var file = request.Files["AfterChangeFile"];
-
-                    string fileName = Path.GetFileName(file.FileName);
-                    string fileExtention = Path.GetExtension(fileName);
-
-                    string path = HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{fileName}_{Guid.NewGuid()}.{fileExtention}");
+                    string fileName =  $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    string path = HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{fileName}");
                     file.SaveAs(path);
 
                     application.AfterChangeFile = fileName;
@@ -343,13 +337,88 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
             return statusHtml;
         }
-        private static string GetButtonHtml(string id)
-        {
-            string detailButton = $"<button type=\"button\" data-id=\"{id}\" onclick=\"DetailMSC(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>";
-            string updateButton = $"<button type=\"button\" data-id=\"{id}\" onclick=\"UpdateMSC(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>";
-            string deleteButton = $"<button type=\"button\" data-id=\"{id}\" onclick=\"DeleteMSC(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>";
+        private static string GetButtonHtml(Entities.MSC msc)
+        {           
+            var userType = GetSessionUserType(msc);
 
-            return $"<div class=\"btn-group\">{detailButton}{updateButton}{deleteButton}</div>";
+            var buttons = new
+            {
+                detailButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"DetailMSC(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>",
+                updateButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"UpdateMSC(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>",
+                deleteButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"DeleteMSC(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>",
+                rejectButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"RejectMSC(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>",
+                approveButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"ApproveMSC(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>",
+                IEApproveButton = $"<button type=\"button\" data-id=\"{msc.Id}\" onclick=\"IEApproveMSC(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>",
+                updateDisableButton = $"<button type=\"button\" title=\"update\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-pen\"></i></button>",
+                deleteDisableButton = $"<button type=\"button\" title=\"delete\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-trash\"></i></button>",
+            };
+
+            switch (userType)
+            {
+                case "Guest":
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.updateDisableButton}{buttons.deleteDisableButton}</div>";
+                case "OwnerHasSigned":
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.updateDisableButton}{buttons.deleteDisableButton}</div>";
+                case "OwnerNotSigned":
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.updateButton}{buttons.deleteButton}</div>";
+                case "SignIE":
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.IEApproveButton}{buttons.rejectButton}</div>";
+                case "SignNormal":
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.approveButton}{buttons.rejectButton}</div>";
+                default:
+                    return $"<div class=\"btn-group\">{buttons.detailButton}{buttons.updateDisableButton}{buttons.deleteDisableButton}</div>";
+            }
+        }
+        private static string GetSessionUserType(Entities.MSC msc)
+        {
+            var sessionUser = Common.GetSessionUser();
+
+            var userType = "Guest";
+
+            try
+            {
+                // là người tạo đơn
+                if (msc.IdUserCreated == sessionUser.Id)
+                {
+                    // đã có ký
+                    if (msc.Signs.Any(s => s.Status != 1))
+                    {
+                        userType = "OwnerHasSigned";
+                    }
+                    // chưa có ai ký
+                    else
+                    {
+                        userType = "OwnerNotSigned";
+                    }
+
+                }
+                else
+                {
+                    var signUser = R_User.GetUser(msc.Signs.OrderBy(s => s.Order).FirstOrDefault(s => s.Status == 1).IdUser);
+
+                    // tới lượt ký
+                    if (!msc.Signs.Any(s => s.Status == -1) && signUser.Id == sessionUser.Id)
+                    {
+                        // là IE ký
+                        if (signUser.UserDepartments.Any(ud => ud.Department.DepartmentName.ToUpper() == "IE"))
+                        {
+                            userType = "SignIE";
+                        }
+                        // là ng ký bt
+                        else
+                        {
+                            userType = "SignNormal";
+                        }
+                    }
+                }
+
+                return userType;
+            }
+            catch
+            {
+                return userType;
+            }
+            
         }
 
     }

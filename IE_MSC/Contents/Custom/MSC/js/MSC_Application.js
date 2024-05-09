@@ -136,14 +136,8 @@ function CreateDatatableCellActionButton(IdApplicaion) {
 function CreateMSC() {
 	ApplicationCreate(function (result) {
 		_datas.Application = result;
-		//let rowData = CreateDatatableRow(result);
-
-		//console.log(result);
-		//console.log(rowData);
-
-		//datatable.row.add(rowData).draw(false);
-
 		datatable.draw(false);
+		toastr['success']('Create Application Success.');
 	});
 }
 function DetailMSC(elm, e) {
@@ -161,7 +155,7 @@ function DeleteMSC(elm, e) {
 	let rowIndex = datatable.row($(elm).closest('tr')).index();
 	ApplicationDelete(Id, function (result) {
 		if (result) {		    
-			datatable.row(rowIndex).remove().draw(false);
+			datatable.draw(false);
 		    toastr['success']('Delete Application Success.');
 		}
 	});

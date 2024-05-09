@@ -32,8 +32,8 @@ namespace IE_MSC.Areas
 				}
 				else
 				{
-					return null;
-				}
+                    throw new Exception("Login session expired. Please relogin (F5).");
+                }
 			}
 			catch (Exception ex)
 			{
