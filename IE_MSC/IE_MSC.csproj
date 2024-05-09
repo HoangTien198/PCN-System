@@ -238,6 +238,7 @@
     <Compile Include="Areas\old\IE\Controllers\MSCController.cs" />
     <Compile Include="Areas\old\IE\Controllers\ProfileController.cs" />
     <Compile Include="Areas\old\IE\IEAreaRegistration.cs" />
+    <Compile Include="Areas\Repositories\R_Email.cs" />
     <Compile Include="Areas\Repositories\R_User.cs" />
     <Compile Include="Areas\Repositories\R_MSC.cs" />
     <Compile Include="Areas\Repositories\R_Dashboard.cs" />
@@ -294,6 +295,9 @@
       <DependentUpon>PcnModel.edmx</DependentUpon>
       <LastGenOutput>PcnModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Areas\Shared\Emails\ApplicationSignApproved.html" />
+    <Content Include="Areas\Shared\Emails\ApplicationSignRejected.html" />
+    <Content Include="Areas\Shared\Emails\ApplicationSignRequest.html" />
     <Content Include="Contents\Custom\Common\_HudAdminNavbar.css" />
     <Content Include="Contents\Custom\Common\_HudAdminNavbar.js" />
     <Content Include="Assets\MSC\images\bg-login\login-background.jpg" />
@@ -1575,7 +1579,7 @@
     <Folder Include="Areas\User\Data\" />
     <Folder Include="Areas\User\Views\Management\" />
     <Folder Include="Areas\User\Views\Shared\" />
-    <Folder Include="Assets\Media\FileMSC\" />
+    <Folder Include="Assets\Media\" />
     <Folder Include="Assets\MSC\images\employee\" />
     <Folder Include="Views\Customer\" />
     <Folder Include="Views\Dashboard\" />

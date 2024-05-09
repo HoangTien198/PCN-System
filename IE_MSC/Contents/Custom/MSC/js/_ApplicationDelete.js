@@ -32,7 +32,7 @@ function ApplicationDeleteInfor(application) {
                 <tbody>
                     <tr>
                         <th class="text-theme text-nowrap">MSC單號<br />Mã số</th>
-                        <td>${application.CodeMSC}</td>
+                        <td>${application.Code}</td>
                     </tr>
                     <tr>
                         <th class="text-theme text-nowrap">日期<br />Ngày</th>
@@ -52,9 +52,6 @@ function ApplicationDeleteInfor(application) {
 /* Other */
 async function GetDeleteApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
-        _datas.Application = _datas.Applications.find(application => { application.Id.toUpperCase() === IdApplication.toUpperCase() });
-        if (!_datas.Application) {
-            _datas.Application = await GetApplication(IdApplication);
-        }
+        _datas.Application = await GetApplication(IdApplication);
     }
 }

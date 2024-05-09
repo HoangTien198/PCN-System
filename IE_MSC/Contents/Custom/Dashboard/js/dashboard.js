@@ -8,19 +8,21 @@ $(document).ready(function () {
 
 async function GetAndInitData() {
 	try {
-
 		_datas.HeaderData = await GetHeaderData();
 		_datas.WeekData = await GetWeekData();
+		CreateHeaderChart();
+
 		_datas.DataByCustomer = await GetDataByCustomer();
 		_datas.MonthOfYearData = await GetMonthOfYearData();
-		_datas.MonthOfYearDataByDepartment = await GetMonthOfYearDataByDepartment();
-		_datas.Top10 = await GetTop10();
-		_datas.Top10Action = await GetTop10Action();
-
-		CreateHeaderChart();
 		CreateApplicationChart();
+
+		_datas.MonthOfYearDataByDepartment = await GetMonthOfYearDataByDepartment();
 		CreateDepartmentChart();
+		
+		_datas.Top10 = await GetTop10();
 		CreateTop10Table();
+
+		_datas.Top10Action = await GetTop10Action();
 		CreateTop10ActionTable();
 
 	} catch (e) {
@@ -31,6 +33,7 @@ async function GetAndInitData() {
 
 /* GET */
 function GetHeaderData() {
+	console.time("GetHeaderData");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetHeaderData`,
@@ -38,6 +41,7 @@ function GetHeaderData() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
+				console.timeEnd("GetHeaderData");
 				if (res.status) {
 					resolve(res.data);
 				}
@@ -46,33 +50,38 @@ function GetHeaderData() {
 				}
 			},
 			error: function (error) {
+				console.timeEnd("GetHeaderData");
 				reject(error);
 			}
 		});
 	});
 }
 function GetWeekData() {
+	console.time("GetWeekData");
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `/Dashboard/Dashboard/GetWeekData`,
             type: "GET",
             contentType: "application/json;charset=utf-8",
             dataType: "json",
-            success: function (res) {
-                if (res.status) {
+			success: function (res) {
+				console.timeEnd("GetWeekData");
+				if (res.status) {
                     resolve(res.data);
                 }
                 else {
                     reject(res.message);
                 }
             },
-            error: function (error) {
+			error: function (error) {
+				console.timeEnd("GetWeekData");
                 reject(error);
             }
         });
     });
 }
 function GetDataByCustomer() {
+	console.time("GetDataByCustomer");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetDataByCustomer`,
@@ -80,6 +89,7 @@ function GetDataByCustomer() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
+				console.timeEnd("GetDataByCustomer");
 				if (res.status) {
 					resolve(res.data);
 				}
@@ -88,12 +98,14 @@ function GetDataByCustomer() {
 				}
 			},
 			error: function (error) {
+				console.timeEnd("GetDataByCustomer");
 				reject(error);
 			}
 		});
 	});
 }
 function GetMonthOfYearData() {
+	console.time("GetMonthOfYearData");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetMonthOfYearData`,
@@ -101,6 +113,7 @@ function GetMonthOfYearData() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
+				console.timeEnd("GetMonthOfYearData");
 				if (res.status) {
 					resolve(res.data);
 				}
@@ -109,12 +122,14 @@ function GetMonthOfYearData() {
 				}
 			},
 			error: function (error) {
+				console.timeEnd("GetMonthOfYearData");
 				reject(error);
 			}
 		});
 	});
 }
 function GetMonthOfYearDataByDepartment() {
+	console.time("GetMonthOfYearDataByDepartment");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetMonthOfYearDataByDepartment`,
@@ -122,10 +137,12 @@ function GetMonthOfYearDataByDepartment() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
+				console.timeEnd("GetMonthOfYearDataByDepartment");
 				if (res.status) {
 					resolve(res.data);
 				}
 				else {
+					console.timeEnd("GetMonthOfYearDataByDepartment");
 					reject(res.message);
 				}
 			},
@@ -136,6 +153,7 @@ function GetMonthOfYearDataByDepartment() {
 	});
 }
 function GetTop10() {
+	console.time("GetTop10");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetTop10`,
@@ -143,7 +161,8 @@ function GetTop10() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
-				if (res.status) {
+				console.timeEnd("GetTop10");
+				if (res.status) {					
 					resolve(res.data);
 				}
 				else {
@@ -151,12 +170,14 @@ function GetTop10() {
 				}
 			},
 			error: function (error) {
+				console.timeEnd("GetTop10");
 				reject(error);
 			}
 		});
 	});
 }
 function GetTop10Action() {
+	console.time("GetTop10Action");
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: `/Dashboard/Dashboard/GetTop10Action`,
@@ -164,6 +185,7 @@ function GetTop10Action() {
 			contentType: "application/json;charset=utf-8",
 			dataType: "json",
 			success: function (res) {
+				console.timeEnd("GetTop10Action");
 				if (res.status) {
 					resolve(res.data);
 				}
@@ -172,6 +194,7 @@ function GetTop10Action() {
 				}
 			},
 			error: function (error) {
+				console.timeEnd("GetTop10Action");
 				reject(error);
 			}
 		});
@@ -684,6 +707,19 @@ function CreateApplicationChart() {
 
 /* DEPARTMENT CHART */
 function CreateDepartmentChart() {
+	//let atLeastOneKept = false;
+
+	//_datas.MonthOfYearDataByDepartment.Series = _datas.MonthOfYearDataByDepartment.Series.filter(serie => {
+	//	if (Array.isArray(serie)) {
+	//		const sum = serie.reduce((total, currentValue) => total + currentValue, 0);
+	//		if (sum !== 0 || !atLeastOneKept) {
+	//			atLeastOneKept = true;
+	//			return true;
+	//		}
+	//	}
+	//	return false;
+	//});
+
 	// Chart
 	{
 		if (_charts.DepartmentChart) {

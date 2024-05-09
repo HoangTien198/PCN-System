@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; font-size: 16px;">
+    <!-- Header-->
+    <section style="width: 1340px;">
+        <div style="height: 35px; background-color: #212121; color: white; text-align: center; padding: 5px 0 5px 0; line-height: 35px; font-size: 20px; font-weight: bold; font-family: arial,helvetica,sans-serif;">{SystemName}</div>
+    </section>
+    <!-- Body -->
+    <section style="width: 1340px;">
+        <div style="padding: 20px; background-color: #d3eaff; display: grid; place-items: center; ">
+            <div style="padding: 20px; background-color: white; border-radius: 15px; font-family: arial,helvetica,sans-serif; width: 1240px;">
+                <!-- Email Header -->
+                <div style="font-weight: bold; padding-bottom: 10px; font-size: 20px;">Dear {ToEmail},</div>
+                <!-- Email Body -->
+                <div>
+                    <p>We hope this email finds you well. You have a <span style="color: green; font-weight: bold;">signed</span> document</p>
+                    <p>Document Detail:</p>
+                    <!-- Email Details-->
+                    <table cellpadding="0" cellspacing="0" style="font-family: arial,helvetica,sans-serif; width: 1200px;">
+                        <tbody>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-top: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Document name</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-top: 2px solid #515151; padding: 5px 10px;">{DocumentName}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Type</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{DocumentType}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Uploader</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Uploader}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Datetime</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Datetime}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">For project</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Project}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">For machine</td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Machine}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>Follow this link to [<a href="{LinkDownloadDocument}">Download Document ({DocumentSize})</a>]</p>
+
+                    <!-- End content -->
+                    <p>This is an automated email, please no reply. If you have any question or need more information, please contact to email <a href="javascript:;">[you-nan.ruan@mail.foxconn.com]</a> or phone <a href="javascript:;">[37146]</a>. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <section style="width: 1340px;">
+        <div style="height: 35px; background-color: #212121; color: white; line-height: 35px; font-size: 15px;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="float: left; font-family: arial,helvetica,sans-serif; padding-left: 10px;">MBD-AUTOMATION-IOT@mail.foxconn.com</div>
+                <div style="float: right; font-family: arial,helvetica,sans-serif; padding-right: 10px;">Copyright &#169 2024. MBD A-IOT</div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,5 +1,7 @@
 ﻿using IE_MSC.Areas.Entities;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace IE_MSC.Areas.Dashboard.Controllers
@@ -93,7 +95,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }       
-        public static object GetUser(string Id)
+        public static Entities.User GetUser(string Id)
         {
             try
             {
@@ -101,7 +103,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var user = context.Users.FirstOrDefault(u => u.Id.ToUpper() == Id.ToUpper());
+                    var user = context.Users.Include(u => u.UserDepartments.Select(d => d.Department.Customer))
+                                            .FirstOrDefault(u => u.Id.ToUpper() == Id.ToUpper());
 
                     return user;
                 }
@@ -111,7 +114,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetSessionUser()
+        public static Entities.User GetSessionUser()
         {
             try
             {
@@ -123,7 +126,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                     if(sessionUser != null)
                     {
-                        var user = context.Users.FirstOrDefault(u => u.Id.ToUpper() == sessionUser.Id.ToUpper());
+                        var user = context.Users.Include(u => u.UserDepartments.Select(d => d.Department))
+                                                .Include(u => u.UserDepartments.Select(d => d.Department.Customer))
+                                                .FirstOrDefault(u => u.Id.ToUpper() == sessionUser.Id.ToUpper());
 
                         return user;
                     }
@@ -138,7 +143,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetUsers()
+        public static List<Entities.User> GetUsers()
         {
             try
             {
@@ -146,7 +151,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var users = context.Users.ToList();
+                    var users = context.Users.Include(u => u.UserDepartments.Select(d => d.Department.Customer))
+                                             .ToList();
 
                     return users;
                 }
@@ -164,7 +170,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var customerDepartments = context.Customers.ToList();
+                    var customerDepartments = context.Customers.Select(c => new
+                    {
+                        c.Id,
+                        c.CustomerName,
+                        Departments = context.Departments.Where(d => d.IdCustomer.ToUpper() == c.Id.ToUpper()).ToList()
+                    }).ToList();
 
                     return customerDepartments;
                 }

@@ -4,9 +4,9 @@
 
 /* Create Modal */
 function ApplicationCreate(callback) {
-    $('#ApplicationCreateModal-UserCreated').val(GetUserNameObj(_datas.SessionUser));
-    $('#ApplicationCreateModal-Department').val(GetUserDeptObj(_datas.SessionUser));
-    $('#ApplicationCreateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm'));
+    $('#ApplicationCreateModal-UserCreated').val(GetUserName(_datas.SessionUser));
+    $('#ApplicationCreateModal-Department').val(GetUserDept(_datas.SessionUser));
+    $('#ApplicationCreateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm:ss'));
 
     $('#ApplicationCreateModal-Subject').val('');
     $('#ApplicationCreateModal-Process').val('');
@@ -25,16 +25,69 @@ function ApplicationCreate(callback) {
     $('#ApplicationCreateModal-Sign').empty();
     AddCreateSign();
 
+    if ($('#ApplicationCreateModal-Customer option').length === 0) {
+        let customerSelect = $('#ApplicationCreateModal-Customer');
+        customerSelect.empty();
+        _datas.CustomerDepartments.forEach(function (customer) {
+            customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+        });
+        customerSelect.change(function () {
+            let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+            let departmentSelect = $('#ApplicationCreateModal-Department');
+            departmentSelect.empty();
+            departments.forEach(function (department) {
+                departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+            });
+        });
+    }
+    $('#ApplicationCreateModal-Customer').change();
+   
+
     $('#ApplicationCreateModal').modal('show');
 
     $('#ApplicationCreateModal-Save').click(async function () {
-        let result = await ApplicationCreateSave();
+        try {
+            console.log('Create Application');
 
-        if (result) {
-            $('#ApplicationCreateModal').modal('hide');
+            let application = {
+                IdUserCreated: $('#SessionUser').data('id'),
+                DateCreated: $('#ApplicationCreateModal-DateCreated').val(),
+                Subject: $('#ApplicationCreateModal-Subject').val(),
+                Process: $('#ApplicationCreateModal-Process').val(),
+                Model: $('#ApplicationCreateModal-Model').val(),
+                BeforeChange: $('#ApplicationCreateModal-BeforeChange').summernote('code'),
+                AfterChange: $('#ApplicationCreateModal-AfterChange').summernote('code'),
+                Reason: $('#ApplicationCreateModal-Reason').summernote('code'),
+                IdCustomer: $('#ApplicationCreateModal-Customer').val(),
+                IdDepartment: $('#ApplicationCreateModal-Department').val(),
+                Signs: $('#ApplicationCreateModal-Sign .widget-reminder-item').map((index, signItem) => {
+                    return {
+                        IdUser: $(signItem).find('[user]').val(),
+                        Order: $(signItem).find('[order]').text()
+                    };
+                }).get()
+            };
+
+            let files = {
+                beforeChangeFile: $('#ApplicationCreateModal-BeforeChangeFile').prop('files')[0],
+                afterChangeFile: $('#ApplicationCreateModal-AfterChangeFile').prop('files')[0],
+
+            };
+
+            let isSendBoss = $('#ApplicationCreateModal-SendBoss').is(':checked');
+
+            if (!ApplicationValidate(application, files)) return false;
+
+            let result = await CreateApplication(application, files, isSendBoss);
             callback(result);
+            $('#ApplicationCreateModal-Save').off('click');
+            $('#ApplicationCreateModal').modal('hide');
+
+        } catch (e) {
+            Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
+            console.error(e);
         }
-    });
+    });  
 }
 $('#ApplicationCreateModal').on('shown.bs.modal', function () {
     $('#ApplicationCreateModal-Title').focus();
@@ -130,13 +183,13 @@ function AddCreateSign() {
 
                                 var IdCustomer = selectCust.val(), IdDepartment = selectDept.val();
                                 var users = _datas.Users.filter(user => {
-                                    return user.Departments.some(dept => {
-                                        return dept.Department.DepartmentID === IdDepartment && dept.Department.CustomerID === IdCustomer;
+                                    return user.UserDepartments.some((userDept) => {
+                                        return userDept.Department.Id === IdDepartment && userDept.Department.IdCustomer === IdCustomer;
                                     });
                                 });
                                 selectUser.empty();
                                 selectUser.append(users.map(function (user) {
-                                    return $(`<option value="${user.Id}">`).text(GetUserNameObj(user));
+                                    return $(`<option value="${user.Id}">`).text(GetUserName(user));
                                 }))
                             }))
                     )
@@ -161,61 +214,29 @@ function AddCreateSign() {
 }
 
 /* Save Event */
-async function ApplicationCreateSave() {
-    try {
-        let applicationData = {
-            data: {
-                RecommendedBy: $('#SessionUser').data('id'),
-                RecommendedDate: $('#ApplicationCreateModal-DateCreated').val(),
-                Subject: $('#ApplicationCreateModal-Subject').val(),
-                ProcessTitle: $('#ApplicationCreateModal-Process').val(),
-                ModelTitle: $('#ApplicationCreateModal-Model').val(),
-                BeforeChangeDescription: $('#ApplicationCreateModal-BeforeChange').summernote('code'),
-                AfterChangeDescription: $('#ApplicationCreateModal-AfterChange').summernote('code'),
-                Reason: $('#ApplicationCreateModal-Reason').summernote('code'),
-                PCNConfirms: $('#ApplicationCreateModal-Sign .widget-reminder-item').map((index, signItem) => {
-                    return {
-                        EmployeeID: $(signItem).find('[user]').val(),
-                        SortOrder: $(signItem).find('[order]').text()
-                    };
-                }).get()
-            },
-            beforeChangeFile: $('#ApplicationCreateModal-BeforeChangeFile').prop('files')[0],
-            afterChangeFile: $('#ApplicationCreateModal-AfterChangeFile').prop('files')[0],
-            sendToBoss: $('#ApplicationCreateModal-SendBoss').is(':checked'),
-        }
 
-        if (!ApplicationValidate(applicationData)) return false;
-
-        return await CreateApplication(applicationData);
-
-    } catch (e) {
-        Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
-        console.error(e);
-    }
-}
-function ApplicationValidate(applicationData) {
-    if (applicationData.data.Subject.length === 0) {
+function ApplicationValidate(application, files) {
+    if (application.Subject.length === 0) {
         toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
         return false;
     }
-    if (applicationData.data.ProcessTitle.length === 0) {
+    if (application.Process.length === 0) {
         toastr['warning']('[ 过程 / Process ] Không được để trống!');
         return false;
     }
-    if (applicationData.data.ModelTitle.length === 0) {
+    if (application.Model.length === 0) {
         toastr['warning']('[ 模型 / Model ] Không được để trống!');
         return false;
     }
-    if (applicationData.data.Subject.length > 250 ) {
+    if (application.Subject.length > 250 ) {
         toastr['warning']('[ 主題 / Chủ đề ] quá dài (lớn hơn 250 ký tự)!');
         return false;
     }
-    if (applicationData.data.ProcessTitle.length > 250) {
+    if (application.Process.length > 250) {
         toastr['warning']('[ 过程 / Process ] quá dài (lớn hơn 250 ký tự)!');
         return false;
     }
-    if (applicationData.data.ModelTitle.length > 250) {
+    if (application.Model.length > 250) {
         toastr['warning']('[ 模型 / Model ] quá dài (lớn hơn 250 ký tự)!');
         return false;
     }   
@@ -227,7 +248,7 @@ function ApplicationValidate(applicationData) {
         toastr['warning']('[ 變更后的方式 / Phương thức sau khi thay đổi  ] Không được để trống!');
         return false;
     }
-    if (!applicationData.beforeChangeFile && !applicationData.afterChangeFile) {
+    if (!files.beforeChangeFile && !files.afterChangeFile) {
         toastr['warning']('[ Tài liệu phương thức TRƯỚC / SAU khi thay đổi ] Vui lòng chọn tài liệu!');
         return false;
     }
@@ -235,7 +256,7 @@ function ApplicationValidate(applicationData) {
         toastr['warning']('[ 變更原因 / Nguyên nhân thay đổi ] Không được để trống!');
         return false;
     }
-    if (applicationData.data.PCNConfirms.length === 0) {
+    if (application.Signs.length === 0) {
         toastr['warning']('[ 會簽 / Các bộ phận phê duyệt ] Không được để trống!');
         return false;
     }

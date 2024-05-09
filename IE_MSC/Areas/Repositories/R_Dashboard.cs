@@ -23,13 +23,13 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var mscs = context.MSCs.ToList();
+                    var mscs = context.MSCs.Select(m => m.Status);
 
                     var data = new
                     {
-                        Approved = mscs.Where(p => p.Status == 2).Count(),
-                        Pending = mscs.Where(p => p.Status == 1).Count(),
-                        Rejected = mscs.Where(p => p.Status == -1).Count(),
+                        Approved = mscs.Where(p => p == 2).Count(),
+                        Pending = mscs.Where(p => p == 1).Count(),
+                        Rejected = mscs.Where(p => p == -1).Count(),
                         Total = mscs.Count(),
                     };
 
@@ -50,12 +50,14 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     context.Configuration.LazyLoadingEnabled = false;
 
                     var nowDate = DateTime.Now;
-                    var endDate = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day);
+                    var endDate = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day + 1);
                     var startDate = endDate.AddDays(-7);
 
-                    var pcns = context.MSCs.Where(p => p.DateCreated != null && p.DateCreated > startDate && p.DateCreated <= endDate)
-                                                .OrderBy(p => p.DateCreated)
-                                                .ToList();
+                    var mscs = context.MSCs.Select(m => new
+                    {
+                        m.Status,
+                        m.DateCreated
+                    }).Where(p => p.DateCreated != null && p.DateCreated > startDate && p.DateCreated <= endDate);
 
                     var data = new
                     {
@@ -66,42 +68,20 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         Total = new List<int>(),
                     };
 
-                    for(int i = 1; i < 8; i++)
+                    for(int i = 0; i < 7; i++)
                     {
                         var currentDate = startDate.AddDays(i);
+                        var nextDate = currentDate.AddDays(1);
 
                         data.Categories.Add(currentDate.ToString("yyyy-MM-dd"));
-                        data.Approved.Add(0);
-                        data.Pending.Add(0);
-                        data.Rejected.Add(0);
-                        data.Total.Add(0);
-                    }
 
-                    foreach (var pcn in pcns)
-                    {
-                        if(pcn.DateCreated != null)
-                        {
-                            var categorie = data.Categories.FirstOrDefault(d => d == pcn.DateCreated?.ToString("yyyy-MM-dd"));
-                            if (categorie != null)
-                            {
-                                var index = data.Categories.IndexOf(categorie);
-                                switch (pcn.Status ?? 0)
-                                {
-                                    case -1:
-                                        data.Rejected[index] += 1;
-                                        break;
-                                    case 1:
-                                        data.Pending[index] += 1;
-                                        break;
-                                    case 2:
-                                        data.Approved[index] += 1;
-                                        break;
-                                }
-                                data.Total[index] += 1;
-                            }
-                        }
-                    }
+                        var currentMscs = mscs.Where(m => m.DateCreated >= currentDate && m.DateCreated < nextDate).ToList();
 
+                        data.Approved.Add(currentMscs.Where(m => m.Status == 2).Count());
+                        data.Pending.Add(currentMscs.Where(m => m.Status == 1).Count());
+                        data.Rejected.Add(currentMscs.Where(m => m.Status == -1).Count());
+                        data.Total.Add(currentMscs.Count());
+                    }
 
                     return data;
                 }
@@ -119,15 +99,21 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
+                    var mscs = context.MSCs.Select(m => new
+                    {
+                        m.Status,
+                        m.IdCustomer,
+                    }).ToList();
+
                     List<object> listDataCustomer = new List<object>();
                     foreach (var customer in context.Customers.ToList())
                     {
                         object data = new
                         {
                             Customer = customer.CustomerName,
-                            Pending = context.MSCs.Count(p => p.Status == 1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
-                            Approved = context.MSCs.Count(p => p.Status == 2 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
-                            Rejected = context.MSCs.Count(p => p.Status == -1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Pending = mscs.Count(p => p.Status == 1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Approved = mscs.Count(p => p.Status == 2 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Rejected = mscs.Count(p => p.Status == -1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
                         };
                         listDataCustomer.Add(data);
                     }
@@ -150,7 +136,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     DateTime thresholdDate = DateTime.Now.AddMonths(-12);
                     thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
 
-                    var mscs = context.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
+                    var mscs = context.MSCs.Select(m => new
+                    {
+                        m.DateCreated,
+                        m.Status,
+                    }).Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
 
                     var data = new
                     {
@@ -169,11 +159,13 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         DateTime EndDate = thresholdDate.AddMonths(i + 1);
                         EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
 
+                        var currentMscs = mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).ToList();
+
                         data.Date.Add(StartDate.ToString("yyyy-MMM"));
-                        data.Pending.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 1).Count());
-                        data.Approved.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == 2).Count());                        
-                        data.Rejected.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate && p.Status == -1).Count());
-                        data.Total.Add(mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).Count());
+                        data.Pending.Add(currentMscs.Where(p => p.Status == 1).Count());
+                        data.Approved.Add(currentMscs.Where(p => p.Status == 2).Count());                        
+                        data.Rejected.Add(currentMscs.Where(p => p.Status == -1).Count());
+                        data.Total.Add(currentMscs.Count());
                     }
 
                     return data;
@@ -194,56 +186,60 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                     var data = new
                     {
-                        Categories = new List<string>(),
-                        IdDepartments = new List<string>(),
+                        Categories = new string[12],
                         Series = new List<Serie>(),
-
                     };
-                    var departments = context.Departments.Select(d => new
+
+                    DateTime thresholdDate = DateTime.Now.AddMonths(-12);
+                    thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
+
+                    var departments = context.Departments
+                        .Select(d => new
+                        {
+                            d.Id,
+                            d.DepartmentName,
+                            d.Customer.CustomerName
+                        }).ToList();
+
+                    var mscs = context.MSCs.Select(m => new
                     {
-                        d.Id,
-                        d.DepartmentName,
-                        d.IdCustomer,
-                        CustomerName = d.Customer.CustomerName
-                    }).Distinct().ToList();
+                        m.DateCreated,
+                        m.IdDepartment,
+                    }).Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
+
 
                     if (departments.Count > 0)
                     {
-                        foreach(var department in departments)
+                        foreach (var department in departments)
                         {
-                            data.IdDepartments.Add(department.Id);
-                            data.Series.Add(new Serie
+                            var serie = new Serie();
+                            serie.name = $"{department.DepartmentName} ({department.CustomerName})";
+                            serie.data = new List<int>();
+
+                            var departmentMSCs = mscs.Where(p =>p.IdDepartment.ToUpper() == department.Id.ToUpper()).ToList();
+
+                            if (departmentMSCs.Count > 0)
                             {
-                                name = $"{department.DepartmentName} ({department.CustomerName})",
-                                data = new List<object>(),
-                            });
-                        }
+                                for (int i = 1; i < 13; i++)
+                                {
+                                    DateTime StartDate = thresholdDate.AddMonths(i);
+                                    StartDate = new DateTime(StartDate.Year, StartDate.Month, 1);
 
-                        DateTime thresholdDate = DateTime.Now.AddMonths(-12);
-                        thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
-                        var mscs = context.MSCs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= thresholdDate);
+                                    DateTime EndDate = thresholdDate.AddMonths(i + 1);
+                                    EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
 
-                        for (int i = 1; i < 13; i++)
-                        {
-                            DateTime StartDate = thresholdDate.AddMonths(i);
-                            StartDate = new DateTime(StartDate.Year, StartDate.Month, 1);
+                                    var currentMSCs = departmentMSCs.Count(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate);
 
-                            DateTime EndDate = thresholdDate.AddMonths(i + 1);
-                            EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
+                                    serie.data.Add(currentMSCs);
 
-                            data.Categories.Add(StartDate.ToString("yyyy-MMM"));
+                                    if (string.IsNullOrEmpty(data.Categories[i - 1]))
+                                    {
+                                        data.Categories[i - 1] = StartDate.ToString("yyyy-MMM");
+                                    }
+                                }
 
-                            foreach (var IdDept in data.IdDepartments)
-                            {
-                                int deptCount = mscs.Where(p => p.DateCreated.HasValue && 
-                                                                p.DateCreated.Value >= StartDate && 
-                                                                p.DateCreated.Value <= EndDate && 
-                                                                p.IdDepartment.ToUpper() == IdDept.ToUpper())
-                                                    .Count();
-
-                                int indexOf = data.IdDepartments.IndexOf(IdDept);
-                                data.Series[indexOf].data.Add(deptCount);
-                            }
+                                data.Series.Add(serie);
+                            } 
                         }
 
                         return data;
@@ -331,6 +327,6 @@ namespace IE_MSC.Areas.Dashboard.Controllers
     public class Serie
     {
         public string name { get; set; }
-        public List<object> data { get; set; }
+        public List<int> data { get; set; }
     }
 }

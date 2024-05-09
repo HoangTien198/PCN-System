@@ -39,8 +39,8 @@ namespace IE_MSC.Areas.Entities
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SignMSC> Signs { get; set; }
-        public User UserCreated { get; set; }
-        public Customer Customer { get; set; }
-        public Department Department { get; set; }
+        public virtual User UserCreated { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Department Department { get; set; }
     }
 }

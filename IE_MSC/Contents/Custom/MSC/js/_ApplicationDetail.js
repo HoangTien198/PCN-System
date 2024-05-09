@@ -13,56 +13,67 @@ function CreateApplicationDetailModal(application) {
 
     /* Information */
     $('#ApplicationDetailModal-UserCreated').val(GetUserName(application.UserCreated));
-    $('#ApplicationDetailModal-Department').val(application.Departments.length > 0 ? [...new Set(application.Departments.map(department => department.DepartmentName))].join(", ") : '');
-    $('#ApplicationDetailModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm"));
-    $('#ApplicationDetailModal-ApplicationStatus').val(application.ApplicationStatus);
-    $('#ApplicationDetailModal-StatusMSC').val(application.ApplicationStatus);
+    $('#ApplicationDetailModal-Department').val(GetUserDept(application.UserCreated));
+    $('#ApplicationDetailModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm:ss"));
+    $('#ApplicationDetailModal-ApplicationStatus').val(GetApplicationStatus(application));
 
     $('#ApplicationDetailModal-ApplicationStatus').removeClass();    
-    $('#ApplicationDetailModal-StatusMSC').removeClass();
     $('#ApplicationDetailModal-DateActived').val('');
 
-    switch (application.ApplicationStatus) {
-        case "Pending":
+    switch (application.Status) {
+        case -1:
+            $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-danger bg-danger');
+            break;
+        case 1:
             $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-warning bg-warning');
             break;
-        case "Approved":
+        case 2:
             $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-success bg-success');
-            $('#ApplicationDetailModal-DateActived').val(moment(application.DateActived).format("YYYY-MM-DD HH:mm"))
-            break;
-        case "Rejected":
-            $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-danger bg-danger');
+            $('#ApplicationDetailModal-DateActived').val(GetApplicationActiveDate(application))
             break;
     }
 
-    $('#ApplicationDetailModal-CodeMSC').val(application.CodeMSC);
+    $('#ApplicationDetailModal-CodeMSC').val(application.Code);
     $('#ApplicationDetailModal-Subject').val(application.Subject);
     $('#ApplicationDetailModal-Process').val(application.Process);
     $('#ApplicationDetailModal-Model').val(application.Model);
 
     /* Details */
-    $('#ApplicationDetailModal-BeforeChange').html(application.BeforeChange);
-    $('#ApplicationDetailModal-AfterChange').html(application.AfterChange);
+    $('#ApplicationDetailModal-BeforeChange').html(decodeURIComponent(application.BeforeChange));
+    $('#ApplicationDetailModal-AfterChange').html(decodeURIComponent(application.AfterChange));
 
-    $('#ApplicationDetailModal-BeforeChangeFile').attr('href', application.BeforeChangeFile ? `/Assets/Media/FileMSC/${application.BeforeChangeFile}` : 'javascript:;');
-    $('#ApplicationDetailModal-AfterChangeFile').attr('href', application.AfterChangeFile ? `/Assets/Media/FileMSC/${application.AfterChangeFile}` : 'javascript:;');
-    $('#ApplicationDetailModal-BeforeChangeFile').text(application.BeforeChangeFile ? application.BeforeChangeFile : 'No file');
-    $('#ApplicationDetailModal-AfterChangeFile').text(application.AfterChangeFile ? application.AfterChangeFile : 'No file');
+    if (application.BeforeChangeFile) {
+        $('#ApplicationDetailModal-BeforeChangeFile').text(application.BeforeChangeFile);
+        $('#ApplicationDetailModal-BeforeChangeFile').attr('href', `/Assets/Media/FileMSC/${application.BeforeChangeFile}`);
+    }
+    else {
+        $('#ApplicationDetailModal-BeforeChangeFile').attr('href', 'javascript:;');
+        $('#ApplicationDetailModal-BeforeChangeFile').text('No file');
+    }
+
+    if (application.AfterChangeFile) {
+        $('#ApplicationDetailModal-AfterChangeFile').text(application.AfterChangeFile);
+        $('#ApplicationDetailModal-AfterChangeFile').attr('href', `/Assets/Media/FileMSC/${application.AfterChangeFile}`);
+    }
+    else {
+        $('#ApplicationDetailModal-AfterChangeFile').attr('href', 'javascript:;');
+        $('#ApplicationDetailModal-AfterChangeFile').text('No file');
+    }
 
     /* Reason */
-    $('#ApplicationDetailModal-Reason').html(application.Reason);
-    $('#ApplicationDetailModal-Cost').html(application.Cost);
+    $('#ApplicationDetailModal-Reason').html(decodeURIComponent(application.Reason));
+    $('#ApplicationDetailModal-Cost').html(decodeURIComponent(application.CalcCost));
 
     /* Sign */
     let SignContainer = $('#ApplicationDetailModal-Sign');
     let IsReject = false;
     SignContainer.empty();
     application.Signs.forEach(function (sign) {
-        let color = (sign.Status == "Pending") ? "warning" : (sign.Status == "Approved") ? "success" : "danger";
-        let dept = sign.Departments.length > 0 ? [...new Set(sign.Departments.map(department => department.DepartmentName))].join(", ") : '';
+        let color = (sign.Status == 1) ? "warning" : (sign.Status == 2) ? "success" : "danger";
+        let dept = GetUserDept(sign.User);
         let user = GetUserName(sign.User);
 
-        if (sign.Status == "Rejected") {
+        if (sign.Status == -1) {
             IsReject = true;
 
             let time = `<span class="text-danger fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
@@ -91,7 +102,7 @@ function CreateApplicationDetailModal(application) {
                 SignContainer.append(item);
             }
             else {
-                let time = (sign.Status == 'Pending') ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
+                let time = (sign.Status == 1) ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
 
                 let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
                        <div class="widget-reminder-time">${time}</div>
@@ -113,9 +124,6 @@ function CreateApplicationDetailModal(application) {
 /* Other */
 async function GetDetailApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
-        _datas.Application = _datas.Applications.find(application => { application.Id.toUpperCase() === IdApplication.toUpperCase() });
-        if (!_datas.Application) {
-            _datas.Application = await GetApplication(IdApplication);
-        }
+        _datas.Application = await GetApplication(IdApplication);
     }
 }
