@@ -1,5 +1,4 @@
 ﻿using IE_MSC.Areas.Dashboard.Controllers;
-using IE_MSC.Areas.Entities;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -133,13 +132,13 @@ namespace IE_MSC.Areas
         /* HASH */
         private string NewHashValue(string value)
         {
-            return Convert.ToBase64String(Protect(Encoding.UTF8.GetBytes(value), Encoding.UTF8.GetBytes("MSC_ProtectKey")));
+            return Convert.ToBase64String(Protect(Encoding.UTF8.GetBytes(value), Encoding.UTF8.GetBytes("ProtectKey")));
         }
         private Entities.User UnHashValue(string value)
         {
             try
             {
-                var unprotectedData = Encoding.UTF8.GetBytes("MSC_ProtectKey");
+                var unprotectedData = Encoding.UTF8.GetBytes("ProtectKey");
                 var protectedData = Convert.FromBase64String(value);
 
                 var decryptedData = Unprotect(protectedData, unprotectedData);

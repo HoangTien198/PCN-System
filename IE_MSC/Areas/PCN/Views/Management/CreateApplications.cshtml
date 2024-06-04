@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "Create Application";
+    Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
+
+    var newGuid = Guid.NewGuid();
+}
+
+@section styles{
+    <!-- plugin -->
+    <link href="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+    <!-- custom -->
+    <link href="~/Contents/Custom/PCN/css/CreateApplication.css" rel="stylesheet" />
+
+}
+
+<!-- Breadcrumb -->
+<section>
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">HOME</a></li>
+        <li class="breadcrumb-item">MY APPLICATION</li>
+        <li class="breadcrumb-item active">CREATE APPLICATION</li>
+    </ul>
+</section>
+
+<!-- Content -->
+<section>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4 class="text-center text-theme">標准方法變更通知書<br />(MSC)Thông báo thay đổi phương pháp làm việc tiêu chuẩn (MSC)</h4>
+        </div>
+        <div class="card-body">
+            <!-- Information -->
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">日期 / Ngày</label>
+                        <input type="text" class="form-control text-truncate" id="ApplicationCreate-DateCreated" disabled>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">制作人 / Người đề nghị</label>
+                        <input type="text" class="form-control text-truncate" id="ApplicationCreate-UserCreated" disabled>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">制作部門 / Bộ phận <span class="text-danger">*</span></label>
+                        <div class="d-flex">
+                            <select type="text" class="form-select text-truncate me-1" id="ApplicationCreate-Customer"></select>
+                            <select type="text" class="form-select text-truncate ms-1" id="ApplicationCreate-Department"></select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3 ">
+                        <label class="form-label">主題 / Chủ đề <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control text-truncate" id="ApplicationCreate-Subject" maxlength="250">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">过程 / Process <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control text-truncate" id="ApplicationCreate-Process" maxlength="250">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">模型 / Model <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control text-truncate" id="ApplicationCreate-Model" maxlength="250">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <hr class="mb-3">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">現行作業方式 / Phương thức làm việc hiện hành <span class="text-danger">*</span></label>
+                        <div class="form-control overflow-auto" id="ApplicationCreate-BeforeChange" style="height: 10rem;"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">變更后的方式 / Phương thức sau khi thay đổi <span class="text-danger">*</span></label>
+                        <div class="form-control overflow-auto" id="ApplicationCreate-AfterChange" style="height: 10rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="mb-3">
+                        <label class="form-label">文档現行作業 / Tài liệu phương thức làm việc hiện hành</label>
+                        <input type="file" class="form-control text-truncate" id="ApplicationCreate-BeforeChangeFile" />
+                    </div>
+
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="mb-3">
+                        <label class="form-label">變更后的作業 / Tài liệu phương thức sau khi thay đổi</label>
+                        <input type="file" class="form-control text-truncate" id="ApplicationCreate-AfterChangeFile" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason -->
+            <hr class="mb-3">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">變更原因 / Nguyên nhân thay đổi <span class="text-danger">*</span></label>
+                        <div class="form-control overflow-auto" id="ApplicationCreate-Reason" style="height: 10rem;"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">制造成本計算 / Tính toán giá thành sản xuất (IE) <span class="text-danger">*</span></label>
+                        <div class="form-control overflow-auto" id="ApplicationCreate-Cost" style="height: 10rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sign -->
+            <hr class="mb-3">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="ApplicationCreate-SendBoss">
+                            <label class="form-check-label">Send to Boss (dai-xin.gao@fii-foxconn.com)</label>
+                        </div>
+                        <a class="text-theme" role="button" onclick="AddCreateSign()"><i class="fa-duotone fa-plus"></i> Add Sign</a>
+                    </div>
+                    <div class="card">
+                        <div class="widget-reminder" id="ApplicationCreate-Sign">
+
+                        </div>
+
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label">保存期限:二年 / Thời hạn bảo lưu</label>
+                        <input type="text" class="form-control" value="5 năm (5 年)">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">表單編號 / Mã bảng biểu</label>
+                        <input type="text" class="form-control" value="FM3NVA002001A">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-theme" id="ApplicationCreate-Save"><i class="fa-duotone fa-floppy-disk"></i> Create Application</button>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+
+    </div>
+</section>
+
+@section scripts{
+    <!-- plugin -->
+    <script src="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+    <!-- custom -->
+    <script src="~/Contents/Custom/User/User_Promise.js"></script>
+    <script src="~/Contents/Custom/PCN/js/Application_Promise.js"></script>
+
+    <script src="~/Contents/Custom/PCN/js/CreateApplication.js"></script>
+}

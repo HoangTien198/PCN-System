@@ -40,3 +40,9 @@ table tbody tr:hover {
 .note-editor.note-frame {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
+.widget-reminder .widget-reminder-time {
+    width: 160px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

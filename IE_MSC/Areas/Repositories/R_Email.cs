@@ -30,7 +30,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 {
     internal class R_Emails
     {
-        public static bool SendSignRequestEmail(Entities.MSC application, SignMSC sign)
+        public static bool SendSignRequestEmail(Entities.Application application, Sign sign)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 htmlBody = htmlBody.Replace("{Subject}", Common.RemoveStringAccents(application.Subject));
                 htmlBody = htmlBody.Replace("{UserCreated}", Common.CreateUserName(sign.User));
                 htmlBody = htmlBody.Replace("{Process}", Common.RemoveStringAccents(application.Process));
-                htmlBody = htmlBody.Replace("{Department}", R_MSC.GetApplicationDepartment(application.Id));
+                htmlBody = htmlBody.Replace("{Department}", R_PCN.GetApplicationDepartment(application.Id));
                 htmlBody = htmlBody.Replace("{Model}", Common.RemoveStringAccents(application.Model));
                 htmlBody = htmlBody.Replace("{BeforeChange}", Common.UrlDecode(application.BeforeChange));
                 htmlBody = htmlBody.Replace("{AfterChange}", Common.UrlDecode(application.AfterChange));

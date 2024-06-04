@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-Bold.woff2') format('woff2'),
+        url('ChakraPetch-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-BoldItalic.woff2') format('woff2'),
+        url('ChakraPetch-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-Italic.woff2') format('woff2'),
+        url('ChakraPetch-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-Light.woff2') format('woff2'),
+        url('ChakraPetch-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-LightItalic.woff2') format('woff2'),
+        url('ChakraPetch-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-Regular.woff2') format('woff2'),
+        url('ChakraPetch-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-MediumItalic.woff2') format('woff2'),
+        url('ChakraPetch-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-Medium.woff2') format('woff2'),
+        url('ChakraPetch-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-SemiBoldItalic.woff2') format('woff2'),
+        url('ChakraPetch-SemiBoldItalic.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Chakra Petch';
+    src: url('ChakraPetch-SemiBold.woff2') format('woff2'),
+        url('ChakraPetch-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+

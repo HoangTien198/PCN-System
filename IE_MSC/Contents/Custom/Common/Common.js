@@ -95,6 +95,14 @@ function GetApplicationStatus(application) {
         }
     }
 }
+function GetApplicationDepartment(application) {
+    if (!application || !application.Department) {
+        return 'Unknown (data of old version)';
+    }
+    else {
+        return `${application.Department.DepartmentName} (${application.Customer.CustomerName})`;
+    }
+}
 function GetApplicationActiveDate(application) {
     if (application.Signs.filter(sign => { return sign.Status != 2 }).length > 0) {
         return '';

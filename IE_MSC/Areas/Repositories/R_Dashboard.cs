@@ -23,14 +23,14 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var mscs = context.MSCs.Select(m => m.Status);
+                    var applications = context.Applications.Select(m => m.Status);
 
                     var data = new
                     {
-                        Approved = mscs.Where(p => p == 2).Count(),
-                        Pending = mscs.Where(p => p == 1).Count(),
-                        Rejected = mscs.Where(p => p == -1).Count(),
-                        Total = mscs.Count(),
+                        Approved = applications.Where(p => p == 2).Count(),
+                        Pending = applications.Where(p => p == 1).Count(),
+                        Rejected = applications.Where(p => p == -1).Count(),
+                        Total = applications.Count(),
                     };
 
                     return data;
@@ -53,7 +53,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     var endDate = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day + 1);
                     var startDate = endDate.AddDays(-7);
 
-                    var mscs = context.MSCs.Select(m => new
+                    var applications = context.Applications.Select(m => new
                     {
                         m.Status,
                         m.DateCreated
@@ -75,12 +75,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                         data.Categories.Add(currentDate.ToString("yyyy-MM-dd"));
 
-                        var currentMscs = mscs.Where(m => m.DateCreated >= currentDate && m.DateCreated < nextDate).ToList();
+                        var currentApplications = applications.Where(m => m.DateCreated >= currentDate && m.DateCreated < nextDate).ToList();
 
-                        data.Approved.Add(currentMscs.Where(m => m.Status == 2).Count());
-                        data.Pending.Add(currentMscs.Where(m => m.Status == 1).Count());
-                        data.Rejected.Add(currentMscs.Where(m => m.Status == -1).Count());
-                        data.Total.Add(currentMscs.Count());
+                        data.Approved.Add(currentApplications.Where(m => m.Status == 2).Count());
+                        data.Pending.Add(currentApplications.Where(m => m.Status == 1).Count());
+                        data.Rejected.Add(currentApplications.Where(m => m.Status == -1).Count());
+                        data.Total.Add(currentApplications.Count());
                     }
 
                     return data;
@@ -99,7 +99,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var mscs = context.MSCs.Select(m => new
+                    var applications = context.Applications.Select(m => new
                     {
                         m.Status,
                         m.IdCustomer,
@@ -111,9 +111,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         object data = new
                         {
                             Customer = customer.CustomerName,
-                            Pending = mscs.Count(p => p.Status == 1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
-                            Approved = mscs.Count(p => p.Status == 2 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
-                            Rejected = mscs.Count(p => p.Status == -1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Pending = applications.Count(p => p.Status == 1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Approved = applications.Count(p => p.Status == 2 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
+                            Rejected = applications.Count(p => p.Status == -1 && p.IdCustomer.ToUpper() == customer.Id.ToUpper()),
                         };
                         listDataCustomer.Add(data);
                     }
@@ -136,7 +136,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     DateTime thresholdDate = DateTime.Now.AddMonths(-12);
                     thresholdDate = new DateTime(thresholdDate.Year, thresholdDate.Month, 1);
 
-                    var mscs = context.MSCs.Select(m => new
+                    var applications = context.Applications.Select(m => new
                     {
                         m.DateCreated,
                         m.Status,
@@ -159,13 +159,13 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         DateTime EndDate = thresholdDate.AddMonths(i + 1);
                         EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
 
-                        var currentMscs = mscs.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).ToList();
+                        var currentApplications = applications.Where(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate).ToList();
 
                         data.Date.Add(StartDate.ToString("yyyy-MMM"));
-                        data.Pending.Add(currentMscs.Where(p => p.Status == 1).Count());
-                        data.Approved.Add(currentMscs.Where(p => p.Status == 2).Count());                        
-                        data.Rejected.Add(currentMscs.Where(p => p.Status == -1).Count());
-                        data.Total.Add(currentMscs.Count());
+                        data.Pending.Add(currentApplications.Where(p => p.Status == 1).Count());
+                        data.Approved.Add(currentApplications.Where(p => p.Status == 2).Count());                        
+                        data.Rejected.Add(currentApplications.Where(p => p.Status == -1).Count());
+                        data.Total.Add(currentApplications.Count());
                     }
 
                     return data;
@@ -201,7 +201,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                             d.Customer.CustomerName
                         }).ToList();
 
-                    var mscs = context.MSCs.Select(m => new
+                    var applications = context.Applications.Select(m => new
                     {
                         m.DateCreated,
                         m.IdDepartment,
@@ -216,9 +216,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                             serie.name = $"{department.DepartmentName} ({department.CustomerName})";
                             serie.data = new List<int>();
 
-                            var departmentMSCs = mscs.Where(p =>p.IdDepartment.ToUpper() == department.Id.ToUpper()).ToList();
+                            var currentDepartments = applications.Where(p =>p.IdDepartment.ToUpper() == department.Id.ToUpper()).ToList();
 
-                            if (departmentMSCs.Count > 0)
+                            if (currentDepartments.Count > 0)
                             {
                                 for (int i = 1; i < 13; i++)
                                 {
@@ -228,9 +228,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                     DateTime EndDate = thresholdDate.AddMonths(i + 1);
                                     EndDate = new DateTime(EndDate.Year, EndDate.Month, 1);
 
-                                    var currentMSCs = departmentMSCs.Count(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate);
+                                    var currentApplications = currentDepartments.Count(p => p.DateCreated.HasValue && p.DateCreated.Value >= StartDate && p.DateCreated.Value <= EndDate);
 
-                                    serie.data.Add(currentMSCs);
+                                    serie.data.Add(currentApplications);
 
                                     if (string.IsNullOrEmpty(data.Categories[i - 1]))
                                     {
@@ -263,7 +263,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     dbContext.Configuration.LazyLoadingEnabled = false;
 
-                    var result = dbContext.MSCs.OrderByDescending(p => p.DateCreated).Take(10).ToList();
+                    var result = dbContext.Applications.OrderByDescending(p => p.DateCreated).Take(10).ToList();
 
 
                     return result;
@@ -282,7 +282,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var pcnsQuery = context.MSCs
+                    var pcnsQuery = context.Applications
                                              .OrderByDescending(p => p.DateCreated)
                                              .Take(50)
                                              .Select(p => new
@@ -293,12 +293,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                                  Date = p.DateCreated,
                                                  User = context.Users.FirstOrDefault(e => e.Id.ToUpper() == p.IdUserCreated.ToUpper()),
                                              });
-                    var confirmsQuery = context.SignMSCs.OrderByDescending(p => p.DateSigned)
+                    var confirmsQuery = context.Signs.OrderByDescending(p => p.DateSigned)
                                                  .Take(50)
                                                  .Select(c => new
                                                  {
-                                                     Id = context.MSCs.FirstOrDefault(m => m.Id.ToUpper() == c.IdMSC.ToUpper()).Id,
-                                                     Code = context.MSCs.FirstOrDefault(m => m.Id.ToUpper() == c.IdMSC.ToUpper()).Code,
+                                                     Id = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Id,
+                                                     Code = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
                                                      c.Status,
                                                      Date = c.DateSigned,
                                                      User = context.Users.FirstOrDefault(u => u.Id == c.IdUser)

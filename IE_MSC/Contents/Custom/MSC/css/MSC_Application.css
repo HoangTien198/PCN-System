@@ -1,5 +1,0 @@
-﻿#datatable td:nth-child(5) {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}

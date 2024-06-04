@@ -28,8 +28,8 @@ namespace IE_MSC.Areas.Entities
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<UserDepartment> UserDepartments { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
-        public virtual DbSet<SignMSC> SignMSCs { get; set; }
-        public virtual DbSet<MSC> MSCs { get; set; }
+        public virtual DbSet<Sign> Signs { get; set; }
+        public virtual DbSet<Application> Applications { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }
 }
