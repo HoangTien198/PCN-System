@@ -4,6 +4,7 @@ using IE_MSC.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -118,53 +119,65 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    IOrderedQueryable<Entities.Application> query = context.Applications;
+                    IQueryable<Entities.Application> query = context.Applications;
 
-                    if (sortColumnDirection == "asc")
-                    {
-                        query = query.OrderBy(m => m.DateCreated);
-                    }
-                    else
-                    {
-                        query = query.OrderByDescending(m => m.DateCreated);
-                    }
+                    // Sorting
+                    if (sortColumnDirection == "asc") query = query.OrderBy(m => m.DateCreated);
+                    else query = query.OrderByDescending(m => m.DateCreated);
 
+                    // Total count before paging
+                    int recordsTotal = query.Count();
+
+                    // Load required columns into memory
+                    var rawData = query
+                        .Include(app => app.Signs)
+                        .Select(app => new
+                        {
+                            app.Id,
+                            app.Code,
+                            app.DateCreated,
+                            app.IdUserCreated,
+                            app.Subject,
+                            app.Status,
+                            app.Signs
+                        }).ToList();
+
+                    // Applying custom methods after data is loaded into memory
+                    var data = rawData.Select(app => new
+                    {
+                        Id = app.Id,
+                        Dot = GetDotHtml((int)app.Status),
+                        Code = app.Code,
+                        Date = GetDate((DateTime)app.DateCreated),
+                        UserCreated = GetUserCreated(context, app.IdUserCreated),
+                        Subject = app.Subject,
+                        Status = GetStatusHtml((int)app.Status),
+                        Button = GetButtonHtml(app.Id)
+                    }).ToList();
+
+                    // Advanced search
                     if (!string.IsNullOrEmpty(searchValue))
                     {
-                        query = (IOrderedQueryable<Entities.Application>)query.Where(m =>
-                                                                             m.Code.ToLower().Contains(searchValue) ||
-                                                                             m.Subject.ToLower().Contains(searchValue) ||
-                                                                             m.DateCreated.ToString().Contains(searchValue) ||
-                                                                             m.IdUserCreated.ToString().Contains(searchValue));
+                        data = data.Where(app => app.Code.ToLower().Contains(searchValue) ||
+                                                 app.Subject.ToLower().Contains(searchValue) ||
+                                                 app.Date.Contains(searchValue) ||
+                                                 app.UserCreated.ToLower().Contains(searchValue) ||
+                                                 app.Status.ToLower().Contains(searchValue) ||
+                                                 app.Date.ToLower().Contains(searchValue)).ToList();
                     }
 
-                    IQueryable<Entities.Application> dataQuery = query;
-                    if (pageSize != -1)
-                    {
-                        dataQuery = dataQuery.Skip(start).Take(pageSize);
-                    }
+                    // Count filtered records
+                    int recordsFiltered = data.Count();
 
-
-                    var data = dataQuery.Include(app => app.Signs).ToList()
-                                        .Select(app => new
-                                        {
-                                            Id = app.Id,
-                                            Dot = GetDotHtml((int)app.Status),
-                                            Code = app.Code,
-                                            Date = app.DateCreated?.ToString("yyyy-MM-dd HH:mm:ss"),
-                                            UserCreated = GetUserCreated(context.Users.FirstOrDefault(u => u.Id == app.IdUserCreated)),
-                                            Subject = app.Subject,
-                                            Status = GetStatusHtml((int)app.Status),
-                                            Button = GetButtonHtml(app)
-                                        })
-                                        .ToList();
+                    // Apply paging after advanced search
+                    var pagedData = data.Skip(start).Take(pageSize).ToList();
 
                     var returnObj = new
                     {
-                        draw = draw,
-                        recordsTotal = context.Applications.Count(),
-                        recordsFiltered = query.Count(),
-                        data = data
+                        draw,
+                        recordsTotal,
+                        recordsFiltered,
+                        data = pagedData
                     };
 
                     return returnObj;
@@ -182,73 +195,77 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         {
             try
             {
-                var form = request.Form;
-                var application = new Entities.Application();
-                int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 2;
-
-                application.Id = Guid.NewGuid().ToString();
-                application.IdUserCreated = form["IdUserCreated"];
-                application.DateCreated = DateTime.Parse(form["DateCreated"]);
-                application.Subject = form["Subject"];
-                application.Process = form["Process"];
-                application.Model = form["Model"];
-                application.BeforeChange = form["BeforeChange"];
-                application.AfterChange = form["AfterChange"];
-                application.Reason = form["Reason"];
-                application.IdCustomer = form["IdCustomer"];
-                application.IdDepartment = form["IdDepartment"];
-                application.Code = $"PCN_{application.DateCreated?.ToString("yyyyMMddHHmmss")}";
-                application.Status = 1;
-
-                for (int i = 0; i < countSigns; i++)
-                {
-                    var sign = new Sign
-                    {
-                        IdApplication = application.Id,
-                        IdUser = form[$"Signs[{i}].IdUser"],
-                        Order = int.Parse(form[$"Signs[{i}].Order"]),
-                        Status = 1
-                    };
-
-                    application.Signs.Add(sign);
-                }
-
-                // Before change file
-                if (request.Files["BeforeChangeFile"] != null)
-                {
-                    var file = request.Files["BeforeChangeFile"];
-                    string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
-                    file.SaveAs(path);
-
-                    application.BeforeChangeFile = fileName;
-                }
-
-                // After change file
-                if (request.Files["AfterChangeFile"] != null)
-                {
-                    var file = request.Files["AfterChangeFile"];
-                    string fileName =  $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
-                    file.SaveAs(path);
-
-                    application.AfterChangeFile = fileName;
-                }
-
                 using (var context = new PcnEntities())
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
+                    var form = request.Form;
+                    var application = new Entities.Application();
+                    int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 2;
+
+                    application.Id = Guid.NewGuid().ToString();
+                    application.IdUserCreated = form["IdUserCreated"];
+                    application.DateCreated = DateTime.Parse(form["DateCreated"]);
+                    application.Subject = form["Subject"];
+                    application.Process = form["Process"];
+                    application.Model = form["Model"];
+                    application.BeforeChange = form["BeforeChange"];
+                    application.AfterChange = form["AfterChange"];
+                    application.Reason = form["Reason"];
+                    application.IdCustomer = form["IdCustomer"];
+                    application.IdDepartment = form["IdDepartment"];
+                    application.Code = $"PCN_{application.DateCreated?.ToString("yyyyMMddHHmmss")}";
+                    application.Status = 1;
+
+                    bool IsSendBoss = bool.Parse(form["IsSendBoss"]);
+
+                    for (int i = 0; i < countSigns; i++)
+                    {
+                        var signApplication = new Sign
+                        {
+                            IdApplication = application.Id,
+                            IdUser = form[$"Signs[{i}].IdUser"],
+                            Order = int.Parse(form[$"Signs[{i}].Order"]),
+                            Status = 1
+                        };
+
+                        application.Signs.Add(signApplication);
+                    }
+
+                    // Before change file
+                    if (request.Files["BeforeChangeFile"] != null)
+                    {
+                        var file = request.Files["BeforeChangeFile"];
+                        string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                        string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                        file.SaveAs(path);
+
+                        application.BeforeChangeFile = fileName;
+                    }
+
+                    // After change file
+                    if (request.Files["AfterChangeFile"] != null)
+                    {
+                        var file = request.Files["AfterChangeFile"];
+                        string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                        string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                        file.SaveAs(path);
+
+                        application.AfterChangeFile = fileName;
+                    }
+
+                    // Save to DB
                     context.Applications.Add(application);
                     context.SaveChanges();
 
+                    // Send Email
                     var result = GetApplication(application.Id);
 
                     var sign = result.Signs.ToArray()[0];
                     sign.User.Email = "you-nan.ruan@mail.foxconn.com";
 
-                    R_Emails.SendSignRequestEmail(result, sign);
-
+                    R_Emails.SendSignRequestEmail(result, sign, IsSendBoss);
+                 
                     return result;
                 }
             }
@@ -265,11 +282,11 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             {
                 context.Configuration.LazyLoadingEnabled = false;
 
-                if(context.Applications.Any(p => p.Id.ToUpper() == IdApplication.ToUpper()))
+                if (context.Applications.Any(p => p.Id.ToUpper() == IdApplication.ToUpper()))
                 {
                     var application = context.Applications.FirstOrDefault(p => p.Id.ToUpper() == IdApplication.ToUpper());
 
-                    if(application.BeforeChangeFile != null)
+                    if (application.BeforeChangeFile != null)
                     {
                         string filePath = HttpContext.Current.Server.MapPath($"/Data/Files/{application.BeforeChangeFile}");
                         if (File.Exists(filePath))
@@ -295,7 +312,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 }
                 else
                 {
-                    throw new Exception("Application does not exists.");   
+                    throw new Exception("Application does not exists.");
                 }
             }
         }
@@ -318,8 +335,13 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
             return dotHtml;
         }
-        private static string GetUserCreated(Entities.User user)
+        private static string GetDate(DateTime date)
         {
+            return date.ToString("yyyy-MM-dd HH:mm");
+        }
+        private static string GetUserCreated(PcnEntities context, string IdUser)
+        {
+            var user = context.Users.FirstOrDefault(u => u.Id == IdUser);
             if (user != null)
                 return $"{user.CardId} - {user.VnName ?? user.CnName}";
             else
@@ -342,77 +364,25 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
             return statusHtml;
         }
-        private static string GetButtonHtml(Entities.Application application)
+        private static string GetStatus(int status)
         {
-            var sessionUser = Common.GetSessionUser();
-
-            try
+            string statusHtml = "";
+            switch (status)
             {
-                // là người tạo đơn
-                if (application.IdUserCreated == sessionUser.Id)
-                {
-                    // đã có ký
-                    if (application.Signs.Any(s => s.Status != 1))
-                    {
-                        return $"<div class=\"btn-group\">" +
-                               $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                               $"   <button type=\"button\" title=\"update\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-pen\"></i></button>" +
-                               $"   <button type=\"button\" title=\"delete\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-trash\"></i></button>" +
-                               $"</div>";
-                    }
-                    // chưa có ai ký
-                    else
-                    {
-                        return $"<div class=\"btn-group\">" +
-                               $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                               $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"UpdateApplication(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>" +
-                               $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DeleteApplication(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>" +
-                               $"</div>";
-                    }
-
-                }
-                else
-                {
-                    var signUser = R_User.GetUser(application.Signs.OrderBy(s => s.Order).FirstOrDefault(s => s.Status == 1).IdUser);
-
-                    // tới lượt ký
-                    if (!application.Signs.Any(s => s.Status == -1) && signUser.Id == sessionUser.Id)
-                    {
-                        // là IE ký
-                        if (signUser.UserDepartments.Any(ud => ud.Department.DepartmentName.ToUpper() == "IE"))
-                        {
-                            return $"<div class=\"btn-group\">" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"IEApproveApplication(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"RejectApplication(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
-                                   $"</div>";
-                        }
-                        // là người ký bình thường
-                        else
-                        {
-                            return $"<div class=\"btn-group\">" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"ApproveApplication(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
-                                   $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"RejectApplication(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
-                                   $"</div>";
-                        }
-                    }
-                }
-
-                return $"<div class=\"btn-group\">" +
-                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                       $"   <button type=\"button\" title=\"update\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-pen\"></i></button>" +
-                       $"   <button type=\"button\" title=\"delete\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-trash\"></i></button>" +
-                       $"</div>";
+                case -1:
+                    return "Rejected";
+                case 1:
+                    return "Pending";
+                case 2:
+                    return "Approved";
             }
-            catch
-            {
-                return $"<div class=\"btn-group\">" +
-                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                       $"   <button type=\"button\" title=\"update\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-pen\"></i></button>" +
-                       $"   <button type=\"button\" title=\"delete\" class=\"btn btn-sm btn-secondary disabled\"><i class=\"fa-duotone fa-trash\"></i></button>" +
-                       $"</div>";
-            }
+            return statusHtml;
+        }
+        private static string GetButtonHtml(string IdApplication)
+        {
+            return $"<div class=\"btn-group\">" +
+                   $"   <button type=\"button\" data-id=\"{IdApplication}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                   $"</div>";
         }
 
 

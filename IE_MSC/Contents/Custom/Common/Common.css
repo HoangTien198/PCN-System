@@ -34,6 +34,11 @@ table tbody tr:hover {
             border-left: 1px solid rgba(255, 255, 255, 0.3);
             width: 250px !important;
         }
+.table.table-striped .even {
+    background-color: rgb(255 255 255 / 10%);
+}
+
+
 .modal-xxl {
     --bs-modal-width: 95%;
 }
@@ -45,4 +50,16 @@ table tbody tr:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.note-editable[contenteditable="false"] {
+    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3)) !important;
+}
+.note-statusbar.locked {
+    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3)) !important;
+}
+.form-control:disabled {
+    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+}
+.form-label {
+    color: var(--bs-theme);
 }

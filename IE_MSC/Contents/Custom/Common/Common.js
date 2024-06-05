@@ -71,12 +71,16 @@ function GetUserName(user) {
     }
 }
 function GetUserDept(user) {
-    var depts = [];
-    user.UserDepartments.forEach(function (userDepartment) {
-        let department = userDepartment.Department;
-        depts.push(`${department.DepartmentName} (${department.Customer.CustomerName})`);
-    });
-    return depts.join(', ');
+    if (user && user.UserDepartments.length > 0) {
+        var depts = [];
+        user.UserDepartments.forEach(function (userDepartment) {
+            let department = userDepartment.Department;
+            depts.push(`[ ${department.Customer.CustomerName} - ${department.DepartmentName} ]`);
+        });
+        return depts.join(', ');
+    }
+    else return '';
+   
 }
 function GetApplicationStatus(application) {
     if (!application || !application.Status) {

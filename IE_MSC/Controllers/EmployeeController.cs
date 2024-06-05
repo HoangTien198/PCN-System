@@ -71,7 +71,7 @@ namespace IE_MSC.Controllers
                 sr.Close();
                 return jsonString;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "";
             }

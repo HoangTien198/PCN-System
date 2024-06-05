@@ -1,4 +1,5 @@
 ﻿var _datas = {};
+var InitApplicationFormCount = 0;
 $(document).ready(async function () {
     const [sessionUser, customerDepartments, users] = await Promise.all([
         GetSessionUser(),
@@ -19,6 +20,7 @@ function InitCreateSumernote() {
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
+        focus: false,
         toolbar: [
             ['style', ['bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontname', 'fontsize']],
@@ -31,6 +33,7 @@ function InitCreateSumernote() {
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
+        focus: false,
         toolbar: [
             ['style', ['bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontname', 'fontsize']],
@@ -43,6 +46,7 @@ function InitCreateSumernote() {
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
+        focus: false,
         toolbar: [
             ['style', ['bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontname', 'fontsize']],
@@ -55,6 +59,7 @@ function InitCreateSumernote() {
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
+        focus: false,
         toolbar: [
             ['style', ['bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontname', 'fontsize']],
@@ -65,6 +70,7 @@ function InitCreateSumernote() {
     });
 }
 function InitApplicationForm() {
+    // Information
     $('#ApplicationCreate-UserCreated').val(GetUserName(_datas.SessionUser));
     $('#ApplicationCreate-Department').val(GetUserDept(_datas.SessionUser));
     $('#ApplicationCreate-DateCreated').val(moment().format('YYYY-MM-DD HH:mm:ss'));
@@ -82,31 +88,93 @@ function InitApplicationForm() {
     $('#ApplicationCreate-BeforeChangeFile').val('');
     $('#ApplicationCreate-AfterChangeFile').val('');
 
+    // Sign process
     $('#ApplicationCreate-SendBoss').prop('checked', false);
     $('#ApplicationCreate-Sign').empty();
+    AddCreateSign();
 
-    if ($('#ApplicationCreate-Customer option').length === 0) {
-        let customerSelect = $('#ApplicationCreate-Customer');
-        customerSelect.empty();
-        _datas.CustomerDepartments.forEach(function (customer) {
-            customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
-        });
-        customerSelect.change(function () {
-            let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
-            let departmentSelect = $('#ApplicationCreate-Department');
-            departmentSelect.empty();
-            departments.forEach(function (department) {
-                departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+    // Department   
+    if (InitApplicationFormCount == 0) {
+        if ($('#ApplicationCreate-Customer option').length === 0) {
+            let customerSelect = $('#ApplicationCreate-Customer');
+            customerSelect.empty();
+            _datas.CustomerDepartments.forEach(function (customer) {
+                customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
             });
-        });
+            customerSelect.change(function () {
+                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+                let departmentSelect = $('#ApplicationCreate-Department');
+                departmentSelect.empty();
+                departments.forEach(function (department) {
+                    departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+                });
+            });
+        }
+    }
+   
+    let department = _datas.SessionUser?.UserDepartments[0];
+    if (department != null) {
+        customer = department.Department.Customer;
+        $('#ApplicationCreate-Customer').val(customer.Id);
+        $('#ApplicationCreate-Department').val(department.IdDepartment);
     }
     $('#ApplicationCreate-Customer').change();
-
-    AddCreateSign();
 }
 
+/* Save Event */
 
-/* Add Sign Event */
+$('#ApplicationCreate-Save').click(async function () {
+    try {
+        // get application data
+        let application = {
+            IdUserCreated: $('#SessionUser').data('id'),
+            DateCreated: $('#ApplicationCreate-DateCreated').val(),
+            Subject: $('#ApplicationCreate-Subject').val(),
+            Process: $('#ApplicationCreate-Process').val(),
+            Model: $('#ApplicationCreate-Model').val(),
+            BeforeChange: $('#ApplicationCreate-BeforeChange').summernote('code'),
+            AfterChange: $('#ApplicationCreate-AfterChange').summernote('code'),
+            Reason: $('#ApplicationCreate-Reason').summernote('code'),
+            IdCustomer: $('#ApplicationCreate-Customer').val(),
+            IdDepartment: $('#ApplicationCreate-Department').val(),
+            Signs: $('#ApplicationCreate-Sign .widget-reminder-item').map((index, signItem) => {
+                return {
+                    IdUser: $(signItem).find('[user]').val(),
+                    Order: $(signItem).find('[order]').text()
+                };
+            }).get()
+        };
+
+        // get file data
+        let files = {
+            beforeChangeFile: $('#ApplicationCreate-BeforeChangeFile').prop('files')[0],
+            afterChangeFile: $('#ApplicationCreate-AfterChangeFile').prop('files')[0],
+
+        };
+
+        // get send boss
+        let isSendBoss = $('#ApplicationCreate-SendBoss').is(':checked');
+
+        // validate
+        if (!ApplicationValidate(application, files)) return false;
+
+        // send data to sv
+        let result = await CreateApplication(application, files, isSendBoss);
+
+        if (result) {
+            // save success
+            InitApplicationFormCount += 1;
+            InitApplicationForm();
+            toastr['success']('Create application success!<br />Tạo đơn thành công!');
+        }
+
+    } catch (e) {
+        Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
+        console.error(e);
+    }
+});  
+
+/* Sign Event */
 function AddCreateSign() {
     let container = $('#ApplicationCreate-Sign');
     let count = container.find('.widget-reminder-item').length;
@@ -174,4 +242,57 @@ function AddCreateSign() {
 
     container.append(widgetReminderItem);
     widgetReminderItem.find('[customer]').change();
+}
+
+/* Application Validate */
+function ApplicationValidate(application, files) {
+    if (application.Subject.length === 0) {
+        toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
+        $('#ApplicationCreate-Subject').focus();
+        return false;
+    }
+    if (application.Process.length === 0) {
+        toastr['warning']('[ 过程 / Process ] Không được để trống!');
+        $('#ApplicationCreate-Process').focus();
+        return false;
+    }
+    if (application.Model.length === 0) {
+        toastr['warning']('[ 模型 / Model ] Không được để trống!');
+        $('#ApplicationCreate-Model').focus();
+        return false;
+    }
+   
+    if ($('#ApplicationCreate-BeforeChange').summernote('isEmpty')) {
+        toastr['warning']('[ 現行作業方式 / Phương thức làm việc hiện hành ] Không được để trống!');
+        $('#ApplicationCreate-BeforeChange').summernote('focus');
+        return false;
+    }
+    if ($('#ApplicationCreate-AfterChange').summernote('isEmpty')) {
+        toastr['warning']('[ 變更后的方式 / Phương thức sau khi thay đổi  ] Không được để trống!');
+        $('#ApplicationCreate-AfterChange').summernote('focus');
+        return false;
+    }
+    if ($('#ApplicationCreate-Reason').summernote('isEmpty')) {
+        toastr['warning']('[ 變更原因 / Nguyên nhân thay đổi ] Không được để trống!');
+        $('#ApplicationCreate-Reason').summernote('focus');
+        return false;
+    }
+    if (!files.beforeChangeFile) {
+        toastr['warning']('[ Tài liệu phương thức trước khi thay đổi ] Vui lòng chọn tài liệu!');
+        $('#ApplicationCreate-BeforeChangeFile').focus();
+        return false;
+    }
+    if (!files.afterChangeFile) {
+        toastr['warning']('[ Tài liệu phương thức sau khi thay đổi ] Vui lòng chọn tài liệu!');
+        $('#ApplicationCreate-AfterChangeFile').focus();
+        return false;
+    }
+
+    if (application.Signs.length === 0) {
+        toastr['warning']('[ 會簽 / Các bộ phận phê duyệt ] Không được để trống!');
+        $('#ApplicationCreate-Sign').focus();
+        return false;
+    }
+
+    return true;
 }

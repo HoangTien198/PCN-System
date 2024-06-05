@@ -13,7 +13,12 @@ function CreateApplicationDetailModal(application) {
 
     /* Information */
     $('#ApplicationDetailModal-UserCreated').val(GetUserName(application.UserCreated));
-    $('#ApplicationDetailModal-Department').val(GetUserDept(application.UserCreated));
+    if (application.Customer && application.Department) {
+        $('#ApplicationDetailModal-Department').val(`[ ${application.Customer.CustomerName} - ${application.Department.DepartmentName} ]`);
+    }
+    else {
+        $('#ApplicationDetailModal-Department').val(GetUserDept(application.UserCreated));
+    }
     $('#ApplicationDetailModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm:ss"));
     $('#ApplicationDetailModal-ApplicationStatus').val(GetApplicationStatus(application));
 

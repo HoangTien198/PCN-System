@@ -3,7 +3,9 @@
 });
 
 /* Create Modal */
-function ApplicationCreate(callback) {
+function ApplicationCreate() {
+
+    // Information
     $('#ApplicationCreateModal-UserCreated').val(GetUserName(_datas.SessionUser));
     $('#ApplicationCreateModal-Department').val(GetUserDept(_datas.SessionUser));
     $('#ApplicationCreateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm:ss'));
@@ -21,10 +23,12 @@ function ApplicationCreate(callback) {
     $('#ApplicationCreateModal-BeforeChangeFile').val('');
     $('#ApplicationCreateModal-AfterChangeFile').val('');
 
+    // Sign
     $('#ApplicationCreateModal-SendBoss').prop('checked', false);
     $('#ApplicationCreateModal-Sign').empty();
     AddCreateSign();
 
+    // Department
     if ($('#ApplicationCreateModal-Customer option').length === 0) {
         let customerSelect = $('#ApplicationCreateModal-Customer');
         customerSelect.empty();
@@ -43,51 +47,8 @@ function ApplicationCreate(callback) {
     $('#ApplicationCreateModal-Customer').change();
    
 
+    // show modal
     $('#ApplicationCreateModal').modal('show');
-
-    $('#ApplicationCreateModal-Save').click(async function () {
-        try {
-            console.log('Create Application');
-
-            let application = {
-                IdUserCreated: $('#SessionUser').data('id'),
-                DateCreated: $('#ApplicationCreateModal-DateCreated').val(),
-                Subject: $('#ApplicationCreateModal-Subject').val(),
-                Process: $('#ApplicationCreateModal-Process').val(),
-                Model: $('#ApplicationCreateModal-Model').val(),
-                BeforeChange: $('#ApplicationCreateModal-BeforeChange').summernote('code'),
-                AfterChange: $('#ApplicationCreateModal-AfterChange').summernote('code'),
-                Reason: $('#ApplicationCreateModal-Reason').summernote('code'),
-                IdCustomer: $('#ApplicationCreateModal-Customer').val(),
-                IdDepartment: $('#ApplicationCreateModal-Department').val(),
-                Signs: $('#ApplicationCreateModal-Sign .widget-reminder-item').map((index, signItem) => {
-                    return {
-                        IdUser: $(signItem).find('[user]').val(),
-                        Order: $(signItem).find('[order]').text()
-                    };
-                }).get()
-            };
-
-            let files = {
-                beforeChangeFile: $('#ApplicationCreateModal-BeforeChangeFile').prop('files')[0],
-                afterChangeFile: $('#ApplicationCreateModal-AfterChangeFile').prop('files')[0],
-
-            };
-
-            let isSendBoss = $('#ApplicationCreateModal-SendBoss').is(':checked');
-
-            if (!ApplicationValidate(application, files)) return false;
-
-            let result = await CreateApplication(application, files, isSendBoss);
-            callback(result);
-            $('#ApplicationCreateModal-Save').off('click');
-            $('#ApplicationCreateModal').modal('hide');
-
-        } catch (e) {
-            Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
-            console.error(e);
-        }
-    });  
 }
 $('#ApplicationCreateModal').on('shown.bs.modal', function () {
     $('#ApplicationCreateModal-Title').focus();

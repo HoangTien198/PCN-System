@@ -1036,7 +1036,7 @@ namespace IE_MSC.Models.Dao
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "";
             }

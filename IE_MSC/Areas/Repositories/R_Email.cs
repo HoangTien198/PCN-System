@@ -30,7 +30,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 {
     internal class R_Emails
     {
-        public static bool SendSignRequestEmail(Entities.Application application, Sign sign)
+        public static bool SendSignRequestEmail(Entities.Application application, Sign sign, bool IsSendBoss)
         {
             try
             {
@@ -40,8 +40,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                 var filePaths = new
                 {
-                    BeforeFilePath = (application.BeforeChangeFile != null) ? HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{application.BeforeChangeFile}") : null,
-                    AfterFilePath = (application.AfterChangeFile != null) ? HttpContext.Current.Server.MapPath($"/Assets/Media/FileMSC/{application.AfterChangeFile}") : null,
+                    BeforeFilePath = (application.BeforeChangeFile != null) ? HttpContext.Current.Server.MapPath($"/Data/Files/{application.BeforeChangeFile}") : null,
+                    AfterFilePath = (application.AfterChangeFile != null) ? HttpContext.Current.Server.MapPath($"/Data/Files/{application.AfterChangeFile}") : null,
                 };
                 var fileSizes = new
                 {
@@ -76,7 +76,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 Common.SendEmail(new Email
                 {
                     MailTo = sign.User.Email,
-                    MailCC = "",
+                    MailCC = IsSendBoss ? "you-nan.ruan@mail.foxconn.com" : "",
                     MailSubject = $"【 Project Management 】New sign request.",
                     MailContent = htmlBody,
                     MailType = "html"
@@ -93,7 +93,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
         private static string CreateDownloadElementPath(string filePath, string fileSize)
         {
-            return  $"<a href=\"{ConfigurationManager.AppSettings["SystemUrl"]}/Assets/Media/FileMSC/{filePath}\">{filePath} ({fileSize})</a>";
+            return  $"<a href=\"{ConfigurationManager.AppSettings["SystemUrl"]}/Data/Files/{filePath}\">{filePath} ({fileSize})</a>";
         }
     }
 }
