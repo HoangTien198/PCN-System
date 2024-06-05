@@ -91,7 +91,7 @@ function CreateApplicationDetailModal(application) {
         if (sign.Status == -1) {
             IsReject = true;
 
-            let time = `<span class="text-danger fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
+            let time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
 
             let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
                        <div class="widget-reminder-time">${time}</div>
@@ -99,7 +99,7 @@ function CreateApplicationDetailModal(application) {
                        <div class="widget-reminder-content">
                            <div class="fw-bold text-danger">${user}</div>
                            <div class="fs-10px text-danger">${dept}</div>
-                           <div class="fs-13px text-danger">${sign.Details}</div>
+                           <div class="fs-13px text-danger">${sign.Detail}</div>
                        </div>
                    </div>`;
             SignContainer.append(item);
@@ -117,7 +117,7 @@ function CreateApplicationDetailModal(application) {
                 SignContainer.append(item);
             }
             else {
-                let time = (sign.Status == 1) ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateSigned).format("YYYY-MM-DD HH:mm")}</span>`;
+                let time = (sign.Status == 1) ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
 
                 let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
                        <div class="widget-reminder-time">${time}</div>

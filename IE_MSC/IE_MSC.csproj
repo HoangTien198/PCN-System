@@ -180,22 +180,37 @@
     <Compile Include="Areas\AuthenticationController.cs" />
     <Compile Include="Areas\Common.cs" />
     <Compile Include="Areas\Entities\Application.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Entities\Customer.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Entities\Department.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\PCN_DataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PCN_DataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\PCN_DataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Entities\PCN_DataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PCN_DataModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Areas\Entities\Sign.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Entities\User.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Entities\UserDepartment.cs">
-      <DependentUpon>PcnModel.tt</DependentUpon>
+      <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\PCN\Controllers\ManagementController.cs" />
     <Compile Include="Areas\PCN\PCNAreaRegistration.cs" />
@@ -218,21 +233,6 @@
     <Compile Include="Areas\old\DepartmentNormal\Controllers\MSCController.cs" />
     <Compile Include="Areas\old\DepartmentNormal\Controllers\ProfileController.cs" />
     <Compile Include="Areas\old\DepartmentNormal\DepartmentNormalAreaRegistration.cs" />
-    <Compile Include="Areas\Entities\PcnModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PcnModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\PcnModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PcnModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Entities\PCN_Entities.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PCN_Entities.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\old\IE\Controllers\BaseIEController.cs" />
     <Compile Include="Areas\old\IE\Controllers\HomeController.cs" />
     <Compile Include="Areas\old\IE\Controllers\MSCController.cs" />
@@ -285,15 +285,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Entities\PcnModel.Context.tt">
+    <Content Include="Areas\Entities\PCN_DataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PCN_Entities.edmx</DependentUpon>
-      <LastGenOutput>PcnModel.Context.cs</LastGenOutput>
+      <DependentUpon>PCN_DataModel.edmx</DependentUpon>
+      <LastGenOutput>PCN_DataModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Areas\Entities\PcnModel.tt">
+    <Content Include="Areas\Entities\PCN_DataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PCN_Entities.edmx</DependentUpon>
-      <LastGenOutput>PcnModel.cs</LastGenOutput>
+      <DependentUpon>PCN_DataModel.edmx</DependentUpon>
+      <LastGenOutput>PCN_DataModel.cs</LastGenOutput>
     </Content>
     <Content Include="Areas\Shared\Emails\ApplicationSignApproved.html" />
     <Content Include="Areas\Shared\Emails\ApplicationSignRejected.html" />
@@ -822,18 +822,15 @@
     <Content Include="Contents\Custom\Common\Common.js" />
     <Content Include="Contents\Custom\Dashboard\css\dashboard.css" />
     <Content Include="Contents\Custom\Dashboard\js\dashboard.js" />
-    <Content Include="Contents\Custom\PCN\css\CreateApplication.css" />
     <Content Include="Contents\Custom\PCN\css\PCN_Application.css" />
-    <Content Include="Contents\Custom\PCN\css\_ApplicationUpdate.css" />
-    <Content Include="Contents\Custom\PCN\css\_ApplicationCreate.css" />
-    <Content Include="Contents\Custom\PCN\css\_ApplicationDetail.css" />
     <Content Include="Contents\Custom\PCN\js\Application_Promise.js" />
     <Content Include="Contents\Custom\PCN\js\CreateApplication.js" />
+    <Content Include="Contents\Custom\PCN\js\MyApplication.js" />
     <Content Include="Contents\Custom\PCN\js\PCN_Application.js" />
-    <Content Include="Contents\Custom\PCN\js\_ApplicationUpdate.js" />
-    <Content Include="Contents\Custom\PCN\js\_ApplicationCreate.js" />
-    <Content Include="Contents\Custom\PCN\js\_ApplicationDelete.js" />
-    <Content Include="Contents\Custom\PCN\js\_ApplicationDetail.js" />
+    <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationUpdate.js" />
+    <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationCreate.js" />
+    <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationDelete.js" />
+    <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationDetail.js" />
     <Content Include="Contents\Custom\User\User_Promise.js" />
     <Content Include="Contents\Image\backgound_auto.jpg" />
     <Content Include="Contents\Image\Backgrounds\1.jpg" />
@@ -978,13 +975,6 @@
     <Content Include="Areas\Shared\_PcnLayoutShare.cshtml" />
     <Content Include="Areas\old\_DepartmentNormal_View_old.cshtml" />
     <Content Include="Areas\Dashboard\Views\web.config" />
-    <EntityDeploy Include="Areas\Entities\PCN_Entities.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>PCN_Entities.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Areas\Entities\PCN_Entities.edmx.diagram">
-      <DependentUpon>PCN_Entities.edmx</DependentUpon>
-    </Content>
     <Content Include="Areas\Dashboard\Views\Dashboard\Index.cshtml" />
     <Content Include="Areas\PCN\Views\web.config" />
     <Content Include="Areas\PCN\Views\Management\Management.cshtml" />
@@ -1015,6 +1005,14 @@
     <Content Include="Contents\template\HUD_Admin\assets\css\fonts\ChakraPetch\ChakraPetch-SemiBoldItalic.woff" />
     <Content Include="Contents\template\HUD_Admin\assets\css\fonts\ChakraPetch\ChakraPetch-SemiBoldItalic.woff2" />
     <Content Include="Areas\PCN\Views\Management\CreateApplications.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\MyApplications.cshtml" />
+    <EntityDeploy Include="Areas\Entities\PCN_DataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PCN_DataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Areas\Entities\PCN_DataModel.edmx.diagram">
+      <DependentUpon>PCN_DataModel.edmx</DependentUpon>
+    </Content>
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />

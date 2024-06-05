@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "PCN APPLICATION";
+    ViewBag.Title = "MY APPLICATION";
     Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
 
     var newGuid = Guid.NewGuid();
@@ -10,16 +10,14 @@
     <!-- plugin -->
     @Styles.Render("~/bundles/datatablesCss")
     <link href="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
-
     <!-- custom -->
-    <link href="~/Contents/Custom/PCN/css/PCN_Application.css" rel="stylesheet" />
 }
 
 <!-- Breadcrumb -->
 <section>
     <ul class="breadcrumb">
         <li class="breadcrumb-item"><a href="/Dashboard/Dashboard">HOME</a></li>
-        <li class="breadcrumb-item active">PCN APPLICATION</li>
+        <li class="breadcrumb-item active">MY APPLICATION</li>
     </ul>
 </section>
 
@@ -58,8 +56,9 @@
 <section>
     <!-- PCN Detail -->
     @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationDetail.cshtml")
+    <!-- PCN Update -->
+    @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationUpdate.cshtml")
 </section>
-
 
 @section scripts{
     <!-- plugin -->
@@ -69,6 +68,8 @@
     <script src="~/Contents/Custom/PCN/js/Application_Promise.js"></script>
     <script src="~/Contents/Custom/User/User_Promise.js"></script>
 
-    <script src="~/Contents/Custom/PCN/js/PCN_Application.js"></script>
+    <script src="~/Contents/Custom/PCN/js/MyApplication.js"></script>
     <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationUpdate.js"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDelete.js"></script>
 }

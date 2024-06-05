@@ -119,7 +119,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    IQueryable<Entities.Application> query = context.Applications;
+                    IQueryable<Entities.Application> query = context.Applications.Include(app => app.Signs);
 
                     // Sorting
                     if (sortColumnDirection == "asc") query = query.OrderBy(m => m.DateCreated);
@@ -129,18 +129,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     int recordsTotal = query.Count();
 
                     // Load required columns into memory
-                    var rawData = query
-                        .Include(app => app.Signs)
-                        .Select(app => new
-                        {
-                            app.Id,
-                            app.Code,
-                            app.DateCreated,
-                            app.IdUserCreated,
-                            app.Subject,
-                            app.Status,
-                            app.Signs
-                        }).ToList();
+                    var rawData = query.ToList();
 
                     // Applying custom methods after data is loaded into memory
                     var data = rawData.Select(app => new
@@ -152,7 +141,158 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         UserCreated = GetUserCreated(context, app.IdUserCreated),
                         Subject = app.Subject,
                         Status = GetStatusHtml((int)app.Status),
-                        Button = GetButtonHtml(app.Id)
+                        Button = GetButtonHtml(app, false, false)
+                    }).ToList();
+
+                    // Advanced search
+                    if (!string.IsNullOrEmpty(searchValue))
+                    {
+                        data = data.Where(app => app.Code.ToLower().Contains(searchValue) ||
+                                                 app.Subject.ToLower().Contains(searchValue) ||
+                                                 app.Date.Contains(searchValue) ||
+                                                 app.UserCreated.ToLower().Contains(searchValue) ||
+                                                 app.Status.ToLower().Contains(searchValue) ||
+                                                 app.Date.ToLower().Contains(searchValue)).ToList();
+                    }
+
+                    // Count filtered records
+                    int recordsFiltered = data.Count();
+
+                    // Apply paging after advanced search
+                    var pagedData = data.Skip(start).Take(pageSize).ToList();
+
+                    var returnObj = new
+                    {
+                        draw,
+                        recordsTotal,
+                        recordsFiltered,
+                        data = pagedData
+                    };
+
+                    return returnObj;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetSessionUserApplicationsServerSide(HttpRequestBase request)
+        {
+            try
+            {
+                int pageSize = int.Parse(request.Form["length"]);
+                int start = int.Parse(request.Form["start"]);
+                int draw = int.Parse(request.Form["draw"]);
+                string searchValue = request.Form["search[value]"].ToLower();
+                var sortColumnDirection = request.Form["order[0][dir]"];
+
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var sessionUser = Common.GetSessionUser();
+
+                    IQueryable<Entities.Application> query = context.Applications.Include(app => app.Signs).Where(app => app.IdUserCreated == sessionUser.Id);
+
+                    // Sorting
+                    if (sortColumnDirection == "asc") query = query.OrderBy(m => m.DateCreated);
+                    else query = query.OrderByDescending(m => m.DateCreated);
+
+                    // Total count before paging
+                    int recordsTotal = query.Count();
+
+                    // Load required columns into memory
+                    var rawData = query.ToList();
+
+                    // Applying custom methods after data is loaded into memory
+                    var data = rawData.Select(app => new
+                    {
+                        Id = app.Id,
+                        Dot = GetDotHtml((int)app.Status),
+                        Code = app.Code,
+                        Date = GetDate((DateTime)app.DateCreated),
+                        UserCreated = GetUserCreated(context, app.IdUserCreated),
+                        Subject = app.Subject,
+                        Status = GetStatusHtml((int)app.Status),
+                        Button = GetButtonHtml(app, true, false)
+                    }).ToList();
+
+                    // Advanced search
+                    if (!string.IsNullOrEmpty(searchValue))
+                    {
+                        data = data.Where(app => app.Code.ToLower().Contains(searchValue) ||
+                                                 app.Subject.ToLower().Contains(searchValue) ||
+                                                 app.Date.Contains(searchValue) ||
+                                                 app.UserCreated.ToLower().Contains(searchValue) ||
+                                                 app.Status.ToLower().Contains(searchValue) ||
+                                                 app.Date.ToLower().Contains(searchValue)).ToList();
+                    }
+
+                    // Count filtered records
+                    int recordsFiltered = data.Count();
+
+                    // Apply paging after advanced search
+                    var pagedData = data.Skip(start).Take(pageSize).ToList();
+
+                    var returnObj = new
+                    {
+                        draw,
+                        recordsTotal,
+                        recordsFiltered,
+                        data = pagedData
+                    };
+
+                    return returnObj;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static object GetSessionUserSignApplicationsServerSide(HttpRequestBase request)
+        {
+            try
+            {
+                int pageSize = int.Parse(request.Form["length"]);
+                int start = int.Parse(request.Form["start"]);
+                int draw = int.Parse(request.Form["draw"]);
+                string searchValue = request.Form["search[value]"].ToLower();
+                var sortColumnDirection = request.Form["order[0][dir]"];
+
+                using (var context = new PcnEntities())
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var sessionUser = Common.GetSessionUser();
+
+                    IQueryable<Entities.Application> query = context.Applications
+                        .Include(app => app.Signs)
+                        .Where(app => app.Signs.Any(s => s.IdUser == sessionUser.Id));
+
+                    // Sorting
+                    if (sortColumnDirection == "asc") query = query.OrderBy(m => m.DateCreated);
+                    else query = query.OrderByDescending(m => m.DateCreated);
+
+                    // Total count before paging
+                    int recordsTotal = query.Count();
+
+                    // Load required columns into memory
+                    var rawData = query.ToList();
+
+                    // Applying custom methods after data is loaded into memory
+                    var data = rawData.Select(app => new
+                    {
+                        Id = app.Id,
+                        Dot = GetDotHtml((int)app.Status),
+                        Code = app.Code,
+                        Date = GetDate((DateTime)app.DateCreated),
+                        UserCreated = GetUserCreated(context, app.IdUserCreated),
+                        Subject = app.Subject,
+                        Status = GetStatusHtml((int)app.Status),
+                        SignStatus = GetSignStatusHtml(app),
+                        Button = GetButtonHtml(app, false ,true)
                     }).ToList();
 
                     // Advanced search
@@ -364,25 +504,90 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
             return statusHtml;
         }
-        private static string GetStatus(int status)
+        private static string GetSignStatusHtml(Entities.Application application)
         {
             string statusHtml = "";
-            switch (status)
+            var sessionUser = Common.GetSessionUser();
+
+            bool isRejected = application.Signs.Any(s => s.Status == -1);
+            if (isRejected)
+            {
+                foreach(var sign in application.Signs)
+                {
+                    if (sign.Status == 1) sign.Status = 3;
+                }
+            }
+
+            switch (application.Signs.FirstOrDefault(s => s.IdUser == sessionUser.Id).Status)
             {
                 case -1:
-                    return "Rejected";
+                    statusHtml = "<span class=\"badge d-block bg-danger text-theme-900 rounded-0 pt-5px w-70px\">Rejected</span>";
+                    break;
                 case 1:
-                    return "Pending";
+                    statusHtml = "<span class=\"badge d-block bg-warning text-theme-900 rounded-0 pt-5px w-70px\">Waiting</span>";
+                    break;
                 case 2:
-                    return "Approved";
+                    statusHtml = "<span class=\"badge d-block bg-success text-theme-900 rounded-0 pt-5px w-70px\">Approved</span>";
+                    break;
+                case 3:
+                    statusHtml = "<span class=\"badge d-block bg-secondary text-theme-900 rounded-0 pt-5px w-70px\">Closed</span>";
+                    break;
             }
+
             return statusHtml;
         }
-        private static string GetButtonHtml(string IdApplication)
+        private static string GetButtonHtml(Entities.Application application, bool IsSessionUser, bool IsSessionUserSign)
         {
-            return $"<div class=\"btn-group\">" +
-                   $"   <button type=\"button\" data-id=\"{IdApplication}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                   $"</div>";
+            if (!IsSessionUser && !IsSessionUserSign)
+            {
+                return $"<div class=\"btn-group\">" +
+                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                       $"</div>";
+            }
+            else if (IsSessionUser)
+            {
+                if(application.Signs.Any(s => s.Status != 1))
+                {
+                    return $"<div class=\"btn-group\">" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" title=\"Update\" class=\"disabled btn btn-sm btn-secondary\"><i class=\"fa-duotone fa-pen\"></i></button>" +
+                           $"   <button type=\"button\" title=\"Delete\" class=\"disabled btn btn-sm btn-secondary\"><i class=\"fa-duotone fa-trash\"></i></button>" +
+                           $"</div>";
+                }
+                else
+                {
+                    return $"<div class=\"btn-group\">" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"UpdateApplication(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DeleteApplication(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>" +
+                           $"</div>";
+                }
+                
+            }
+            else if (IsSessionUserSign) 
+            {
+                var sessionUser = Common.GetSessionUser();
+                if (application.Signs.Any(s => s.IdUser == sessionUser.Id && s.Status != 1))
+                {
+                    return $"<div class=\"btn-group\">" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"</div>";
+                }
+                else
+                {
+                    return $"<div class=\"btn-group\">" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"ApproveApplication(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"RejectApplication(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
+                           $"</div>";                    
+                }
+            }
+            else
+            {
+                return $"<div class=\"btn-group\">" +
+                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                       $"</div>";
+            }         
         }
 
 

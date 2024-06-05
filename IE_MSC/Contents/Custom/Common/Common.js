@@ -113,7 +113,7 @@ function GetApplicationActiveDate(application) {
     }
     else {
         let newestSign = application.Signs[application.Signs.length - 1];
-        return moment(newestSign.DateSigned).format('YYYY-MM-DD HH:MM');
+        return moment(newestSign.DateApproved).format('YYYY-MM-DD HH:MM');
     }
 }
 

@@ -283,31 +283,30 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     context.Configuration.LazyLoadingEnabled = false;
 
                     var pcnsQuery = context.Applications
-                                             .OrderByDescending(p => p.DateCreated)
-                                             .Take(50)
-                                             .Select(p => new
-                                             {
-                                                 p.Id,
-                                                 p.Code,
-                                                 p.Signs.FirstOrDefault().Status,
-                                                 Date = p.DateCreated,
-                                                 User = context.Users.FirstOrDefault(e => e.Id.ToUpper() == p.IdUserCreated.ToUpper()),
-                                             });
-                    var confirmsQuery = context.Signs.OrderByDescending(p => p.DateSigned)
-                                                 .Take(50)
-                                                 .Select(c => new
-                                                 {
-                                                     Id = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Id,
-                                                     Code = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
-                                                     c.Status,
-                                                     Date = c.DateSigned,
-                                                     User = context.Users.FirstOrDefault(u => u.Id == c.IdUser)
-                                                 });
+                        .OrderByDescending(p => p.DateCreated)
+                        .Take(10)
+                        .Select(p => new
+                        {
+                            p.Id,
+                            p.Code,
+                            p.Signs.FirstOrDefault().Status,
+                            Date = p.DateCreated,
+                            User = context.Users.FirstOrDefault(e => e.Id.ToUpper() == p.IdUserCreated.ToUpper()),
+                        });
+                    var confirmsQuery = context.Signs
+                        .OrderByDescending(p => p.DateApproved)
+                        .OrderByDescending(p => p.DateRejected)
+                        .Take(10)
+                        .Select(c => new
+                        {
+                            Id = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Id,
+                            Code = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
+                            c.Status,
+                            Date = c.DateApproved != null ? c.DateApproved : c.DateRejected != null ? c.DateRejected : null,
+                            User = context.Users.FirstOrDefault(u => u.Id == c.IdUser)
+                        });
 
-                    var combinedQuery = pcnsQuery.Concat(confirmsQuery)
-                                                .OrderByDescending(p => p.Date)
-                                                .Take(10)
-                                                .ToList();
+                    var combinedQuery = pcnsQuery.Concat(confirmsQuery).OrderByDescending(p => p.Date).Take(10).ToList();
                    
                     return combinedQuery;
                 }

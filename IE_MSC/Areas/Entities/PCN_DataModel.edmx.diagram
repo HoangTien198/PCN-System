@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0c8ba3eeb8a44aaf87798ea061a21bc7" Name="Diagram1" ZoomLevel="95">
+        <EntityTypeShape EntityType="PCN_DataModel.Customer" Width="1.75" PointX="7" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PCN_DataModel.UserDepartment" Width="2.375" PointX="9.5" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PCN_DataModel.Department" Width="1.75" PointX="7.125" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PCN_DataModel.User" Width="2.125" PointX="9.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PCN_DataModel.Sign" Width="2.25" PointX="13.25" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PCN_DataModel.Application" Width="2.625" PointX="16.5" PointY="2.25" IsExpanded="true" />
+        <AssociationConnector Association="PCN_DataModel.FK_Departments_Customers" ManuallyRouted="false" />
+        <AssociationConnector Association="PCN_DataModel.FK_DepartmentEmployee_Departments" ManuallyRouted="false" />
+        <AssociationConnector Association="PCN_DataModel.FK_DepartmentEmployee_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="PCN_DataModel.FK_PCNConfirms_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="PCN_DataModel.FK_PCNConfirms_PCNs" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

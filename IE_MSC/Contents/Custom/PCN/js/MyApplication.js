@@ -21,7 +21,7 @@ function InitDatatable() {
 
 	var config = {
 		ajax: {
-			url: "/PCN/Management/GetApplicationsServerSide",
+			url: "/PCN/Management/GetSessionUserApplicationsServerSide",
 			type: "POST",
 		},
 		processing: true,
@@ -46,6 +46,7 @@ function InitDatatable() {
 			{ targets: [0, 1, 2, 4, 5, 6, 7], orderable: false },
 			{ targets: [0], visible: false },
 			{ targets: [4], className: 'fw-bold' },
+			{ targets: [7], width: 80 },
 		],
 		buttons: [{
 			text: '<i class="fa-duotone fa-plus"></i> Create Application',
@@ -79,4 +80,20 @@ function InitDatatable() {
 function DetailApplication(elm, e) {
 	let Id = $(elm).data('id');
 	ApplicationDetail(Id);
+}
+function UpdatApplication(elm, e) {
+	let Id = $(elm).data('id');
+	ApplicationUpdate(Id, function (result) {
+		console.log(result);
+	});
+}
+function DeleteApplication(elm, e) {
+	let Id = $(elm).data('id');
+	let rowIndex = datatable.row($(elm).closest('tr')).index();
+	ApplicationDelete(Id, function (result) {
+		if (result) {
+			datatable.draw(false);
+			toastr['success']('Delete Application Success.');
+		}
+	});
 }

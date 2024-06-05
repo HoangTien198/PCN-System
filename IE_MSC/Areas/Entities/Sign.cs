@@ -18,7 +18,8 @@ namespace IE_MSC.Areas.Entities
         public string IdApplication { get; set; }
         public Nullable<int> Order { get; set; }
         public Nullable<int> Status { get; set; }
-        public Nullable<System.DateTime> DateSigned { get; set; }
+        public Nullable<System.DateTime> DateApproved { get; set; }
+        public Nullable<System.DateTime> DateRejected { get; set; }
         public string Detail { get; set; }
     
         public virtual User User { get; set; }

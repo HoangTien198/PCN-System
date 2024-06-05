@@ -75,6 +75,34 @@ namespace IE_MSC.Areas.PCN.Controllers
                 return Json(new {status = false, message = ex.Message});
             }
         }
+        [HttpPost]
+        public JsonResult GetSessionUserApplicationsServerSide()
+        {
+            try
+            {
+                var result = R_PCN.GetSessionUserApplicationsServerSide(Request);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult GetSessionUserSignApplicationsServerSide()
+        {
+            try
+            {
+                var result = R_PCN.GetSessionUserSignApplicationsServerSide(Request);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
+        }
 
         /* POST */
         [HttpPost]
