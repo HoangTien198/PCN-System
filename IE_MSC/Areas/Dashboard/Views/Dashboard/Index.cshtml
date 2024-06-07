@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "DASHBOARD";
     Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
+
+    var newGuid = Guid.NewGuid();
 }
 
 @section styles{
@@ -10,7 +12,6 @@
 
     <!-- custom -->
     <link href="~/Contents/Custom/Dashboard/css/dashboard.css" rel="stylesheet" />
-    <link href="~/Contents/Custom/PCN/css/_ApplicationDetail.css" rel="stylesheet" />
 
 }
 
@@ -398,6 +399,6 @@
     <!-- custom -->
     <script src="~/Contents/Custom/Dashboard/js/dashboard.js"></script>
 
-    <script src="~/Contents/Custom/PCN/js/Application_Promise.js"></script>
-    <script src="~/Contents/Custom/PCN/js/_ApplicationDetail.js"></script>
+    <script src="~/Contents/Custom/PCN/js/Application_Promise.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js?v=@newGuid"></script>
 }

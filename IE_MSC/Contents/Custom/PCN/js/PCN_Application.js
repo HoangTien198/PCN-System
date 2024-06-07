@@ -43,17 +43,10 @@ function InitDatatable() {
 		lengthMenu: calHeight.lengthMenu,
 		dom: "<'row mb-3'<'col-md-4 mb-3 mb-md-0'l><'col-md-8 text-right'<'d-flex justify-content-end'f>>>t<'row align-items-center'<'mr-auto col-md-6 mb-3 mb-md-0 mt-n2 'i><'mb-0 col-md-6'p>>",
 		columnDefs: [
-			{ targets: [0, 1, 2, 4, 5, 6, 7], orderable: false },
+			{ targets: [0, 1, 2, 4, 5, 6, 7], orderable: false },		
 			{ targets: [0], visible: false },
-			{ targets: [4], className: 'fw-bold' },
+			{ targets: [4], className: 'fw-bold' },			
 		],
-		buttons: [{
-			text: '<i class="fa-duotone fa-plus"></i> Create Application',
-			className: 'btn btn-theme btn-sm ms-2 disabled',
-			action: function () {
-				CreateApplication();
-			}
-		}],
 		language: {
 			search: "<i class='fa fa-search'></i>",
 			paginate: {

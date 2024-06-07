@@ -822,6 +822,7 @@
     <Content Include="Contents\Custom\Common\Common.js" />
     <Content Include="Contents\Custom\Dashboard\css\dashboard.css" />
     <Content Include="Contents\Custom\Dashboard\js\dashboard.js" />
+    <Content Include="Contents\Custom\PCN\css\MyApplication.css" />
     <Content Include="Contents\Custom\PCN\css\PCN_Application.css" />
     <Content Include="Contents\Custom\PCN\js\Application_Promise.js" />
     <Content Include="Contents\Custom\PCN\js\CreateApplication.js" />

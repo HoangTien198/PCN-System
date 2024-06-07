@@ -129,24 +129,20 @@ $('#ApplicationCreate-Save').click(async function () {
                     IdUser: $(signItem).find('[user]').val(),
                     Order: $(signItem).find('[order]').text()
                 };
-            }).get()
+            }).get(),
+            Files: {
+                BeforeChangeFile: $('#ApplicationCreate-BeforeChangeFile').prop('files')[0],
+                AfterChangeFile: $('#ApplicationCreate-AfterChangeFile').prop('files')[0],
+
+            },
+            IsSendBoss: $('#ApplicationCreate-SendBoss').is(':checked')
         };
-
-        // get file data
-        let files = {
-            beforeChangeFile: $('#ApplicationCreate-BeforeChangeFile').prop('files')[0],
-            afterChangeFile: $('#ApplicationCreate-AfterChangeFile').prop('files')[0],
-
-        };
-
-        // get send boss
-        let isSendBoss = $('#ApplicationCreate-SendBoss').is(':checked');
 
         // validate
-        if (!ApplicationValidate(application, files)) return false;
+        if (!ApplicationValidate(application)) return false;
 
         // send data to sv
-        let result = await CreateApplication(application, files, isSendBoss);
+        let result = await CreateApplication(application);
 
         if (result) {
             // save success
@@ -161,78 +157,96 @@ $('#ApplicationCreate-Save').click(async function () {
     }
 });  
 
+
+/* Dynamic sign */
+function CreateWidgetReminderItem(count) {
+    return $(`
+        <div class="widget-reminder-item">
+            <div class="widget-reminder-time">
+                <span class="text-info fw-bold" order>${count}</span>
+            </div>
+            <div class="widget-reminder-divider bg-info"></div>
+            <div class="widget-reminder-content">
+                <div class="d-flex justify-content-between">
+                    <div class="row w-100">
+                        <div class="col-12 mb-2">
+                            <div class="d-flex w-100">
+                                <select class="form-select me-2" customer></select>
+                                <select class="form-select" department></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <select class="form-select" user></select>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger ms-2" delete>
+                        <i class="fa-duotone fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `);
+}
+function PopulateCustomerOptions(selectCustomer) {
+    _datas.CustomerDepartments.forEach((customer) => {
+        selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+    });
+}
+function SetupCustomerChangeEvent(selectCustomer, selectDepartment) {
+    selectCustomer.change(() => {
+        const customer = _datas.CustomerDepartments.find(customer => customer.Id === selectCustomer.val());
+        selectDepartment.empty();
+        customer.Departments.forEach((department) => {
+            selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+        });
+        selectDepartment.change();
+    });
+}
+function SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser) {
+    selectDepartment.change(() => {
+        const IdCustomer = selectCustomer.val();
+        const IdDepartment = selectDepartment.val();
+        const users = _datas.Users.filter(user => {
+            return user.UserDepartments.some(dept => {
+                return dept.Department.Id === IdDepartment && dept.Department.IdCustomer === IdCustomer;
+            });
+        });
+
+        selectUser.empty();
+        users.forEach((user) => {
+            selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
+        });
+    });
+}
+function SetupWidgetReminderItempDeleteEvent(buttonDelete) {
+    buttonDelete.click(function () {
+        buttonDelete.closest('.widget-reminder-item').remove();
+    });
+}
+
 /* Sign Event */
 function AddCreateSign() {
-    let container = $('#ApplicationCreate-Sign');
-    let count = container.find('.widget-reminder-item').length;
+    const container = $('#ApplicationCreate-Sign');
+    let count = parseInt($('#ApplicationCreate-Sign').find('[order]').last().text()) + 1;
+    if (isNaN(count)) count = 1;
 
-    var widgetReminderItem = $('<div class="widget-reminder-item">').append(
-        $('<div class="widget-reminder-time">').append(
-            $('<span class="text-info fw-bold" order>').text(count + 1)
-        ),
-        $('<div class="widget-reminder-divider bg-info">'),
-        $('<div class="widget-reminder-content">').append(
-            $('<div class="d-flex justify-content-between">').append(
-                $('<div class="row w-100">').append(
-                    $('<div class="col-12 mb-2">').append(
-                        $('<div class="d-flex w-100">').append(
-                            $('<select class="form-select me-2" customer>').append(
-                                _datas.CustomerDepartments.map(function (customer) {
-                                    return $(`<option value="${customer.Id}">`).text(customer.CustomerName);
-                                })
-                            ).change(function () {
-                                let selectCust = widgetReminderItem.find('[customer]');
-                                let selectDept = widgetReminderItem.find('[department]');
-                                let customer = _datas.CustomerDepartments.find(customer => { return customer.Id == selectCust.val(); });
+    const widgetReminderItem = CreateWidgetReminderItem(count);
+    const selectCustomer = widgetReminderItem.find('[customer]');
+    const selectDepartment = widgetReminderItem.find('[department]');
+    const selectUser = widgetReminderItem.find('[user]');
+    const buttonDelete = widgetReminderItem.find('[delete]');
 
-                                selectDept.empty();
-                                selectDept.append(
-                                    customer.Departments.map(function (department) {
-                                        return $(`<option value="${department.Id}">`).text(department.DepartmentName);
-                                    })
-                                )
-                                selectDept.change();
-                            })
-                        ).append(
-                            $('<select class="form-select" department>').change(function () {
-                                let selectCust = widgetReminderItem.find('[customer]');
-                                let selectDept = widgetReminderItem.find('[department]');
-                                let selectUser = widgetReminderItem.find('[user]');
-
-                                var IdCustomer = selectCust.val(), IdDepartment = selectDept.val();
-                                var users = _datas.Users.filter(user => {
-                                    return user.UserDepartments.some((userDept) => {
-                                        return userDept.Department.Id === IdDepartment && userDept.Department.IdCustomer === IdCustomer;
-                                    });
-                                });
-                                selectUser.empty();
-                                selectUser.append(users.map(function (user) {
-                                    return $(`<option value="${user.Id}">`).text(GetUserName(user));
-                                }))
-                            }))
-                    )
-                ).append(
-                    $('<div class="col-12">').append(
-                        $('<select class="form-select" user>')
-                    )
-                ),
-
-            ).append(
-                $('<button class="btn btn-danger ms-2">').append(
-                    $('<i class="fa-duotone fa-trash">')
-                ).click(function () {
-                    widgetReminderItem.remove();
-                })
-            )
-        )
-    );
+    PopulateCustomerOptions(selectCustomer);
+    SetupCustomerChangeEvent(selectCustomer, selectDepartment);
+    SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser);
+    SetupWidgetReminderItempDeleteEvent(buttonDelete);
 
     container.append(widgetReminderItem);
-    widgetReminderItem.find('[customer]').change();
+    selectCustomer.change();
 }
 
 /* Application Validate */
-function ApplicationValidate(application, files) {
+function ApplicationValidate(application) {
     if (application.Subject.length === 0) {
         toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
         $('#ApplicationCreate-Subject').focus();
@@ -263,17 +277,7 @@ function ApplicationValidate(application, files) {
         toastr['warning']('[ 變更原因 / Nguyên nhân thay đổi ] Không được để trống!');
         $('#ApplicationCreate-Reason').summernote('focus');
         return false;
-    }
-    if (!files.beforeChangeFile) {
-        toastr['warning']('[ Tài liệu phương thức trước khi thay đổi ] Vui lòng chọn tài liệu!');
-        $('#ApplicationCreate-BeforeChangeFile').focus();
-        return false;
-    }
-    if (!files.afterChangeFile) {
-        toastr['warning']('[ Tài liệu phương thức sau khi thay đổi ] Vui lòng chọn tài liệu!');
-        $('#ApplicationCreate-AfterChangeFile').focus();
-        return false;
-    }
+    }    
 
     if (application.Signs.length === 0) {
         toastr['warning']('[ 會簽 / Các bộ phận phê duyệt ] Không được để trống!');

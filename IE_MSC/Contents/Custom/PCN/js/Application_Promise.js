@@ -49,44 +49,10 @@ function GetApplications() {
 }
 
 /* POST */
-function CreateApplication(application, files, isSendBoss) {
+function CreateApplication(application) {
 	console.time("CreateApplication");
 	return new Promise(function (resolve, reject) {
-
-		application.BeforeChange = encodeURIComponent(application.BeforeChange);
-		application.AfterChange = encodeURIComponent(application.AfterChange);
-		application.Reason = encodeURIComponent(application.Reason);
-
-		let formData = new FormData();
-		formData.append('IdUserCreated', application.IdUserCreated);
-		formData.append('DateCreated', application.DateCreated);
-		formData.append('Subject', application.Subject);
-		formData.append('Process', application.Process);
-		formData.append('Model', application.Model);
-		formData.append('BeforeChange', application.BeforeChange);
-		formData.append('AfterChange', application.AfterChange);
-		formData.append('Reason', application.Reason);
-		formData.append('IdCustomer', application.IdCustomer);
-		formData.append('IdDepartment', application.IdDepartment);
-		formData.append('IsSendBoss', isSendBoss);
-
-		// Thêm dữ liệu cho các chữ ký
-		application.Signs.forEach((sign, index) => {
-			formData.append(`Signs[${index}].IdCustomer`, sign.IdCustomer);
-			formData.append(`Signs[${index}].IdDepartment`, sign.IdDepartment);
-			formData.append(`Signs[${index}].IdUser`, sign.IdUser);
-			formData.append(`Signs[${index}].Order`, sign.Order);
-		});
-
-		// Thêm tệp nếu có
-		if (files.beforeChangeFile) {
-			formData.append('BeforeChangeFile', files.beforeChangeFile);
-		}
-		if (files.afterChangeFile) {
-			formData.append('AfterChangeFile', files.afterChangeFile);
-		}
-		
-
+		let formData = CreateApplicationFormData(application);
 		// Gửi tới SV
 		$.ajax({
 			url: `/PCN/Management/CreateApplication`,
@@ -109,6 +75,72 @@ function CreateApplication(application, files, isSendBoss) {
 			}
 		});
 	});
+}
+function UpdateApplication(application) {
+	console.time("UpdateApplication");
+	return new Promise(function (resolve, reject) {
+		let formData = CreateApplicationFormData(application);
+		// Gửi tới SV
+		$.ajax({
+			url: `/PCN/Management/UpdateApplication`,
+			type: "POST",
+			processData: false,
+			contentType: false,
+			data: formData,
+			success: function (res) {
+				console.timeEnd("UpdateApplication");
+				if (res.status) {
+					resolve(res.data);
+				}
+				else {
+					reject(res.message);
+				}
+			},
+			error: function (error) {
+				console.timeEnd("UpdateApplication");
+				reject(error);
+			}
+		});
+	});
+}
+function CreateApplicationFormData(application) {
+	application.BeforeChange = encodeURIComponent(application.BeforeChange);
+	application.AfterChange = encodeURIComponent(application.AfterChange);
+	application.Reason = encodeURIComponent(application.Reason);
+	application.CalcCost = encodeURIComponent(application.CalcCost);
+
+	let formData = new FormData();
+	formData.append('Id', application?.Id);
+	formData.append('IdUserCreated', application.IdUserCreated);
+	formData.append('DateCreated', application.DateCreated);
+	formData.append('Subject', application.Subject);
+	formData.append('Process', application.Process);
+	formData.append('Model', application.Model);
+	formData.append('BeforeChange', application.BeforeChange);
+	formData.append('AfterChange', application.AfterChange);
+	formData.append('Reason', application.Reason);
+	formData.append('CalcCost', application.CalcCost);
+	formData.append('IdCustomer', application.IdCustomer);
+	formData.append('IdDepartment', application.IdDepartment);
+	formData.append('IsSendBoss', application.IsSendBoss);
+
+	// Thêm dữ liệu cho các chữ ký
+	application.Signs.forEach((sign, index) => {
+		formData.append(`Signs[${index}].IdCustomer`, sign.IdCustomer);
+		formData.append(`Signs[${index}].IdDepartment`, sign.IdDepartment);
+		formData.append(`Signs[${index}].IdUser`, sign.IdUser);
+		formData.append(`Signs[${index}].Order`, sign.Order);
+	});
+
+	// Thêm tệp nếu có
+	if (application.Files.BeforeChangeFile) {
+		formData.append('BeforeChangeFile', application.Files.BeforeChangeFile);
+	}
+	if (application.Files.AfterChangeFile) {
+		formData.append('AfterChangeFile', application.Files.AfterChangeFile);
+	}
+
+	return formData;
 }
 
 /* DELETE */

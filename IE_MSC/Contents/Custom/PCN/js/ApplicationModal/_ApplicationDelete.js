@@ -1,4 +1,4 @@
-﻿async function ApplicationDelete(IdApplication, callback) {
+﻿async function ApplicationDelete(IdApplication) {
     try {
         await GetDeleteApplication(IdApplication);
 
@@ -18,7 +18,11 @@
         }).then(async function (confirm) {
             if (confirm.value) {
                 let result = await DeleteApplication(_datas.Application.Id);
-                callback(result);
+
+                if (result) {
+                    datatable.draw(false);
+                    toastr['success']('Delete Application Success.');
+                }
             }
         });
 

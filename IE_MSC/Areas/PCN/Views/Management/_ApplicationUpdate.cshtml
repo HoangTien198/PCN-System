@@ -102,7 +102,7 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">制造成本計算 / Tính toán giá thành sản xuất (IE) <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-Cost" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationUpdateModal-CalcCost" style="height: 10rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -116,14 +116,12 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="" id="ApplicationUpdateModal-SendBoss">
-                                <label class="form-check-label">Send to Boss (dai-xin.gao@fii-foxconn.com)</label>
+                                <label class="form-check-label text-theme">Send to Boss (dai-xin.gao@fii-foxconn.com)</label>
                             </div>
-                            <a class="text-theme" role="button" onclick="AddUpdateSign()"><i class="fa-duotone fa-plus"></i> Add Sign</a>
+                            <a class="btn btn-sm btn-outline-theme" role="button" onclick="AddUpdateSign()"><i class="fa-duotone fa-plus"></i> Add Sign</a>
                         </div>
                         <div class="card">
-                            <div class="widget-reminder" id="ApplicationUpdateModal-Sign">
-                               
-                            </div>
+                            <div class="widget-reminder" id="ApplicationUpdateModal-Sign"></div>
 
                             <div class="card-arrow">
                                 <div class="card-arrow-top-left"></div>
@@ -151,7 +149,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="ApplicationUpdateModal-Save"><i class="fa-duotone fa-floppy-disk"></i> Update Application</button>
+                <button type="button" class="btn btn-theme" onclick="ApplicationUpdateSave()"><i class="fa-duotone fa-floppy-disk"></i> Update Application</button>
             </div>
         </div>
     </div>

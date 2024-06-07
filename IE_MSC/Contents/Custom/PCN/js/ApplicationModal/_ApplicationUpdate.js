@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 
 /* Create Update Modal */
-async function ApplicationUpdate(IdApplication, callback) {
+async function ApplicationUpdate(IdApplication) {
     try {
         await GetUpdateApplication(IdApplication);
 
@@ -26,8 +26,8 @@ async function ApplicationUpdate(IdApplication, callback) {
         try { $('#ApplicationUpdateModal-Reason').summernote('code', decodeURIComponent(_datas.Application.Reason)) }
         catch { $('#ApplicationUpdateModal-Reason').summernote('code', _datas.Application.Reason) }
 
-        $('#ApplicationUpdateModal-Cost').summernote('reset')
-        $('#ApplicationUpdateModal-Cost').summernote('disable');
+        $('#ApplicationUpdateModal-CalcCost').summernote('reset')
+        $('#ApplicationUpdateModal-CalcCost').summernote('disable');
 
         // File
         if (_datas.Application.BeforeChangeFile) {
@@ -47,6 +47,8 @@ async function ApplicationUpdate(IdApplication, callback) {
             $('#ApplicationUpdateModal-AfterChangeFile-OLD').attr('href', 'javascript:;');
             $('#ApplicationUpdateModal-AfterChangeFile-OLD').text('No file');
         }
+        $('#ApplicationUpdateModal-BeforeChangeFile-NEW').val('');
+        $('#ApplicationUpdateModal-AfterChangeFile-NEW').val('');
 
         // Sign
         $('#ApplicationUpdateModal-SendBoss').prop('checked', false);
@@ -109,7 +111,7 @@ function InitUpdateSumernote() {
             ['table', ['table']],
         ],
     });  
-    $('#ApplicationUpdateModal-Cost').summernote({
+    $('#ApplicationUpdateModal-CalcCost').summernote({
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
@@ -123,240 +125,233 @@ function InitUpdateSumernote() {
     });
 }
 
-/* Add Sign Event */
-function SetUpdateSign(signs) {
-    let container = $('#ApplicationUpdateModal-Sign');
-    let count = 0;
-    signs.forEach(function (sign) {
-        count++;
-        let widgetReminderItem = $(`<div class="widget-reminder-item">
-                                      <div class="widget-reminder-time"><span class="text-info fw-bold" order="">${count }</span></div>
-                                      <div class="widget-reminder-divider bg-info"></div>
-                                      <div class="widget-reminder-content">
-                                        <div class="d-flex justify-content-between">
-                                          <div class="row w-100">
-                                            <div class="col-12 mb-2">
-                                              <div class="d-flex w-100">
-                                                <select class="form-select me-2" customer></select>
-                                                <select class="form-select" department></select>
-                                              </div>
-                                            </div>
-                                            <div class="col-12">
-                                              <select class="form-select" user></select>
-                                            </div>
-                                          </div>
-                                          <button class="btn btn-danger ms-2">
-                                            <i class="fa-duotone fa-trash"></i>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>`);
 
-        let selectCustomer = widgetReminderItem.find('[customer]');
-        let selectDepartment = widgetReminderItem.find('[department]');
-        let selectUser = widgetReminderItem.find('[user]');
-   
-        _datas.CustomerDepartments.forEach((customer) => {
-            selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
-        });
-
-        // select customer change event
-        selectCustomer.change(function () {
-            let customer = _datas.CustomerDepartments.find((customer) => { return customer.Id == selectCustomer.val(); });
-
-            selectDepartment.empty();
-            customer.Departments.forEach(function (department) {
-                selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
-            });
-            selectDepartment.change();
-        });
-
-        // select department change envent
-        selectDepartment.change(function () {
-            var IdCustomer = selectCustomer.val(), IdDepartment = selectDepartment.val();
-            var users = _datas.Users.filter(user => {
-                return user.UserDepartments.some(dept => {
-                    return dept.Department.Id === IdDepartment && dept.Department.IdCustomer === IdCustomer;
-                });
-            });
-
-            selectUser.empty();
-            users.forEach(function (user) {
-                selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
-            })
-        });
-
-        // append to container
-        container.append(widgetReminderItem);
-
-        console.log(sign);
-        // set customer
-        if (sign.IdCustomer) {
-            selectCustomer.val(IdCustomer);
-        }
-        else {
-            selectCustomer.val(_datas.Application.IdCustomer);
-        }
-        selectCustomer.change();
-
-        // set department
-        if (sign.IdDepartment) {
-
-        }
-       
+/* Dynamic sign */
+function CreateWidgetReminderItem(count) {
+    return $(`
+        <div class="widget-reminder-item">
+            <div class="widget-reminder-time">
+                <span class="text-info fw-bold" order>${count}</span>
+            </div>
+            <div class="widget-reminder-divider bg-info"></div>
+            <div class="widget-reminder-content">
+                <div class="d-flex justify-content-between">
+                    <div class="row w-100">
+                        <div class="col-12 mb-2">
+                            <div class="d-flex w-100">
+                                <select class="form-select me-2" customer></select>
+                                <select class="form-select" department></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <select class="form-select" user></select>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger ms-2" delete>
+                        <i class="fa-duotone fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `);
+}
+function PopulateCustomerOptions(selectCustomer) {
+    _datas.CustomerDepartments.forEach((customer) => {
+        selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
     });
 }
-function AddUpdateSign() {
-    let container = $('#ApplicationUpdateModal-Sign');
-    let count = container.find('.widget-reminder-item').length;
+function SetupCustomerChangeEvent(selectCustomer, selectDepartment) {
+    selectCustomer.change(() => {
+        const customer = _datas.CustomerDepartments.find(customer => customer.Id === selectCustomer.val());
+        selectDepartment.empty();
+        customer.Departments.forEach((department) => {
+            selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+        });
+        selectDepartment.change();
+    });
+}
+function SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser) {
+    selectDepartment.change(() => {
+        const IdCustomer = selectCustomer.val();
+        const IdDepartment = selectDepartment.val();
+        const users = _datas.Users.filter(user => {
+            return user.UserDepartments.some(dept => {
+                return dept.Department.Id === IdDepartment && dept.Department.IdCustomer === IdCustomer;
+            });
+        });
 
-    var widgetReminderItem = $('<div class="widget-reminder-item">').append(
-        $('<div class="widget-reminder-time">').append(
-            $('<span class="text-info fw-bold" order>').text(count + 1)
-        ),
-        $('<div class="widget-reminder-divider bg-info">'),
-        $('<div class="widget-reminder-content">').append(
-            $('<div class="d-flex justify-content-between">').append(
-                $('<div class="row w-100">').append(
-                    $('<div class="col-12 mb-2">').append(
-                        $('<div class="d-flex w-100">').append(
-                            $('<select class="form-select me-2" customer>').append(
-                                _datas.CustomerDepartments.map(function (customer) {
-                                    return $(`<option value="${customer.Id}">`).text(customer.CustomerName);
-                                })
-                            ).change(function () {
-                                let selectCust = widgetReminderItem.find('[customer]');
-                                let selectDept = widgetReminderItem.find('[department]');
-                                let customer = _datas.CustomerDepartments.find(customer => { return customer.Id == selectCust.val(); });
-
-                                selectDept.empty();
-                                selectDept.append(
-                                    customer.Departments.map(function (department) {
-                                        return $(`<option value="${department.Id}">`).text(department.DepartmentName);
-                                    })
-                                )
-                                selectDept.change();
-                            })
-                        ).append(
-                            $('<select class="form-select" department>').change(function () {
-                                let selectCust = widgetReminderItem.find('[customer]');
-                                let selectDept = widgetReminderItem.find('[department]');
-                                let selectUser = widgetReminderItem.find('[user]');
-
-                                var IdCustomer = selectCust.val(), IdDepartment = selectDept.val();
-                                var users = _datas.Users.filter(user => {
-                                    return user.Departments.some(dept => {
-                                        return dept.Department.DepartmentID === IdDepartment && dept.Department.CustomerID === IdCustomer;
-                                    });
-                                });
-                                selectUser.empty();
-                                selectUser.append(users.map(function (user) {
-                                    return $(`<option value="${user.Id}">`).text(GetUserNameObj(user));
-                                }))
-                            }))
-                    )
-                ).append(
-                    $('<div class="col-12">').append(
-                        $('<select class="form-select" user>')
-                    )
-                ),
-
-            ).append(
-                $('<button class="btn btn-danger ms-2">').append(
-                    $('<i class="fa-duotone fa-trash">')
-                ).click(function () {
-                    widgetReminderItem.remove();
-                })
-            )
-        )
-    );
-
-    container.append(widgetReminderItem);
-    widgetReminderItem.find('[customer]').change();
+        selectUser.empty();
+        users.forEach((user) => {
+            selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
+        });
+    });
+}
+function SetupWidgetReminderItempDeleteEvent(buttonDelete) {
+    buttonDelete.click(function () {
+        buttonDelete.closest('.widget-reminder-item').remove();
+    });
 }
 
+
+/* Set sign function */
+function SetUpdateSign(signs) {
+    const container = $('#ApplicationUpdateModal-Sign');
+    let count = 0;
+
+    signs.forEach((sign) => {
+        count++;
+        const widgetReminderItem = CreateWidgetReminderItem(count);
+        const inputIdSign = widgetReminderItem.find('[idsign]');
+        const selectCustomer = widgetReminderItem.find('[customer]');
+        const selectDepartment = widgetReminderItem.find('[department]');
+        const selectUser = widgetReminderItem.find('[user]');
+        const buttonDelete = widgetReminderItem.find('[delete]');
+
+        inputIdSign.val(sign.Id);
+        PopulateCustomerOptions(selectCustomer);
+        SetupCustomerChangeEvent(selectCustomer, selectDepartment);
+        SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser);
+        SetupWidgetReminderItempDeleteEvent(buttonDelete);
+
+        container.append(widgetReminderItem);
+
+        SetInitialValues(sign, selectCustomer, selectDepartment, selectUser);
+    });
+}
+function SetInitialValues(sign, selectCustomer, selectDepartment, selectUser) {
+    const initialCustomerId = sign.IdCustomer || sign.User.UserDepartments[0].Department.Customer.Id;
+    const initialDepartmentId = sign.IdDepartment || sign.User.UserDepartments[0].Department.Id;
+    const initialUserId = sign.IdUser;
+
+    selectCustomer.val(initialCustomerId).change();
+    selectDepartment.val(initialDepartmentId).change();
+    if (initialUserId) {
+        selectUser.val(initialUserId);
+    }
+}
+
+/* Add Sign Event */
+function AddUpdateSign() {
+    const container = $('#ApplicationUpdateModal-Sign');
+    let count = parseInt($('#ApplicationUpdateModal-Sign').find('[order]').last().text()) + 1;
+    if (isNaN(count)) count = 1;
+
+    const widgetReminderItem = CreateWidgetReminderItem(count);
+    const selectCustomer = widgetReminderItem.find('[customer]');
+    const selectDepartment = widgetReminderItem.find('[department]');
+    const selectUser = widgetReminderItem.find('[user]');
+    const buttonDelete = widgetReminderItem.find('[delete]');
+
+    PopulateCustomerOptions(selectCustomer);
+    SetupCustomerChangeEvent(selectCustomer, selectDepartment);
+    SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser);
+    SetupWidgetReminderItempDeleteEvent(buttonDelete);
+
+    container.append(widgetReminderItem);
+    selectCustomer.change();
+}
+
+
 /* Save Event */
-async function ApplicationCreateSave() {
+async function ApplicationUpdateSave() {
     try {
-        let applicationData = {
-            data: {
-                RecommendedBy: $('#SessionUser').data('id'),
-                RecommendedDate: $('#ApplicationUpdateModal-DateCreated').val(),
-                Subject: $('#ApplicationUpdateModal-Subject').val(),
-                ProcessTitle: $('#ApplicationUpdateModal-Process').val(),
-                ModelTitle: $('#ApplicationUpdateModal-Model').val(),
-                BeforeChangeDescription: $('#ApplicationUpdateModal-BeforeChange').summernote('code'),
-                AfterChangeDescription: $('#ApplicationUpdateModal-AfterChange').summernote('code'),
-                Reason: $('#ApplicationUpdateModal-Reason').summernote('code'),
-                PCNConfirms: $('#ApplicationUpdateModal-Sign .widget-reminder-item').map((index, signItem) => {
-                    return {
-                        EmployeeID: $(signItem).find('[user]').val(),
-                        SortOrder: $(signItem).find('[order]').text()
-                    };
-                }).get()
+        let application = {
+            Id: _datas.Application.Id,
+            IdUserCreated: _datas.SessionUser.Id,
+            IdCustomer: $('#ApplicationUpdateModal-Customer').val(),
+            IdDepartment: $('#ApplicationUpdateModal-Department').val(),
+            DateCreated: $('#ApplicationUpdateModal-DateCreated').val(),
+            Subject: $('#ApplicationUpdateModal-Subject').val(),
+            Process: $('#ApplicationUpdateModal-Process').val(),
+            Model: $('#ApplicationUpdateModal-Model').val(),
+            BeforeChange: $('#ApplicationUpdateModal-BeforeChange').summernote('code'),
+            AfterChange: $('#ApplicationUpdateModal-AfterChange').summernote('code'),
+            Reason: $('#ApplicationUpdateModal-Reason').summernote('code'),
+            CalcCost: $('#ApplicationUpdateModal-CalcCost').summernote('code'),
+            Signs: $('#ApplicationUpdateModal-Sign .widget-reminder-item').map((index, signItem) => {
+                return {
+                    Id: $(signItem).find('[idsign]').val(),
+                    IdCustomer: $(signItem).find('[customer]').val(),
+                    IdDepartment: $(signItem).find('[department]').val(),
+                    IdUser: $(signItem).find('[user]').val(),
+                    Order: $(signItem).find('[order]').text()
+                };
+            }).get(),
+            Files: {
+                BeforeChangeFile: $('#ApplicationUpdateModal-BeforeChangeFile-NEW').prop('files')[0],
+                BfterChangeFile: $('#ApplicationUpdateModal-AfterChangeFile-NEW').prop('files')[0],
+
             },
-            beforeChangeFile: $('#ApplicationUpdateModal-BeforeChangeFile').prop('files')[0],
-            afterChangeFile: $('#ApplicationUpdateModal-AfterChangeFile').prop('files')[0],
-            sendToBoss: $('#ApplicationUpdateModal-SendBoss').is(':checked'),
+            IsSendBoss: $('#ApplicationUpdateModal-SendBoss').is(':checked')
         }
 
-        if (!ApplicationValidate(applicationData)) return false;
+        if (!ApplicationValidate(application)) return false;
 
-        return await UpdateApplication(applicationData);
+        var result = await UpdateApplication(application);
+
+        if (result) {
+            _datas.Application = result;
+
+            datatable.draw(false);
+            $('#ApplicationUpdateModal').modal('hide');
+            toastr['success']('Delete Application Success.');
+        }
+
 
     } catch (e) {
         Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
         console.error(e);
     }
 }
-function ApplicationValidate(applicationData) {
-    if (applicationData.data.Subject.length === 0) {
+function ApplicationValidate(application) {
+    if (application.Subject.length === 0) {
         toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
+        $('#ApplicationUpdateModal-Subject').focus();
         return false;
     }
-    if (applicationData.data.ProcessTitle.length === 0) {
+    if (application.Process.length === 0) {
         toastr['warning']('[ 过程 / Process ] Không được để trống!');
+        $('#ApplicationUpdateModal-Process').focus();
         return false;
     }
-    if (applicationData.data.ModelTitle.length === 0) {
+    if (application.Model.length === 0) {
         toastr['warning']('[ 模型 / Model ] Không được để trống!');
+        $('#ApplicationUpdateModal-Model').focus();
         return false;
     }
-    if (applicationData.data.Subject.length > 250 ) {
-        toastr['warning']('[ 主題 / Chủ đề ] quá dài (lớn hơn 250 ký tự)!');
-        return false;
-    }
-    if (applicationData.data.ProcessTitle.length > 250) {
-        toastr['warning']('[ 过程 / Process ] quá dài (lớn hơn 250 ký tự)!');
-        return false;
-    }
-    if (applicationData.data.ModelTitle.length > 250) {
-        toastr['warning']('[ 模型 / Model ] quá dài (lớn hơn 250 ký tự)!');
-        return false;
-    }   
+
     if ($('#ApplicationUpdateModal-BeforeChange').summernote('isEmpty')) {
         toastr['warning']('[ 現行作業方式 / Phương thức làm việc hiện hành ] Không được để trống!');
+        $('#ApplicationUpdateModal-BeforeChange').summernote('focus');
         return false;
     }
     if ($('#ApplicationUpdateModal-AfterChange').summernote('isEmpty')) {
         toastr['warning']('[ 變更后的方式 / Phương thức sau khi thay đổi  ] Không được để trống!');
-        return false;
-    }
-    if (!applicationData.beforeChangeFile && !applicationData.afterChangeFile) {
-        toastr['warning']('[ Tài liệu phương thức TRƯỚC / SAU khi thay đổi ] Vui lòng chọn tài liệu!');
+        $('#ApplicationUpdateModal-AfterChange').summernote('focus');
         return false;
     }
     if ($('#ApplicationUpdateModal-Reason').summernote('isEmpty')) {
         toastr['warning']('[ 變更原因 / Nguyên nhân thay đổi ] Không được để trống!');
+        $('#ApplicationUpdateModal-Reason').summernote('focus');
         return false;
     }
-    if (applicationData.data.PCNConfirms.length === 0) {
+
+    if (application.Signs.length === 0) {
         toastr['warning']('[ 會簽 / Các bộ phận phê duyệt ] Không được để trống!');
+        $('#ApplicationUpdateModal-Sign').focus();
+        return false;
+    }
+
+    if (application.Signs.some((sign) => application.Signs.filter((item) => { return item.IdUser === sign.IdUser }).length > 1)) {
+        toastr['warning']('Người ký không được thêm nhiều lần!');
+        $('#ApplicationUpdateModal-Sign').focus();
         return false;
     }
 
     return true;
 }
+
+
 
 /* Other */
 async function GetUpdateApplication(IdApplication) {

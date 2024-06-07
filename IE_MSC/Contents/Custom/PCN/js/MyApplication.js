@@ -46,15 +46,8 @@ function InitDatatable() {
 			{ targets: [0, 1, 2, 4, 5, 6, 7], orderable: false },
 			{ targets: [0], visible: false },
 			{ targets: [4], className: 'fw-bold' },
-			{ targets: [7], width: 80 },
+			{ targets: [7], width: 90 },
 		],
-		buttons: [{
-			text: '<i class="fa-duotone fa-plus"></i> Create Application',
-			className: 'btn btn-theme btn-sm ms-2 disabled',
-			action: function () {
-				CreateApplication();
-			}
-		}],
 		language: {
 			search: "<i class='fa fa-search'></i>",
 			paginate: {
@@ -89,10 +82,5 @@ function Update(elm, e) {
 }
 function Delete(elm, e) {
 	let Id = $(elm).data('id');
-	ApplicationDelete(Id, function (result) {
-		if (result) {
-			datatable.draw(false);
-			toastr['success']('Delete Application Success.');
-		}
-	});
+	ApplicationDelete(Id);
 }

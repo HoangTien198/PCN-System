@@ -9,132 +9,142 @@
         console.error(e);
     }
 }
-function CreateApplicationDetailModal(application) {
 
-    /* Information */
+
+function CreateApplicationDetailModal(application) {
+    SetApplicationInformation(application);
+    SetApplicationDetails(application);
+    SetApplicationSigns(application);
+
+    $('#ApplicationDetailModal').modal('show');
+}
+
+// Infor
+function SetApplicationInformation(application) {
     $('#ApplicationDetailModal-UserCreated').val(GetUserName(application.UserCreated));
-    if (application.Customer && application.Department) {
-        $('#ApplicationDetailModal-Department').val(`[ ${application.Customer.CustomerName} - ${application.Department.DepartmentName} ]`);
-    }
-    else {
-        $('#ApplicationDetailModal-Department').val(GetUserDept(application.UserCreated));
-    }
+    $('#ApplicationDetailModal-Department').val(GetDepartment(application));
     $('#ApplicationDetailModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm:ss"));
     $('#ApplicationDetailModal-ApplicationStatus').val(GetApplicationStatus(application));
 
-    $('#ApplicationDetailModal-ApplicationStatus').removeClass();    
-    $('#ApplicationDetailModal-DateActived').val('');
-
-    switch (application.Status) {
-        case -1:
-            $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-danger bg-danger');
-            break;
-        case 1:
-            $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-warning bg-warning');
-            break;
-        case 2:
-            $('#ApplicationDetailModal-ApplicationStatus').addClass('form-control text-truncate bg-opacity-10 text-success bg-success');
-            $('#ApplicationDetailModal-DateActived').val(GetApplicationActiveDate(application))
-            break;
-    }
+    SetApplicationStatusClass(application.Status);
+    $('#ApplicationDetailModal-DateActived').val(application.Status === 2 ? GetApplicationActiveDate(application) : '');
 
     $('#ApplicationDetailModal-CodePCN').val(application.Code);
     $('#ApplicationDetailModal-Subject').val(application.Subject);
     $('#ApplicationDetailModal-Process').val(application.Process);
     $('#ApplicationDetailModal-Model').val(application.Model);
+}
+function GetDepartment(application) {
+    if (application.Customer && application.Department) {
+        return `[ ${application.Customer.CustomerName} - ${application.Department.DepartmentName} ]`;
+    }
+    return GetUserDept(application.UserCreated);
+}
+function SetApplicationStatusClass(status) {
+    const statusElement = $('#ApplicationDetailModal-ApplicationStatus');
+    statusElement.removeClass();
 
-    /* Details */
-    try {
-        $('#ApplicationDetailModal-BeforeChange').html(decodeURIComponent(application.BeforeChange));
-    } catch (e) {
-        $('#ApplicationDetailModal-BeforeChange').html(application.BeforeChange);
+    switch (status) {
+        case -1:
+            statusElement.addClass('form-control text-truncate bg-opacity-10 text-danger bg-danger');
+            break;
+        case 1:
+            statusElement.addClass('form-control text-truncate bg-opacity-10 text-warning bg-warning');
+            break;
+        case 2:
+            statusElement.addClass('form-control text-truncate bg-opacity-10 text-success bg-success');
+            break;
     }
-    try {
-        $('#ApplicationDetailModal-AfterChange').html(decodeURIComponent(application.AfterChange));
-    } catch (e) {
-        $('#ApplicationDetailModal-AfterChange').html(application.AfterChange);
-    }
-   
-    
+}
 
-    if (application.BeforeChangeFile) {
-        $('#ApplicationDetailModal-BeforeChangeFile').text(application.BeforeChangeFile);
-        $('#ApplicationDetailModal-BeforeChangeFile').attr('href', `/Data/Files/${application.BeforeChangeFile}`);
-    }
-    else {
-        $('#ApplicationDetailModal-BeforeChangeFile').attr('href', 'javascript:;');
-        $('#ApplicationDetailModal-BeforeChangeFile').text('No file');
-    }
-
-    if (application.AfterChangeFile) {
-        $('#ApplicationDetailModal-AfterChangeFile').text(application.AfterChangeFile);
-        $('#ApplicationDetailModal-AfterChangeFile').attr('href', `/Data/Files/${application.AfterChangeFile}`);
-    }
-    else {
-        $('#ApplicationDetailModal-AfterChangeFile').attr('href', 'javascript:;');
-        $('#ApplicationDetailModal-AfterChangeFile').text('No file');
-    }
-
-    /* Reason */
+// Detail
+function SetApplicationDetails(application) {
+    $('#ApplicationDetailModal-BeforeChange').html(DecodeContent(application.BeforeChange));
+    $('#ApplicationDetailModal-AfterChange').html(DecodeContent(application.AfterChange));
     $('#ApplicationDetailModal-Reason').html(decodeURIComponent(application.Reason));
     $('#ApplicationDetailModal-Cost').html(application.CalcCost ? decodeURIComponent(application.CalcCost) : '');
 
-    /* Sign */
-    let SignContainer = $('#ApplicationDetailModal-Sign');
-    let IsReject = false;
-    SignContainer.empty();
-    application.Signs.forEach(function (sign) {
-        let color = (sign.Status == 1) ? "warning" : (sign.Status == 2) ? "success" : "danger";
-        let dept = GetUserDept(sign.User);
-        let user = GetUserName(sign.User);
+    SetFileLink('#ApplicationDetailModal-BeforeChangeFile', application.BeforeChangeFile);
+    SetFileLink('#ApplicationDetailModal-AfterChangeFile', application.AfterChangeFile);
+}
+function DecodeContent(content) {
+    try {
+        return decodeURIComponent(content);
+    } catch (e) {
+        return content;
+    }
+}
+function SetFileLink(elementId, fileName) {
+    const element = $(elementId);
+    if (fileName) {
+        element.text(fileName);
+        element.attr('href', `/Data/Files/${fileName}`);
+    } else {
+        element.attr('href', 'javascript:;');
+        element.text('No file');
+    }
+}
 
-        if (sign.Status == -1) {
-            IsReject = true;
+// Sign
+function SetApplicationSigns(application) {
+    const signContainer = $('#ApplicationDetailModal-Sign');
+    signContainer.empty();
 
-            let time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
+    let isReject = false;
+    application.Signs.forEach((sign) => {
+        if (sign.Status === -1) {
+            isReject = true;
+            const signItem = CreateRejectedSignItem(sign);
 
-            let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
-                       <div class="widget-reminder-time">${time}</div>
-                       <div class="widget-reminder-divider bg-danger"></div>
-                       <div class="widget-reminder-content">
-                           <div class="fw-bold text-danger">${user}</div>
-                           <div class="fs-10px text-danger">${dept}</div>
-                           <div class="fs-13px text-danger">${sign.Detail}</div>
-                       </div>
-                   </div>`;
-            SignContainer.append(item);
-        }
-        else {
-            if (IsReject) {
-                let item = `<div class="widget-reminder-item bg-secondary bg-opacity-10">
-                       <div class="widget-reminder-time"><span class="text-secondary fw-bold">Closed</span></div>
-                       <div class="widget-reminder-divider bg-secondary"></div>
-                       <div class="widget-reminder-content">
-                           <div class="fw-bold text-secondary">${user}</div>
-                           <div class="fs-10px">${dept}</div>
-                       </div>
-                   </div>`;
-                SignContainer.append(item);
-            }
-            else {
-                let time = (sign.Status == 1) ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+            signContainer.append(signItem);
+        } else {
+            const signItem = CreateSignItem(sign, isReject);
 
-                let item = `<div class="widget-reminder-item bg-${color} bg-opacity-10">
-                       <div class="widget-reminder-time">${time}</div>
-                       <div class="widget-reminder-divider bg-${color}"></div>
-                       <div class="widget-reminder-content">
-                           <div class="fw-bold text-${color}">${user}</div>
-                           <div class="fs-10px text-${color}">${dept}</div>
-                       </div>
-                   </div>`;
-                SignContainer.append(item);
-            }
+            signContainer.append(signItem);
         }
     });
-
-
-    $('#ApplicationDetailModal').modal('show');
 }
+function CreateRejectedSignItem(sign) {
+    const time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
+    return `
+        <div class="widget-reminder-item bg-danger bg-opacity-10">
+            <div class="widget-reminder-time">${time}</div>
+            <div class="widget-reminder-divider bg-danger"></div>
+            <div class="widget-reminder-content">
+                <div class="fw-bold text-danger">${GetUserName(sign.User)}</div>
+                <div class="fs-10px text-danger">${GetUserDept(sign.User)}</div>
+                <div class="fs-13px text-danger">${sign.Detail}</div>
+            </div>
+        </div>`;
+}
+function CreateSignItem(sign, isReject) {
+    const color = sign.Status === 1 ? "warning" : "success";
+    const time = sign.Status === 1 ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+
+    if (isReject) {
+        return `
+            <div class="widget-reminder-item bg-secondary bg-opacity-10">
+                <div class="widget-reminder-time"><span class="text-secondary fw-bold">Closed</span></div>
+                <div class="widget-reminder-divider bg-secondary"></div>
+                <div class="widget-reminder-content">
+                    <div class="fw-bold text-secondary">${GetUserName(sign.User)}</div>
+                    <div class="fs-10px">${GetUserDept(sign.User)}</div>
+                </div>
+            </div>`;
+    }
+
+    return `
+        <div class="widget-reminder-item bg-${color} bg-opacity-10">
+            <div class="widget-reminder-time">${time}</div>
+            <div class="widget-reminder-divider bg-${color}"></div>
+            <div class="widget-reminder-content">
+                <div class="fw-bold text-${color}">${GetUserName(sign.User)}</div>
+                <div class="fs-10px text-${color}">${GetUserDept(sign.User)}</div>
+            </div>
+        </div>`;
+}
+
+
 
 /* Other */
 async function GetDetailApplication(IdApplication) {

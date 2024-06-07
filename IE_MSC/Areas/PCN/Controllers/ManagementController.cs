@@ -106,12 +106,25 @@ namespace IE_MSC.Areas.PCN.Controllers
 
         /* POST */
         [HttpPost]
-        [ValidateInput(false)]
         public JsonResult CreateApplication()
         {
             try
             {
                 var result = R_PCN.CreateApplication(Request);
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateApplication()
+        {
+            try
+            {
+                var result = R_PCN.UpdateApplication(Request);
 
                 return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }

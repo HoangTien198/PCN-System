@@ -61,7 +61,7 @@ function CalTableHeight() {
     return result;
 }
 
-/* MSC Common */
+/* PCN Common */
 function GetUserName(user) {
     if (user) {
         return `${user.CardId}${user.VnName ? ' - ' + user.VnName : ' - ' + user.CnName}`;

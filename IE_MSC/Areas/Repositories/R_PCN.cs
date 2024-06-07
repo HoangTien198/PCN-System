@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using System.Web.Http;
+using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
@@ -39,11 +40,15 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         .Include(m => m.Signs.Select(s => s.User.UserDepartments.Select(ud => ud.Department.Customer)))
                         .FirstOrDefault(m => m.Id.ToUpper() == IdApplication.ToUpper());
 
-                    application.UserCreated = context.Users.Include(u => u.UserDepartments.Select(d => d.Department.Customer))
-                                                   .FirstOrDefault(u => u.Id.ToUpper() == application.IdUserCreated);
+                    application.UserCreated = context.Users
+                        .Include(u => u.UserDepartments
+                        .Select(d => d.Department.Customer))
+                        .FirstOrDefault(u => u.Id.ToUpper() == application.IdUserCreated);
 
-                    application.Customer = context.Customers.FirstOrDefault(c => c.Id.ToUpper() == application.IdCustomer.ToUpper());
-                    application.Department = context.Departments.FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment.ToUpper());
+                    application.Customer = context.Customers
+                        .FirstOrDefault(c => c.Id.ToUpper() == application.IdCustomer.ToUpper());
+                    application.Department = context.Departments
+                        .FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment.ToUpper());
 
                     application.Signs = application.Signs.OrderBy(s => s.Order).ToList();
 
@@ -330,91 +335,224 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         }
 
         /* POST */
-        [ValidateInput(false)]
         public static Entities.Application CreateApplication(HttpRequestBase request)
         {
-            try
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
             {
-                using (var context = new PcnEntities())
+                try
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var form = request.Form;
-                    var application = new Entities.Application();
-                    int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 2;
-
-                    application.Id = Guid.NewGuid().ToString();
-                    application.IdUserCreated = form["IdUserCreated"];
-                    application.DateCreated = DateTime.Parse(form["DateCreated"]);
-                    application.Subject = form["Subject"];
-                    application.Process = form["Process"];
-                    application.Model = form["Model"];
-                    application.BeforeChange = form["BeforeChange"];
-                    application.AfterChange = form["AfterChange"];
-                    application.Reason = form["Reason"];
-                    application.IdCustomer = form["IdCustomer"];
-                    application.IdDepartment = form["IdDepartment"];
-                    application.Code = $"PCN_{application.DateCreated?.ToString("yyyyMMddHHmmss")}";
-                    application.Status = 1;
-
-                    bool IsSendBoss = bool.Parse(form["IsSendBoss"]);
-
-                    for (int i = 0; i < countSigns; i++)
-                    {
-                        var signApplication = new Sign
-                        {
-                            IdApplication = application.Id,
-                            IdCustomer = form[$"Signs[{i}].IdCustomer"],
-                            IdDepartment = form[$"Signs[{i}].IdDepartment"],
-                            IdUser = form[$"Signs[{i}].IdUser"],
-                            Order = int.Parse(form[$"Signs[{i}].Order"]),
-                            Status = 1
-                        };
-
-                        application.Signs.Add(signApplication);
-                    }
-
-                    // Before change file
-                    if (request.Files["BeforeChangeFile"] != null)
-                    {
-                        var file = request.Files["BeforeChangeFile"];
-                        string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                        string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
-                        file.SaveAs(path);
-
-                        application.BeforeChangeFile = fileName;
-                    }
-
-                    // After change file
-                    if (request.Files["AfterChangeFile"] != null)
-                    {
-                        var file = request.Files["AfterChangeFile"];
-                        string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                        string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
-                        file.SaveAs(path);
-
-                        application.AfterChangeFile = fileName;
-                    }
-
+                    var application = MapCreateApplication(request);
+                    
                     // Save to DB
                     context.Applications.Add(application);
                     context.SaveChanges();
+                    transaction.Commit();
 
-                    // Send Email
                     var result = GetApplication(application.Id);
 
+                    // Send Email
                     var sign = result.Signs.ToArray()[0];
                     sign.User.Email = "you-nan.ruan@mail.foxconn.com";
 
+                    var IsSendBoss = bool.Parse(request.Form["IsSendBoss"]);
                     R_Emails.SendSignRequestEmail(result, sign, IsSendBoss);
-                 
+
+                    // Return
                     return result;
                 }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+
             }
-            catch (Exception ex)
+        }
+        public static Entities.Application UpdateApplication(HttpRequestBase request)
+        {
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
             {
-                throw ex;
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+                    var form = request.Form;
+
+                    var IdApplication = form["Id"].ToUpper();
+                    var oldApplication = context.Applications.FirstOrDefault(app => app.Id.ToUpper() == IdApplication);
+
+                    if (oldApplication != null)
+                    {
+                        var newApplication = MapUpdateApplication(request, oldApplication);
+
+                        context.Applications.Remove(oldApplication);
+                        context.Applications.Add(newApplication);
+
+                        context.SaveChanges();
+                        transaction.Commit();
+
+                        return GetApplication(newApplication.Id);
+                    }
+                    else
+                    {
+                        throw new Exception("Application does not exists.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+
             }
+        }
+
+        private static Entities.Application MapCreateApplication(HttpRequestBase request)
+        {
+            var form = request.Form;
+
+            var application = new Entities.Application
+            {
+                Id = Guid.NewGuid().ToString(),
+                IdUserCreated = form["IdUserCreated"],
+                DateCreated = DateTime.Parse(form["DateCreated"]),
+                Subject = form["Subject"],
+                Process = form["Process"],
+                Model = form["Model"],
+                BeforeChange = form["BeforeChange"],
+                AfterChange = form["AfterChange"],
+                Reason = form["Reason"],
+                CalcCost = form["CalcCost"],
+                IdCustomer = form["IdCustomer"],
+                IdDepartment = form["IdDepartment"],
+                Code = $"PCN_{DateTime.Parse(form["DateCreated"]).ToString("yyyyMMddHHmmss")}",
+                Status = 1,
+            };
+
+            int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 4;
+            for (int i = 0; i < countSigns; i++)
+            {
+                var signApplication = new Sign
+                {
+                    IdApplication = application.Id,
+                    IdCustomer = form[$"Signs[{i}].IdCustomer"],
+                    IdDepartment = form[$"Signs[{i}].IdDepartment"],
+                    IdUser = form[$"Signs[{i}].IdUser"],
+                    Order = int.Parse(form[$"Signs[{i}].Order"]),
+                    Status = 1
+                };
+
+                application.Signs.Add(signApplication);
+            }
+
+            // Before change file
+            if (request.Files["BeforeChangeFile"] != null)
+            {
+                var file = request.Files["BeforeChangeFile"];
+                string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                file.SaveAs(path);
+
+                application.BeforeChangeFile = fileName;
+            }
+
+            // After change file
+            if (request.Files["AfterChangeFile"] != null)
+            {
+                var file = request.Files["AfterChangeFile"];
+                string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                file.SaveAs(path);
+
+                application.AfterChangeFile = fileName;
+            }
+
+            return application;
+        }
+        private static Entities.Application MapUpdateApplication(HttpRequestBase request, Entities.Application oldApplication)
+        {
+            var form = request.Form;
+
+            var application = new Entities.Application
+            {
+                Id = oldApplication.Id,
+                IdUserCreated = oldApplication.IdUserCreated,
+                DateCreated = oldApplication.DateCreated,
+                Subject = form["Subject"],
+                Process = form["Process"],
+                Model = form["Model"],
+                BeforeChange = form["BeforeChange"],
+                AfterChange = form["AfterChange"],
+                Reason = form["Reason"],
+                CalcCost = form["CalcCost"],
+                IdCustomer = form["IdCustomer"],
+                IdDepartment = form["IdDepartment"],
+                Code = oldApplication.Code,
+                Status = 1,
+            };
+
+            int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 4;
+            for (int i = 0; i < countSigns; i++)
+            {
+                var signApplication = new Sign
+                {
+                    IdApplication = application.Id,
+                    IdCustomer = form[$"Signs[{i}].IdCustomer"],
+                    IdDepartment = form[$"Signs[{i}].IdDepartment"],
+                    IdUser = form[$"Signs[{i}].IdUser"],
+                    Order = int.Parse(form[$"Signs[{i}].Order"]),
+                    Status = 1
+                };
+
+                application.Signs.Add(signApplication);
+            }
+
+            // Before change file
+            if (request.Files["BeforeChangeFile"] != null)
+            {
+                // Xoá file cũ lưu file mới
+                if (File.Exists(HttpContext.Current.Server.MapPath($"/Data/Files/{oldApplication.BeforeChangeFile}")))
+                {
+                    File.Delete(HttpContext.Current.Server.MapPath($"/Data/Files/{oldApplication.BeforeChangeFile}"));
+                }
+
+                var file = request.Files["BeforeChangeFile"];
+                string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                file.SaveAs(path);
+
+                application.BeforeChangeFile = fileName;
+            }
+            else
+            {
+                application.BeforeChangeFile = oldApplication.BeforeChangeFile;
+            }
+
+            // After change file
+            if (request.Files["AfterChangeFile"] != null)
+            {
+                // Xoá file cũ lưu file mới
+                if (File.Exists(HttpContext.Current.Server.MapPath($"/Data/Files/{oldApplication.AfterChangeFile}")))
+                {
+                    File.Delete(HttpContext.Current.Server.MapPath($"/Data/Files/{oldApplication.AfterChangeFile}"));
+                }
+
+                var file = request.Files["AfterChangeFile"];
+                string fileName = $"{Path.GetFileName(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                string path = HttpContext.Current.Server.MapPath($"/Data/Files/{fileName}");
+                file.SaveAs(path);
+
+                application.AfterChangeFile = fileName;
+            }
+            else
+            {
+                application.AfterChangeFile = oldApplication.AfterChangeFile;
+            }
+
+            return application;
         }
 
         /* DELETE */
