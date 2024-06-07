@@ -95,34 +95,19 @@ function InitApplicationForm() {
 
     // Department   
     if (InitApplicationFormCount == 0) {
-        if ($('#ApplicationCreate-Customer option').length === 0) {
-            let customerSelect = $('#ApplicationCreate-Customer');
-            customerSelect.empty();
-            _datas.CustomerDepartments.forEach(function (customer) {
-                customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
-            });
-            customerSelect.change(function () {
-                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
-                let departmentSelect = $('#ApplicationCreate-Department');
-                departmentSelect.empty();
-                departments.forEach(function (department) {
-                    departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
-                });
-            });
+        SetCreateCustomerDepartment();
+        let department = _datas.SessionUser?.UserDepartments[0];
+        if (department != null) {
+            customer = department.Department.Customer;
+            $('#ApplicationCreate-Customer').val(customer.Id);
+            $('#ApplicationCreate-Department').val(department.IdDepartment);
         }
     }
    
-    let department = _datas.SessionUser?.UserDepartments[0];
-    if (department != null) {
-        customer = department.Department.Customer;
-        $('#ApplicationCreate-Customer').val(customer.Id);
-        $('#ApplicationCreate-Department').val(department.IdDepartment);
-    }
     $('#ApplicationCreate-Customer').change();
 }
 
 /* Save Event */
-
 $('#ApplicationCreate-Save').click(async function () {
     try {
         // get application data
@@ -139,6 +124,8 @@ $('#ApplicationCreate-Save').click(async function () {
             IdDepartment: $('#ApplicationCreate-Department').val(),
             Signs: $('#ApplicationCreate-Sign .widget-reminder-item').map((index, signItem) => {
                 return {
+                    IdCustomer: $(signItem).find('[customer]').val(),
+                    IdDepartment: $(signItem).find('[department]').val(),
                     IdUser: $(signItem).find('[user]').val(),
                     Order: $(signItem).find('[order]').text()
                 };
@@ -294,5 +281,30 @@ function ApplicationValidate(application, files) {
         return false;
     }
 
+    if (application.Signs.some((sign) => application.Signs.filter((item) => { return item.IdUser === sign.IdUser }).length > 1)) {
+        toastr['warning']('Người ký không được thêm nhiều lần!');
+        $('#ApplicationCreate-Sign').focus();
+        return false;
+    }
+
     return true;
+}
+
+/* Other */
+function SetCreateCustomerDepartment() {
+    if ($('#ApplicationCreate-Customer option').length === 0) {
+        let customerSelect = $('#ApplicationCreate-Customer');
+        customerSelect.empty();
+        _datas.CustomerDepartments.forEach(function (customer) {
+            customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+        });
+        customerSelect.change(function () {
+            let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+            let departmentSelect = $('#ApplicationCreate-Department');
+            departmentSelect.empty();
+            departments.forEach(function (department) {
+                departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+            });
+        });
+    }
 }

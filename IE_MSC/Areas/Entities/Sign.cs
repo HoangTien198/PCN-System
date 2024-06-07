@@ -21,7 +21,11 @@ namespace IE_MSC.Areas.Entities
         public Nullable<System.DateTime> DateApproved { get; set; }
         public Nullable<System.DateTime> DateRejected { get; set; }
         public string Detail { get; set; }
+        public string IdCustomer { get; set; }
+        public string IdDepartment { get; set; }
     
         public virtual User User { get; set; }
+        public virtual Customer Customer { get; set; }
+        public virtual Department Department { get; set; }
     }
 }

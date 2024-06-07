@@ -16,8 +16,8 @@
                 confirmButton: 'btn btn-sm btn-danger'
             },
         }).then(async function (confirm) {
-            if (confirm.value) {                
-                let result = await DeleteApplication(IdApplication);
+            if (confirm.value) {
+                let result = await DeleteApplication(_datas.Application.Id);
                 callback(result);
             }
         });

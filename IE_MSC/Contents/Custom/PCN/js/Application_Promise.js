@@ -72,6 +72,8 @@ function CreateApplication(application, files, isSendBoss) {
 
 		// Thêm dữ liệu cho các chữ ký
 		application.Signs.forEach((sign, index) => {
+			formData.append(`Signs[${index}].IdCustomer`, sign.IdCustomer);
+			formData.append(`Signs[${index}].IdDepartment`, sign.IdDepartment);
 			formData.append(`Signs[${index}].IdUser`, sign.IdUser);
 			formData.append(`Signs[${index}].Order`, sign.Order);
 		});

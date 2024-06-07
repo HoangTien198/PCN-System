@@ -101,10 +101,10 @@ function GetApplicationStatus(application) {
 }
 function GetApplicationDepartment(application) {
     if (!application || !application.Department) {
-        return 'Unknown (data of old version)';
+        return GetUserDept(application.UserCreated)
     }
     else {
-        return `${application.Department.DepartmentName} (${application.Customer.CustomerName})`;
+        return `[ ${application.Customer.CustomerName} ${application.Department.DepartmentName} ]`;
     }
 }
 function GetApplicationActiveDate(application) {
@@ -119,7 +119,7 @@ function GetApplicationActiveDate(application) {
 
 function GetUserNameObj(user) {
     if (user) {
-        return `${user.CardID}${user.VnName ? ' - ' + user.VnName : ' - ' + user.CnName}`;
+        return `${user.CardId}${user.VnName ? ' - ' + user.VnName : ' - ' + user.CnName}`;
     }
     else {
         return 'Unknown';

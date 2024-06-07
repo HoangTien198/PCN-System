@@ -364,6 +364,8 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         var signApplication = new Sign
                         {
                             IdApplication = application.Id,
+                            IdCustomer = form[$"Signs[{i}].IdCustomer"],
+                            IdDepartment = form[$"Signs[{i}].IdDepartment"],
                             IdUser = form[$"Signs[{i}].IdUser"],
                             Order = int.Parse(form[$"Signs[{i}].Order"]),
                             Status = 1
@@ -541,7 +543,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             if (!IsSessionUser && !IsSessionUserSign)
             {
                 return $"<div class=\"btn-group\">" +
-                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                        $"</div>";
             }
             else if (IsSessionUser)
@@ -549,7 +551,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 if(application.Signs.Any(s => s.Status != 1))
                 {
                     return $"<div class=\"btn-group\">" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                            $"   <button type=\"button\" title=\"Update\" class=\"disabled btn btn-sm btn-secondary\"><i class=\"fa-duotone fa-pen\"></i></button>" +
                            $"   <button type=\"button\" title=\"Delete\" class=\"disabled btn btn-sm btn-secondary\"><i class=\"fa-duotone fa-trash\"></i></button>" +
                            $"</div>";
@@ -557,9 +559,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 else
                 {
                     return $"<div class=\"btn-group\">" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"UpdateApplication(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DeleteApplication(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Update(this, event)\" title=\"Update\" class=\"btn btn-sm btn-warning\"><i class=\"fa-duotone fa-pen\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Delete(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>" +
                            $"</div>";
                 }
                 
@@ -570,22 +572,22 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 if (application.Signs.Any(s => s.IdUser == sessionUser.Id && s.Status != 1))
                 {
                     return $"<div class=\"btn-group\">" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                            $"</div>";
                 }
                 else
                 {
                     return $"<div class=\"btn-group\">" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"ApproveApplication(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
-                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"RejectApplication(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Approve(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
+                           $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Reject(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
                            $"</div>";                    
                 }
             }
             else
             {
                 return $"<div class=\"btn-group\">" +
-                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"DetailApplication(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
+                       $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                        $"</div>";
             }         
         }

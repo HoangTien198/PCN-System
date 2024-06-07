@@ -175,7 +175,6 @@ function AddCreateSign() {
 }
 
 /* Save Event */
-
 function ApplicationValidate(application, files) {
     if (application.Subject.length === 0) {
         toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
@@ -221,6 +220,8 @@ function ApplicationValidate(application, files) {
         toastr['warning']('[ 會簽 / Các bộ phận phê duyệt ] Không được để trống!');
         return false;
     }
+
+
 
     return true;
 }

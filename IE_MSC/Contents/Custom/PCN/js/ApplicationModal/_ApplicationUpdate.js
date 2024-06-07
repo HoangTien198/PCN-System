@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿var InitApplicationUpdateFormCount = 0;
+$(document).ready(function () {
     InitUpdateSumernote();   
 });
 
@@ -7,40 +8,70 @@ async function ApplicationUpdate(IdApplication, callback) {
     try {
         await GetUpdateApplication(IdApplication);
 
-        let ap = _datas.Application;
+        // Information
+        $('#ApplicationUpdateModal-UserCreated').val(GetUserName(_datas.Application.UserCreated));
+        $('#ApplicationUpdateModal-DateCreated').val(moment(_datas.Application.DateCreated).format('YYYY-MM-DD HH:mm'));
 
-        $('#ApplicationUpdateModal-UserCreated').val(GetUserName(ap.UserCreated));
-        $('#ApplicationUpdateModal-Department').val(GetApplicationDepartment(ap));
-        $('#ApplicationUpdateModal-DateCreated').val(moment().format('YYYY-MM-DD HH:mm'));
+        $('#ApplicationUpdateModal-Subject').val(_datas.Application.Subject);
+        $('#ApplicationUpdateModal-Process').val(_datas.Application.Process);
+        $('#ApplicationUpdateModal-Model').val(_datas.Application.Model);
 
-        $('#ApplicationUpdateModal-Subject').val('');
-        $('#ApplicationUpdateModal-Process').val('');
-        $('#ApplicationUpdateModal-Model').val('');
+        // Editor
+        try { $('#ApplicationUpdateModal-BeforeChange').summernote('code', decodeURIComponent(_datas.Application.BeforeChange)) }
+        catch { $('#ApplicationUpdateModal-BeforeChange').summernote('code', _datas.Application.BeforeChange) }
 
-        $('#ApplicationUpdateModal-BeforeChange').summernote('reset');
-        $('#ApplicationUpdateModal-AfterChange').summernote('reset');
-        $('#ApplicationUpdateModal-Reason').summernote('reset');
-        $('#ApplicationUpdateModal-Cost').summernote('reset');
+        try { $('#ApplicationUpdateModal-AfterChange').summernote('code', decodeURIComponent(_datas.Application.AfterChange)) }
+        catch { $('#ApplicationUpdateModal-AfterChange').summernote('code', _datas.Application.AfterChange) }
+
+        try { $('#ApplicationUpdateModal-Reason').summernote('code', decodeURIComponent(_datas.Application.Reason)) }
+        catch { $('#ApplicationUpdateModal-Reason').summernote('code', _datas.Application.Reason) }
+
+        $('#ApplicationUpdateModal-Cost').summernote('reset')
         $('#ApplicationUpdateModal-Cost').summernote('disable');
 
-        $('#ApplicationUpdateModal-BeforeChangeFile').val('');
-        $('#ApplicationUpdateModal-AfterChangeFile').val('');
+        // File
+        if (_datas.Application.BeforeChangeFile) {
+            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').text(_datas.Application.BeforeChangeFile);
+            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').attr('href', `/Data/Files/${_datas.Application.BeforeChangeFile}`);
+        }
+        else {
+            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').attr('href', 'javascript:;');
+            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').text('No file');
+        }
 
+        if (_datas.Application.AfterChangeFile) {
+            $('#ApplicationUpdateModal-AfterChangeFile-OLD').text(_datas.Application.AfterChangeFile);
+            $('#ApplicationUpdateModal-AfterChangeFile-OLD').attr('href', `/Data/Files/${_datas.Application.AfterChangeFile}`);
+        }
+        else {
+            $('#ApplicationUpdateModal-AfterChangeFile-OLD').attr('href', 'javascript:;');
+            $('#ApplicationUpdateModal-AfterChangeFile-OLD').text('No file');
+        }
+
+        // Sign
         $('#ApplicationUpdateModal-SendBoss').prop('checked', false);
         $('#ApplicationUpdateModal-Sign').empty();
-        //AddUpdateSign();
+        SetUpdateSign(_datas.Application.Signs);
+
+        // Customer Departments
+        if (InitApplicationUpdateFormCount == 0) {
+            SetUpdateCustomerDepartment();
+            let department = _datas.SessionUser?.UserDepartments[0];
+            if (department != null) {
+                customer = department.Department.Customer;
+                $('#ApplicationUpdateModal-Customer').val(customer.Id);
+                $('#ApplicationUpdateModal-Department').val(department.IdDepartment);
+            }
+            $('#ApplicationUpdateModal-Customer').change();
+        }
 
         $('#ApplicationUpdateModal').modal('show');
-
-        //callback(true);
+        InitApplicationUpdateFormCount++;
     } catch (e) {
         Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
         console.error(e);
     }
 }
-$('#ApplicationUpdateModal').on('shown.bs.modal', function () {
-    $('#ApplicationUpdateModal-Title').focus();
-});
 function InitUpdateSumernote() {
     $('#ApplicationUpdateModal-BeforeChange').summernote({
         height: 200,
@@ -93,6 +124,88 @@ function InitUpdateSumernote() {
 }
 
 /* Add Sign Event */
+function SetUpdateSign(signs) {
+    let container = $('#ApplicationUpdateModal-Sign');
+    let count = 0;
+    signs.forEach(function (sign) {
+        count++;
+        let widgetReminderItem = $(`<div class="widget-reminder-item">
+                                      <div class="widget-reminder-time"><span class="text-info fw-bold" order="">${count }</span></div>
+                                      <div class="widget-reminder-divider bg-info"></div>
+                                      <div class="widget-reminder-content">
+                                        <div class="d-flex justify-content-between">
+                                          <div class="row w-100">
+                                            <div class="col-12 mb-2">
+                                              <div class="d-flex w-100">
+                                                <select class="form-select me-2" customer></select>
+                                                <select class="form-select" department></select>
+                                              </div>
+                                            </div>
+                                            <div class="col-12">
+                                              <select class="form-select" user></select>
+                                            </div>
+                                          </div>
+                                          <button class="btn btn-danger ms-2">
+                                            <i class="fa-duotone fa-trash"></i>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>`);
+
+        let selectCustomer = widgetReminderItem.find('[customer]');
+        let selectDepartment = widgetReminderItem.find('[department]');
+        let selectUser = widgetReminderItem.find('[user]');
+   
+        _datas.CustomerDepartments.forEach((customer) => {
+            selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+        });
+
+        // select customer change event
+        selectCustomer.change(function () {
+            let customer = _datas.CustomerDepartments.find((customer) => { return customer.Id == selectCustomer.val(); });
+
+            selectDepartment.empty();
+            customer.Departments.forEach(function (department) {
+                selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+            });
+            selectDepartment.change();
+        });
+
+        // select department change envent
+        selectDepartment.change(function () {
+            var IdCustomer = selectCustomer.val(), IdDepartment = selectDepartment.val();
+            var users = _datas.Users.filter(user => {
+                return user.UserDepartments.some(dept => {
+                    return dept.Department.Id === IdDepartment && dept.Department.IdCustomer === IdCustomer;
+                });
+            });
+
+            selectUser.empty();
+            users.forEach(function (user) {
+                selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
+            })
+        });
+
+        // append to container
+        container.append(widgetReminderItem);
+
+        console.log(sign);
+        // set customer
+        if (sign.IdCustomer) {
+            selectCustomer.val(IdCustomer);
+        }
+        else {
+            selectCustomer.val(_datas.Application.IdCustomer);
+        }
+        selectCustomer.change();
+
+        // set department
+        if (sign.IdDepartment) {
+
+        }
+       
+    });
+}
 function AddUpdateSign() {
     let container = $('#ApplicationUpdateModal-Sign');
     let count = container.find('.widget-reminder-item').length;
@@ -249,5 +362,25 @@ function ApplicationValidate(applicationData) {
 async function GetUpdateApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
         _datas.Application = await GetApplication(IdApplication);
+    }
+}
+function SetUpdateCustomerDepartment() {
+    // Department   
+    if (InitApplicationUpdateFormCount == 0) {
+        if ($('#ApplicationCreate-Customer option').length === 0) {
+            let customerSelect = $('#ApplicationUpdateModal-Customer');
+            customerSelect.empty();
+            _datas.CustomerDepartments.forEach(function (customer) {
+                customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+            });
+            customerSelect.change(function () {
+                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+                let departmentSelect = $('#ApplicationUpdateModal-Department');
+                departmentSelect.empty();
+                departments.forEach(function (department) {
+                    departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+                });
+            });
+        }
     }
 }

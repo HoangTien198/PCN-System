@@ -77,19 +77,18 @@ function InitDatatable() {
 
 }
 /* Datatable Event */
-function DetailApplication(elm, e) {
+function Detail(elm, e) {
 	let Id = $(elm).data('id');
 	ApplicationDetail(Id);
 }
-function UpdatApplication(elm, e) {
+function Update(elm, e) {
 	let Id = $(elm).data('id');
 	ApplicationUpdate(Id, function (result) {
 		console.log(result);
 	});
 }
-function DeleteApplication(elm, e) {
+function Delete(elm, e) {
 	let Id = $(elm).data('id');
-	let rowIndex = datatable.row($(elm).closest('tr')).index();
 	ApplicationDelete(Id, function (result) {
 		if (result) {
 			datatable.draw(false);

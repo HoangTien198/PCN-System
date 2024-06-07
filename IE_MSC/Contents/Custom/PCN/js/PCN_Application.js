@@ -76,7 +76,7 @@ function InitDatatable() {
 
 }
 /* Datatable Event */
-function DetailApplication(elm, e) {
+function Detail(elm, e) {
 	let Id = $(elm).data('id');
 	ApplicationDetail(Id);
 }
