@@ -142,6 +142,58 @@ function CreateApplicationFormData(application) {
 
 	return formData;
 }
+function ApproveApplication(sign, calcCost) {
+	console.time("Approve Application");
+	return new Promise(function (resolve, reject) {
+		// Gửi tới SV
+		$.ajax({
+			url: `/PCN/Management/ApproveApplication`,
+			type: "POST",
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify({ sign, calcCost }),
+			success: function (res) {
+				console.timeEnd("Approve Application");
+				if (res.status) {
+					resolve(res.data);
+				}
+				else {
+					reject(res.message);
+				}
+			},
+			error: function (error) {
+				console.timeEnd("Approve Application");
+				reject(error);
+			}
+		});
+	});
+}
+function RejectApplication(sign, calcCost) {
+	console.time("Reject Application");
+	return new Promise(function (resolve, reject) {
+		// Gửi tới SV
+		$.ajax({
+			url: `/PCN/Management/RejectApplication`,
+			type: "POST",
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify({ sign, calcCost }),
+			success: function (res) {
+				console.timeEnd("Reject Application");
+				if (res.status) {
+					resolve(res.data);
+				}
+				else {
+					reject(res.message);
+				}
+			},
+			error: function (error) {
+				console.timeEnd("Reject Application");
+				reject(error);
+			}
+		});
+	});
+}
 
 /* DELETE */
 function DeleteApplication(IdApplication) {

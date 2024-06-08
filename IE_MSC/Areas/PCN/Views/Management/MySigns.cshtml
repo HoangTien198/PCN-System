@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "MY APPLICATION";
+    ViewBag.Title = "MY SIGNS";
     Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
 
     var newGuid = Guid.NewGuid();
@@ -11,7 +11,7 @@
     @Styles.Render("~/bundles/datatablesCss")
     <link href="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
     <!-- custom -->
-    <link href="~/Contents/Custom/PCN/css/MyApplication.css" rel="stylesheet" />
+    <link href="~/Contents/Custom/PCN/css/MySigns.css" rel="stylesheet" />
 }
 
 <!-- Breadcrumb -->
@@ -19,7 +19,7 @@
     <ul class="breadcrumb">
         <li class="breadcrumb-item"><a href="/Dashboard/Dashboard">HOME</a></li>
         <li class="breadcrumb-item">MY APPLICATION</li>
-        <li class="breadcrumb-item active">MY APPLICATION</li>
+        <li class="breadcrumb-item active">SIGN APPLICATION</li>
     </ul>
 </section>
 
@@ -37,6 +37,7 @@
                         <th>APPLICANT</th>
                         <th>SUBJECT</th>
                         <th>STATUS</th>
+                        <th>MY SIGN</th>
                         <th>ACTION</th>
                     </tr>
                 </thead>
@@ -58,8 +59,8 @@
 <section>
     <!-- PCN Detail -->
     @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationDetail.cshtml")
-    <!-- PCN Update -->
-    @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationUpdate.cshtml")
+    <!-- PCN Approve -->
+    @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationApprove.cshtml")
 </section>
 
 @section scripts{
@@ -70,8 +71,7 @@
     <script src="~/Contents/Custom/PCN/js/Application_Promise.js"></script>
     <script src="~/Contents/Custom/User/User_Promise.js"></script>
 
-    <script src="~/Contents/Custom/PCN/js/MyApplication.js"></script>
-    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js"></script>
-    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationUpdate.js"></script>
-    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDelete.js"></script>
+    <script src="~/Contents/Custom/PCN/js/MySigns.js"></script>
+    @*<script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js"></script>*@
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationAprove.js"></script>
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
@@ -51,6 +52,14 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         .FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment.ToUpper());
 
                     application.Signs = application.Signs.OrderBy(s => s.Order).ToList();
+                    foreach(var sign in application.Signs)
+                    {
+                        sign.Customer = context.Customers
+                            .FirstOrDefault(c => c.Id.ToUpper() == sign.IdCustomer.ToUpper());
+                        sign.Department = context.Departments
+                            .FirstOrDefault(d => d.Id.ToUpper() == sign.IdDepartment.ToUpper());
+                    }
+                   
 
                     return application;
                 }
@@ -410,6 +419,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
         }
 
+        // Map
         private static Entities.Application MapCreateApplication(HttpRequestBase request)
         {
             var form = request.Form;
@@ -553,6 +563,83 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
 
             return application;
+        }
+
+        // Approve + Reject
+        public static Entities.Application ApproveApplication(Sign sign, string calcCost)
+        {
+            using(var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var application = context.Applications.Find(sign.IdApplication);
+                    var dbSing = context.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+                    if (application != null && dbSing != null) {                      
+                        if(!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
+                        if(!string.IsNullOrEmpty(sign.Detail)) dbSing.Detail = sign.Detail;
+
+                        dbSing.Status = 2; // Approve = 2
+                        dbSing.DateApproved = DateTime.Now;
+
+                        context.Applications.AddOrUpdate(application);
+                        context.Signs.AddOrUpdate(dbSing);
+                        context.SaveChanges();
+                        transaction.Commit();
+
+                        return GetApplication(application.Id);
+                    }
+                    else
+                    {
+                        throw new Exception("Application does not exists.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+        public static Entities.Application RejectApplication(Sign sign, string calcCost)
+        {
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var application = context.Applications.Find(sign.IdApplication);
+                    var dbSing = context.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+                    if (application != null && dbSing != null)
+                    {
+                        if (!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
+                        if (!string.IsNullOrEmpty(sign.Detail)) dbSing.Detail = sign.Detail;
+
+                        dbSing.Status = -1; // Reject = -1
+                        dbSing.DateRejected = DateTime.Now;
+
+                        context.Applications.AddOrUpdate(application);
+                        context.Signs.AddOrUpdate(dbSing);
+                        context.SaveChanges();
+                        transaction.Commit();
+
+                        return GetApplication(application.Id);
+                    }
+                    else
+                    {
+                        throw new Exception("Application does not exists.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
         }
 
         /* DELETE */

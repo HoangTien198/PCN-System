@@ -1,0 +1,16 @@
+﻿#datatable td:nth-child(5) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.page-item.active .page-link {
+    color: #30beff;
+    background-color: rgba(48, 190, 255, 0.3);
+}
+
+.page-link:focus {
+    color: #30beff;
+    background-color: rgba(48, 190, 255, 0.3);
+    box-shadow: 0 0 0 0.25rem rgb(48 190 255 / 25%);
+}

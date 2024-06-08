@@ -12,6 +12,8 @@
 
 
 function CreateApplicationDetailModal(application) {
+    console.log(application);
+
     SetApplicationInformation(application);
     SetApplicationDetails(application);
     SetApplicationSigns(application);

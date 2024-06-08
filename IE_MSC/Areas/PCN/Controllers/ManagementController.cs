@@ -133,6 +133,34 @@ namespace IE_MSC.Areas.PCN.Controllers
                 return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+        [HttpPost]
+        public JsonResult ApproveApplication(Sign sign, string calcCost)
+        {
+            try
+            {
+                var result = R_PCN.ApproveApplication(sign, calcCost);
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        public JsonResult RejectApplication(Sign sign, string calcCost)
+        {
+            try
+            {
+                var result = R_PCN.RejectApplication(sign, calcCost);
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         /* DELETE */
         [HttpDelete]

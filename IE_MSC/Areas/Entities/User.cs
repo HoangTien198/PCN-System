@@ -11,7 +11,7 @@ namespace IE_MSC.Areas.Entities
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,6 +26,8 @@ namespace IE_MSC.Areas.Entities
         public string VnName { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string Password { get; set; }
         public Nullable<int> Status { get; set; }
         public Nullable<bool> IsAdmin { get; set; }
