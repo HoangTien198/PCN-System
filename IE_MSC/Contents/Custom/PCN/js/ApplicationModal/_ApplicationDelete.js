@@ -1,10 +1,10 @@
 ﻿async function ApplicationDelete(IdApplication) {
     try {
-        await GetDeleteApplication(IdApplication);
+        await Delete_GetApplication(IdApplication);
 
         Swal.fire({
             title: "Delete this application?",
-            html: ApplicationDeleteInfor(_datas.Application),
+            html: Delete_ApplicationInfor(_datas.Application),
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: `<i class="fa-duotone fa-trash"></i> Delete`,
@@ -31,7 +31,7 @@
         Swal.fire("Có lỗi xảy ra!", e, "error");
     }
 }
-function ApplicationDeleteInfor(application) {
+function Delete_ApplicationInfor(application) {
     return `<table class="table table-striped table-bordered align-middle fs-6">
                 <tbody>
                     <tr>
@@ -54,7 +54,7 @@ function ApplicationDeleteInfor(application) {
             </table>`;
 }
 /* Other */
-async function GetDeleteApplication(IdApplication) {
+async function Delete_GetApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
         _datas.Application = await GetApplication(IdApplication);
     }

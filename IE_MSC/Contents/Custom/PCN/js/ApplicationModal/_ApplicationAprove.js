@@ -1,11 +1,11 @@
-﻿var InitApplicationApproveFormCount = 0;
+﻿var ApproveInitApplicationFormCount = 0;
 
 async function ApplicationApprove(IdApplication) {
     try {
-        await GetApproveApplication(IdApplication);
+        await Approve_GetApplication(IdApplication);
 
-        CreateApplicationApproveModal(_datas.Application);
-        InitApproveSumernote();
+        Approve_CreateApplicationModal(_datas.Application);
+        Approve_InitSumernote();
 
     } catch (e) {
         Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
@@ -15,38 +15,36 @@ async function ApplicationApprove(IdApplication) {
 
 
 /* Create Approve Modal */
-function CreateApplicationApproveModal(application) {
-    console.log(application);
-
-    SetApplicationApproveInformation(application);
-    SetApplicationApproveDetails(application);
-    SetApplicationApproveSigns(application);
+function Approve_CreateApplicationModal(application) {
+    Approve_SetApplicationInformation(application);
+    Approve_SetApplicationDetails(application);
+    Approve_SetApplicationSigns(application);
 
     $('#ApplicationApproveModal').modal('show');
 }
 
 // Infor
-function SetApplicationApproveInformation(application) {
+function Approve_SetApplicationInformation(application) {
     $('#ApplicationApproveModal-UserCreated').val(GetUserName(application.UserCreated));
-    $('#ApplicationApproveModal-Department').val(GetApproveDepartment(application));
+    $('#ApplicationApproveModal-Department').val(Approve_GetDepartment(application));
     $('#ApplicationApproveModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm:ss"));
     $('#ApplicationApproveModal-ApplicationStatus').val(GetApplicationStatus(application));
-
-    SetApplicationApproveStatusClass(application.Status);
-    $('#ApplicationApproveModal-DateActived').val(application.Status === 2 ? GetApplicationActiveDate(application) : '');
 
     $('#ApplicationApproveModal-CodePCN').val(application.Code);
     $('#ApplicationApproveModal-Subject').val(application.Subject);
     $('#ApplicationApproveModal-Process').val(application.Process);
     $('#ApplicationApproveModal-Model').val(application.Model);
+
+    Approve_SetApplicationStatusClass(application.Status);
+    $('#ApplicationApproveModal-DateActived').val(application.Status === 2 ? GetApplicationActiveDate(application) : '');
 }
-function GetApproveDepartment(application) {
+function Approve_GetDepartment(application) {
     if (application.Customer && application.Department) {
         return `[ ${application.Customer.CustomerName} - ${application.Department.DepartmentName} ]`;
     }
     return GetUserDept(application.UserCreated);
 }
-function SetApplicationApproveStatusClass(status) {
+function Approve_SetApplicationStatusClass(status) {
     const statusElement = $('#ApplicationApproveModal-ApplicationStatus');
     statusElement.removeClass();
 
@@ -64,20 +62,25 @@ function SetApplicationApproveStatusClass(status) {
 }
 
 // Detail
-function SetApplicationApproveDetails(application) {
-    try { $('#ApplicationApproveModal-BeforeChange').html(decodeURIComponent(_datas.Application.BeforeChange)) }
-    catch { $('#ApplicationApproveModal-BeforeChange').html(_datas.Application.BeforeChange) }
+function Approve_SetApplicationDetails(application) {
+    $('#ApplicationApproveModal-BeforeChange').html(Approve_DecodeContent(_datas.Application.BeforeChange))
+    $('#ApplicationApproveModal-AfterChange').html(Approve_DecodeContent(_datas.Application.AfterChange))
+    $('#ApplicationApproveModal-Reason').html(Approve_DecodeContent(_datas.Application.Reason))
+    $('#ApplicationApproveModal-CalcCost').html(Approve_DecodeContent(_datas.Application.CalcCost))
 
-    try { $('#ApplicationApproveModal-AfterChange').html(decodeURIComponent(_datas.Application.AfterChange)) }
-    catch { $('#ApplicationApproveModal-AfterChange').html(_datas.Application.AfterChange) }
-
-    try { $('#ApplicationApproveModal-Reason').html(decodeURIComponent(_datas.Application.Reason)) }
-    catch { $('#ApplicationApproveModal-Reason').html(_datas.Application.Reason) }
-
-    SetApproveFileLink('#ApplicationApproveModal-BeforeChangeFile', application.BeforeChangeFile);
-    SetApproveFileLink('#ApplicationApproveModal-AfterChangeFile', application.AfterChangeFile);
+    Approve_SetFileLink('#ApplicationApproveModal-BeforeChangeFile', application.BeforeChangeFile);
+    Approve_SetFileLink('#ApplicationApproveModal-AfterChangeFile', application.AfterChangeFile);
 }
-function SetApproveFileLink(elementId, fileName) {
+function Approve_DecodeContent(content) {
+    try {
+        if (content) return decodeURIComponent(content);
+        else return '';
+    } catch (e) {
+        if (content) return content;
+        else return ''
+    }
+}
+function Approve_SetFileLink(elementId, fileName) {
     const element = $(elementId);
     if (fileName) {
         element.text(fileName);
@@ -87,7 +90,7 @@ function SetApproveFileLink(elementId, fileName) {
         element.text('No file');
     }
 }
-function InitApproveSumernote() {
+function Approve_InitSumernote() {
     if (IsUserHasDepartment('IE')) {
         $('#ApplicationApproveModal-CalcCost').summernote({
             height: 200,
@@ -107,70 +110,64 @@ function InitApproveSumernote() {
 }
 
 // Sign
-function SetApplicationApproveSigns(application) {
+function Approve_SetApplicationSigns(application) {
     const signContainer = $('#ApplicationApproveModal-Sign');
     signContainer.empty();
 
-    let isReject = false;
+    let isReject = application.Signs.some((sign) => { return sign.Status === -1 });
     application.Signs.forEach((sign) => {
-        if (sign.Status === -1) {
-            isReject = true;
-            const signItem = CreateRejectedSignItem(sign);
-
-            signContainer.append(signItem);
-        } else {
-            const signItem = CreateSignItem(sign, isReject);
-
-            signContainer.append(signItem);
-        }
+        const signItem = Approve_CreateSignItem(sign, isReject);
+        signContainer.append(signItem);
     });
 }
-function CreateRejectedSignItem(sign) {
-    const time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
-    return `
-        <div class="widget-reminder-item bg-danger bg-opacity-10">
-            <div class="widget-reminder-time">${time}</div>
-            <div class="widget-reminder-divider bg-danger"></div>
-            <div class="widget-reminder-content">
-                <div class="fw-bold text-danger">${GetUserName(sign.User)}</div>
-                <div class="fs-10px text-danger">${GetUserDept(sign.User)}</div>
-                <div class="fs-13px text-danger">${sign.Detail}</div>
-            </div>
-        </div>`;
-}
-function CreateSignItem(sign, isReject) {
-    const color = sign.Status === 1 ? "warning" : "success";
-    const time = sign.Status === 1 ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+function Approve_CreateSignItem(sign, isReject) {
+    let setup = {
+        color: '',
+        time: '',
+        user: GetUserName(sign.User),
+        dept: GetUserSignDepartment(sign),
+        detail: sign.Detail ? sign.Detail : '',
+    };
 
-    if (isReject) {
-        return `
-            <div class="widget-reminder-item bg-secondary bg-opacity-10">
-                <div class="widget-reminder-time"><span class="text-secondary fw-bold">Closed</span></div>
-                <div class="widget-reminder-divider bg-secondary"></div>
-                <div class="widget-reminder-content">
-                    <div class="fw-bold text-secondary">${GetUserName(sign.User)}</div>
-                    <div class="fs-10px">${GetUserDept(sign.User)}</div>
-                </div>
-            </div>`;
+    switch (sign.Status) {
+        case 1:
+            if (isReject) {
+                setup.color = 'secondary';
+                setup.time = '<span class="text-secondary fw-bold">Close</span>';
+            }
+            else {
+                setup.color = 'warning';
+                setup.time = '<span class="text-warning fw-bold">Pending</span>';
+            }
+            break;
+        case 2:
+            setup.color = 'success';
+            setup.time = `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+            break;
+        case -1:
+            setup.color = 'danger';
+            setup.time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
+            break;
+        default:
     }
-
     return `
-        <div class="widget-reminder-item bg-${color} bg-opacity-10">
-            <div class="widget-reminder-time">${time}</div>
-            <div class="widget-reminder-divider bg-${color}"></div>
+        <div class="widget-reminder-item bg-${setup.color} bg-opacity-10">
+            <div class="widget-reminder-time">${setup.time}</div>
+            <div class="widget-reminder-divider bg-${setup.color}"></div>
             <div class="widget-reminder-content">
-                <div class="fw-bold text-${color}">${GetUserName(sign.User)}</div>
-                <div class="fs-10px text-${color}">${GetUserDept(sign.User)}</div>
+                <div class="fw-bold text-${setup.color}">${setup.user}</div>
+                <div class="fs-10px text-${setup.color}">${setup.dept}</div>
+                <div class="fs-10px text-${setup.color}">${setup.detail}</div>
             </div>
         </div>`;
 }
 
 /* Approve Save */
-async function ApplicationApproveSave() {
+async function Approve_ApplicationSave() {
     try {
         Swal.fire({
             title: "Approve this application?",
-            html: ApplicationApproveInfor(_datas.Application),
+            html: Approve_ApplicationInfor(_datas.Application),
             icon: "question",
             showCancelButton: true,
             confirmButtonText: `<i class="fa-duotone fa-check"></i> Approve`,
@@ -196,6 +193,10 @@ async function ApplicationApproveSave() {
 
                 if (result) {
                     datatable.draw(false);
+
+                    _datas.Application = result;
+
+                    $('#ApplicationApproveModal').modal('hide');
                     toastr['success']('Approve Application Success.');
                 }
             }
@@ -205,7 +206,7 @@ async function ApplicationApproveSave() {
         console.error(e);
     }
 }
-function ApplicationApproveInfor(application) {
+function Approve_ApplicationInfor(application) {
     return `<table class="table table-striped table-bordered align-middle fs-6">
                 <tbody>
                     <tr>
@@ -233,16 +234,8 @@ function ApplicationApproveInfor(application) {
 }
 
 /* Other */
-async function GetApproveApplication(IdApplication) {
+async function Approve_GetApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
         _datas.Application = await GetApplication(IdApplication);
-    }
-}
-function IsUserHasDepartment(departmentName) {
-    if (_datas.SessionUser.UserDepartments.some(dept => { return dept.Department.DepartmentName.toUpperCase().includes(departmentName) })) {
-        return true;
-    }
-    else {
-        return false;
     }
 }

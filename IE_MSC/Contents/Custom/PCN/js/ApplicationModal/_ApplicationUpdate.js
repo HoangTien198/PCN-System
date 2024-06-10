@@ -1,80 +1,88 @@
-﻿var InitApplicationUpdateFormCount = 0;
-$(document).ready(function () {
-    InitUpdateSumernote();   
-});
-
-/* Create Update Modal */
+﻿var Update_InitApplicationCount = 0;
 async function ApplicationUpdate(IdApplication) {
     try {
-        await GetUpdateApplication(IdApplication);
+        await Update_GetApplication(IdApplication);
 
-        // Information
-        $('#ApplicationUpdateModal-UserCreated').val(GetUserName(_datas.Application.UserCreated));
-        $('#ApplicationUpdateModal-DateCreated').val(moment(_datas.Application.DateCreated).format('YYYY-MM-DD HH:mm'));
+        Update_CreateApplicationModal(_datas.Application);
 
-        $('#ApplicationUpdateModal-Subject').val(_datas.Application.Subject);
-        $('#ApplicationUpdateModal-Process').val(_datas.Application.Process);
-        $('#ApplicationUpdateModal-Model').val(_datas.Application.Model);
-
-        // Editor
-        try { $('#ApplicationUpdateModal-BeforeChange').summernote('code', decodeURIComponent(_datas.Application.BeforeChange)) }
-        catch { $('#ApplicationUpdateModal-BeforeChange').summernote('code', _datas.Application.BeforeChange) }
-
-        try { $('#ApplicationUpdateModal-AfterChange').summernote('code', decodeURIComponent(_datas.Application.AfterChange)) }
-        catch { $('#ApplicationUpdateModal-AfterChange').summernote('code', _datas.Application.AfterChange) }
-
-        try { $('#ApplicationUpdateModal-Reason').summernote('code', decodeURIComponent(_datas.Application.Reason)) }
-        catch { $('#ApplicationUpdateModal-Reason').summernote('code', _datas.Application.Reason) }
-
-        $('#ApplicationUpdateModal-CalcCost').summernote('reset')
-        $('#ApplicationUpdateModal-CalcCost').summernote('disable');
-
-        // File
-        if (_datas.Application.BeforeChangeFile) {
-            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').text(_datas.Application.BeforeChangeFile);
-            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').attr('href', `/Data/Files/${_datas.Application.BeforeChangeFile}`);
-        }
-        else {
-            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').attr('href', 'javascript:;');
-            $('#ApplicationUpdateModal-BeforeChangeFile-OLD').text('No file');
-        }
-
-        if (_datas.Application.AfterChangeFile) {
-            $('#ApplicationUpdateModal-AfterChangeFile-OLD').text(_datas.Application.AfterChangeFile);
-            $('#ApplicationUpdateModal-AfterChangeFile-OLD').attr('href', `/Data/Files/${_datas.Application.AfterChangeFile}`);
-        }
-        else {
-            $('#ApplicationUpdateModal-AfterChangeFile-OLD').attr('href', 'javascript:;');
-            $('#ApplicationUpdateModal-AfterChangeFile-OLD').text('No file');
-        }
-        $('#ApplicationUpdateModal-BeforeChangeFile-NEW').val('');
-        $('#ApplicationUpdateModal-AfterChangeFile-NEW').val('');
-
-        // Sign
-        $('#ApplicationUpdateModal-SendBoss').prop('checked', false);
-        $('#ApplicationUpdateModal-Sign').empty();
-        SetUpdateSign(_datas.Application.Signs);
-
-        // Customer Departments
-        if (InitApplicationUpdateFormCount == 0) {
-            SetUpdateCustomerDepartment();
-            let department = _datas.SessionUser?.UserDepartments[0];
-            if (department != null) {
-                customer = department.Department.Customer;
-                $('#ApplicationUpdateModal-Customer').val(customer.Id);
-                $('#ApplicationUpdateModal-Department').val(department.IdDepartment);
-            }
-            $('#ApplicationUpdateModal-Customer').change();
-        }
-
-        $('#ApplicationUpdateModal').modal('show');
-        InitApplicationUpdateFormCount++;
+       
+        
     } catch (e) {
         Swal.fire('Error!', `${GetAjaxErrorMessage(e)}`, 'error');
         console.error(e);
     }
 }
-function InitUpdateSumernote() {
+
+
+/* Create Update Modal */
+function Update_CreateApplicationModal(application) {
+    Update_SetInformation(application);
+    Update_SetDetails(application);
+    Update_SetSign(application.Signs);
+
+    Update_InitApplicationCount++;
+
+    $('#ApplicationUpdateModal').modal('show');
+}
+
+// Information
+function Update_SetInformation(application) {
+    $('#ApplicationUpdateModal-UserCreated').val(GetUserName(application.UserCreated));
+    $('#ApplicationUpdateModal-DateCreated').val(moment(application.DateCreated).format('YYYY-MM-DD HH:mm'));
+
+    Update_SetDepartment();
+
+    $('#ApplicationUpdateModal-Subject').val(application.Subject);
+    $('#ApplicationUpdateModal-Process').val(application.Process);
+    $('#ApplicationUpdateModal-Model').val(application.Model);
+}
+function Update_SetDepartment() {
+    if (Update_InitApplicationCount == 0) {
+        if ($('#ApplicationCreate-Customer option').length === 0) {
+            let customerSelect = $('#ApplicationUpdateModal-Customer');
+            customerSelect.empty();
+            _datas.CustomerDepartments.forEach(function (customer) {
+                customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
+            });
+            customerSelect.change(function () {
+                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+                let departmentSelect = $('#ApplicationUpdateModal-Department');
+                departmentSelect.empty();
+                departments.forEach(function (department) {
+                    departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
+                });
+            });
+        }
+
+        let department = _datas.SessionUser?.UserDepartments[0];
+        if (department != null) {
+            customer = department.Department.Customer;
+            $('#ApplicationUpdateModal-Customer').val(customer.Id);
+            $('#ApplicationUpdateModal-Department').val(department.IdDepartment);
+        }
+
+        $('#ApplicationUpdateModal-Customer').change();
+    }
+}
+
+// Details
+function Update_SetDetails(application) {
+    if (Update_InitApplicationCount == 0) Update_InitSumernote();
+
+    $('#ApplicationUpdateModal-BeforeChange').summernote('code', Update_DecodeContent(application.BeforeChange));
+    $('#ApplicationUpdateModal-AfterChange').summernote('code', Update_DecodeContent(application.AfterChange));
+    $('#ApplicationUpdateModal-Reason').summernote('code', Update_DecodeContent(application.Reason))
+    $('#ApplicationUpdateModal-CalcCost').summernote('code', Update_DecodeContent(application.CalcCost))
+
+    $('#ApplicationUpdateModal-CalcCost').summernote('reset')
+    $('#ApplicationUpdateModal-CalcCost').summernote('disable');
+
+    Update_SetFileLink('#ApplicationUpdateModal-BeforeChangeFile-OLD', application.BeforeChangeFile);
+    Update_SetFileLink('#ApplicationUpdateModal-AfterChangeFile-OLD', application.AfterChangeFile);
+    $('#ApplicationUpdateModal-BeforeChangeFile-NEW').val('');
+    $('#ApplicationUpdateModal-AfterChangeFile-NEW').val('');
+}
+function Update_InitSumernote() {
     $('#ApplicationUpdateModal-BeforeChange').summernote({
         height: 200,
         foreColor: 'White',
@@ -98,7 +106,7 @@ function InitUpdateSumernote() {
             ['color', ['color']],
             ['table', ['table']],
         ],
-    });   
+    });
     $('#ApplicationUpdateModal-Reason').summernote({
         height: 200,
         foreColor: 'White',
@@ -110,7 +118,7 @@ function InitUpdateSumernote() {
             ['color', ['color']],
             ['table', ['table']],
         ],
-    });  
+    });
     $('#ApplicationUpdateModal-CalcCost').summernote({
         height: 200,
         foreColor: 'White',
@@ -124,78 +132,30 @@ function InitUpdateSumernote() {
         ],
     });
 }
-
-
-/* Dynamic sign */
-function CreateWidgetReminderItem(count) {
-    return $(`
-        <div class="widget-reminder-item">
-            <div class="widget-reminder-time">
-                <span class="text-info fw-bold" order>${count}</span>
-            </div>
-            <div class="widget-reminder-divider bg-info"></div>
-            <div class="widget-reminder-content">
-                <div class="d-flex justify-content-between">
-                    <div class="row w-100">
-                        <div class="col-12 mb-2">
-                            <div class="d-flex w-100">
-                                <select class="form-select me-2" customer></select>
-                                <select class="form-select" department></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <select class="form-select" user></select>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger ms-2" delete>
-                        <i class="fa-duotone fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `);
+function Update_DecodeContent(content) {
+    try {
+        if (content) return decodeURIComponent(content);
+        else return '';
+    } catch (e) {
+        if (content) return content;
+        else return ''
+    }
 }
-function PopulateCustomerOptions(selectCustomer) {
-    _datas.CustomerDepartments.forEach((customer) => {
-        selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
-    });
-}
-function SetupCustomerChangeEvent(selectCustomer, selectDepartment) {
-    selectCustomer.change(() => {
-        const customer = _datas.CustomerDepartments.find(customer => customer.Id === selectCustomer.val());
-        selectDepartment.empty();
-        customer.Departments.forEach((department) => {
-            selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
-        });
-        selectDepartment.change();
-    });
-}
-function SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser) {
-    selectDepartment.change(() => {
-        const IdCustomer = selectCustomer.val();
-        const IdDepartment = selectDepartment.val();
-        const users = _datas.Users.filter(user => {
-            return user.UserDepartments.some(dept => {
-                return dept.Department.Id === IdDepartment && dept.Department.IdCustomer === IdCustomer;
-            });
-        });
-
-        selectUser.empty();
-        users.forEach((user) => {
-            selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
-        });
-    });
-}
-function SetupWidgetReminderItempDeleteEvent(buttonDelete) {
-    buttonDelete.click(function () {
-        buttonDelete.closest('.widget-reminder-item').remove();
-    });
+function Update_SetFileLink(elementId, fileName) {
+    const element = $(elementId);
+    if (fileName) {
+        element.text(fileName);
+        element.attr('href', `/Data/Files/${fileName}`);
+    } else {
+        element.attr('href', 'javascript:;');
+        element.text('No file');
+    }
 }
 
-
-/* Set sign function */
-function SetUpdateSign(signs) {
+// Sign
+function Update_SetSign(signs) {
     const container = $('#ApplicationUpdateModal-Sign');
+    container.empty();
     let count = 0;
 
     signs.forEach((sign) => {
@@ -218,20 +178,7 @@ function SetUpdateSign(signs) {
         SetInitialValues(sign, selectCustomer, selectDepartment, selectUser);
     });
 }
-function SetInitialValues(sign, selectCustomer, selectDepartment, selectUser) {
-    const initialCustomerId = sign.IdCustomer || sign.User.UserDepartments[0].Department.Customer.Id;
-    const initialDepartmentId = sign.IdDepartment || sign.User.UserDepartments[0].Department.Id;
-    const initialUserId = sign.IdUser;
-
-    selectCustomer.val(initialCustomerId).change();
-    selectDepartment.val(initialDepartmentId).change();
-    if (initialUserId) {
-        selectUser.val(initialUserId);
-    }
-}
-
-/* Add Sign Event */
-function AddUpdateSign() {
+function Update_AddSign() {
     const container = $('#ApplicationUpdateModal-Sign');
     let count = parseInt($('#ApplicationUpdateModal-Sign').find('[order]').last().text()) + 1;
     if (isNaN(count)) count = 1;
@@ -251,9 +198,8 @@ function AddUpdateSign() {
     selectCustomer.change();
 }
 
-
 /* Save Event */
-async function ApplicationUpdateSave() {
+async function Update_ApplicationSave() {
     try {
         let application = {
             Id: _datas.Application.Id,
@@ -285,7 +231,7 @@ async function ApplicationUpdateSave() {
             IsSendBoss: $('#ApplicationUpdateModal-SendBoss').is(':checked')
         }
 
-        if (!ApplicationValidate(application)) return false;
+        if (!Update_ApplicationValidate(application)) return false;
 
         var result = await UpdateApplication(application);
 
@@ -303,7 +249,7 @@ async function ApplicationUpdateSave() {
         console.error(e);
     }
 }
-function ApplicationValidate(application) {
+function Update_ApplicationValidate(application) {
     if (application.Subject.length === 0) {
         toastr['warning']('[ 主題 / Chủ đề ] Không được để trống!');
         $('#ApplicationUpdateModal-Subject').focus();
@@ -351,31 +297,9 @@ function ApplicationValidate(application) {
     return true;
 }
 
-
-
 /* Other */
-async function GetUpdateApplication(IdApplication) {
+async function Update_GetApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
         _datas.Application = await GetApplication(IdApplication);
-    }
-}
-function SetUpdateCustomerDepartment() {
-    // Department   
-    if (InitApplicationUpdateFormCount == 0) {
-        if ($('#ApplicationCreate-Customer option').length === 0) {
-            let customerSelect = $('#ApplicationUpdateModal-Customer');
-            customerSelect.empty();
-            _datas.CustomerDepartments.forEach(function (customer) {
-                customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
-            });
-            customerSelect.change(function () {
-                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
-                let departmentSelect = $('#ApplicationUpdateModal-Department');
-                departmentSelect.empty();
-                departments.forEach(function (department) {
-                    departmentSelect.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
-                });
-            });
-        }
     }
 }

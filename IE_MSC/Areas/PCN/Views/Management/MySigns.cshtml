@@ -11,7 +11,7 @@
     @Styles.Render("~/bundles/datatablesCss")
     <link href="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
     <!-- custom -->
-    <link href="~/Contents/Custom/PCN/css/MySigns.css" rel="stylesheet" />
+    <link href="~/Contents/Custom/PCN/css/MySigns.css?v=@newGuid" rel="stylesheet" />
 }
 
 <!-- Breadcrumb -->
@@ -61,6 +61,8 @@
     @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationDetail.cshtml")
     <!-- PCN Approve -->
     @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationApprove.cshtml")
+    <!-- PCN Reject -->
+    @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationReject.cshtml")
 </section>
 
 @section scripts{
@@ -68,10 +70,11 @@
     @Scripts.Render("~/bundles/datatablesJs")
     <script src="~/Contents/template/HUD_Admin/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
     <!-- custom -->
-    <script src="~/Contents/Custom/PCN/js/Application_Promise.js"></script>
-    <script src="~/Contents/Custom/User/User_Promise.js"></script>
+    <script src="~/Contents/Custom/PCN/js/Application_Promise.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/User/User_Promise.js?v=@newGuid"></script>
 
-    <script src="~/Contents/Custom/PCN/js/MySigns.js"></script>
-    @*<script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js"></script>*@
-    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationAprove.js"></script>
+    <script src="~/Contents/Custom/PCN/js/MySigns.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationAprove.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationReject.js?v=@newGuid"></script>
 }

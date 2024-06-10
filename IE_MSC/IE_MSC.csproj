@@ -1062,6 +1062,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="Areas\PCN\Views\Management\_ApplicationApprove.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\_ApplicationReject.cshtml" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />

@@ -82,5 +82,5 @@ function Approve(elm, e) {
 }
 function Reject(elm, e) {
 	let Id = $(elm).data('id');
-	ApplicationDetail(Id);
+	ApplicationReject(Id);
 }

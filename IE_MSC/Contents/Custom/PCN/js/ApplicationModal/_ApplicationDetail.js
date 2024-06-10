@@ -1,8 +1,8 @@
 ﻿async function ApplicationDetail(IdApplication) {
     try {
-        await GetDetailApplication(IdApplication);
+        await Detail_GetApplication(IdApplication);
 
-        CreateApplicationDetailModal(_datas.Application);
+        Detail_CreateApplicationModal(_datas.Application);
 
     } catch (e) {
         Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
@@ -10,39 +10,36 @@
     }
 }
 
-
-function CreateApplicationDetailModal(application) {
-    console.log(application);
-
-    SetApplicationInformation(application);
-    SetApplicationDetails(application);
-    SetApplicationSigns(application);
+function Detail_CreateApplicationModal(application) {
+    Detail_SetInformation(application);
+    Detail_SetDetails(application);
+    Detail_SetSigns(application);
 
     $('#ApplicationDetailModal').modal('show');
 }
 
 // Infor
-function SetApplicationInformation(application) {
+function Detail_SetInformation(application) {
     $('#ApplicationDetailModal-UserCreated').val(GetUserName(application.UserCreated));
-    $('#ApplicationDetailModal-Department').val(GetDepartment(application));
+    $('#ApplicationDetailModal-Department').val(Detail_GetDepartment(application));
     $('#ApplicationDetailModal-DateCreated').val(moment(application.DateCreated).format("YYYY-MM-DD HH:mm:ss"));
     $('#ApplicationDetailModal-ApplicationStatus').val(GetApplicationStatus(application));
-
-    SetApplicationStatusClass(application.Status);
-    $('#ApplicationDetailModal-DateActived').val(application.Status === 2 ? GetApplicationActiveDate(application) : '');
 
     $('#ApplicationDetailModal-CodePCN').val(application.Code);
     $('#ApplicationDetailModal-Subject').val(application.Subject);
     $('#ApplicationDetailModal-Process').val(application.Process);
     $('#ApplicationDetailModal-Model').val(application.Model);
+
+    Detail_SetStatusClass(application.Status);
+    $('#ApplicationDetailModal-DateActived').val(application.Status === 2 ? GetApplicationActiveDate(application) : '');
 }
-function GetDepartment(application) {
+function Detail_GetDepartment(application) {
     if (application.Customer && application.Department) {
         return `[ ${application.Customer.CustomerName} - ${application.Department.DepartmentName} ]`;
     }
     return GetUserDept(application.UserCreated);
 }
-function SetApplicationStatusClass(status) {
+function Detail_SetStatusClass(status) {
     const statusElement = $('#ApplicationDetailModal-ApplicationStatus');
     statusElement.removeClass();
 
@@ -60,23 +57,25 @@ function SetApplicationStatusClass(status) {
 }
 
 // Detail
-function SetApplicationDetails(application) {
-    $('#ApplicationDetailModal-BeforeChange').html(DecodeContent(application.BeforeChange));
-    $('#ApplicationDetailModal-AfterChange').html(DecodeContent(application.AfterChange));
-    $('#ApplicationDetailModal-Reason').html(decodeURIComponent(application.Reason));
-    $('#ApplicationDetailModal-Cost').html(application.CalcCost ? decodeURIComponent(application.CalcCost) : '');
+function Detail_SetDetails(application) {
+    $('#ApplicationDetailModal-BeforeChange').html(Detail_DecodeContent(application.BeforeChange));
+    $('#ApplicationDetailModal-AfterChange').html(Detail_DecodeContent(application.AfterChange));
+    $('#ApplicationDetailModal-Reason').html(Detail_DecodeContent(application.Reason));
+    $('#ApplicationDetailModal-Cost').html(Detail_DecodeContent(application.CalcCost));
 
-    SetFileLink('#ApplicationDetailModal-BeforeChangeFile', application.BeforeChangeFile);
-    SetFileLink('#ApplicationDetailModal-AfterChangeFile', application.AfterChangeFile);
+    Detail_SetFileLink('#ApplicationDetailModal-BeforeChangeFile', application.BeforeChangeFile);
+    Detail_SetFileLink('#ApplicationDetailModal-AfterChangeFile', application.AfterChangeFile);
 }
-function DecodeContent(content) {
+function Detail_DecodeContent(content) {
     try {
-        return decodeURIComponent(content);
+        if (content) return decodeURIComponent(content);
+        else return '';
     } catch (e) {
-        return content;
+        if (content) return content;
+        else return ''
     }
 }
-function SetFileLink(elementId, fileName) {
+function Detail_SetFileLink(elementId, fileName) {
     const element = $(elementId);
     if (fileName) {
         element.text(fileName);
@@ -88,68 +87,60 @@ function SetFileLink(elementId, fileName) {
 }
 
 // Sign
-function SetApplicationSigns(application) {
+function Detail_SetSigns(application) {
     const signContainer = $('#ApplicationDetailModal-Sign');
     signContainer.empty();
 
-    let isReject = false;
+    let isReject = application.Signs.some((sign) => { return sign.Status === -1 });
     application.Signs.forEach((sign) => {
-        if (sign.Status === -1) {
-            isReject = true;
-            const signItem = CreateRejectedSignItem(sign);
-
-            signContainer.append(signItem);
-        } else {
-            const signItem = CreateSignItem(sign, isReject);
-
-            signContainer.append(signItem);
-        }
+        const signItem = Detail_CreateSignItem(sign, isReject);
+        signContainer.append(signItem);
     });
 }
-function CreateRejectedSignItem(sign) {
-    const time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
-    return `
-        <div class="widget-reminder-item bg-danger bg-opacity-10">
-            <div class="widget-reminder-time">${time}</div>
-            <div class="widget-reminder-divider bg-danger"></div>
-            <div class="widget-reminder-content">
-                <div class="fw-bold text-danger">${GetUserName(sign.User)}</div>
-                <div class="fs-10px text-danger">${GetUserDept(sign.User)}</div>
-                <div class="fs-13px text-danger">${sign.Detail}</div>
-            </div>
-        </div>`;
-}
-function CreateSignItem(sign, isReject) {
-    const color = sign.Status === 1 ? "warning" : "success";
-    const time = sign.Status === 1 ? '<span class="text-warning fw-bold">Pending</span>' : `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+function Detail_CreateSignItem(sign, isReject) {
+    let setup = {
+        color: '',
+        time: '',
+        user: GetUserName(sign.User),
+        dept: GetUserSignDepartment(sign),
+        detail: sign.Detail ? sign.Detail : '',
+    };
 
-    if (isReject) {
-        return `
-            <div class="widget-reminder-item bg-secondary bg-opacity-10">
-                <div class="widget-reminder-time"><span class="text-secondary fw-bold">Closed</span></div>
-                <div class="widget-reminder-divider bg-secondary"></div>
-                <div class="widget-reminder-content">
-                    <div class="fw-bold text-secondary">${GetUserName(sign.User)}</div>
-                    <div class="fs-10px">${GetUserDept(sign.User)}</div>
-                </div>
-            </div>`;
+    switch (sign.Status) {
+        case 1:
+            if (isReject) {
+                setup.color = 'secondary';
+                setup.time = '<span class="text-secondary fw-bold">Close</span>';
+            }
+            else {
+                setup.color = 'warning';
+                setup.time = '<span class="text-warning fw-bold">Pending</span>';
+            }      
+            break;
+        case 2:
+            setup.color = 'success';
+            setup.time = `<span class="text-success fw-bold">${moment(sign.DateApproved).format("YYYY-MM-DD HH:mm")}</span>`;
+            break;
+        case -1:
+            setup.color = 'danger';
+            setup.time = `<span class="text-danger fw-bold">${moment(sign.DateRejected).format("YYYY-MM-DD HH:mm")}</span>`;
+            break;
+        default: 
     }
-
     return `
-        <div class="widget-reminder-item bg-${color} bg-opacity-10">
-            <div class="widget-reminder-time">${time}</div>
-            <div class="widget-reminder-divider bg-${color}"></div>
+        <div class="widget-reminder-item bg-${setup.color} bg-opacity-10">
+            <div class="widget-reminder-time">${setup.time}</div>
+            <div class="widget-reminder-divider bg-${setup.color}"></div>
             <div class="widget-reminder-content">
-                <div class="fw-bold text-${color}">${GetUserName(sign.User)}</div>
-                <div class="fs-10px text-${color}">${GetUserDept(sign.User)}</div>
+                <div class="fw-bold text-${setup.color}">${setup.user}</div>
+                <div class="fs-10px text-${setup.color}">${setup.dept}</div>
+                <div class="fs-10px text-${setup.color}">${setup.detail}</div>
             </div>
         </div>`;
 }
-
-
 
 /* Other */
-async function GetDetailApplication(IdApplication) {
+async function Detail_GetApplication(IdApplication) {
     if (!_datas.Application || _datas.Application.Id.toUpperCase() !== IdApplication.toUpperCase()) {
         _datas.Application = await GetApplication(IdApplication);
     }

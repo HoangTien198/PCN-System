@@ -214,7 +214,7 @@ function SetupDepartmentChangeEvent(selectCustomer, selectDepartment, selectUser
 
         selectUser.empty();
         users.forEach((user) => {
-            selectUser.append(`<option value="${user.Id}">${GetUserNameObj(user)}</option>`);
+            selectUser.append(`<option value="${user.Id}">${GetUserName(user)}</option>`);
         });
     });
 }

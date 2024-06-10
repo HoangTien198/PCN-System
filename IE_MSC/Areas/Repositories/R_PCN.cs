@@ -575,8 +575,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var application = context.Applications.Find(sign.IdApplication);
-                    var dbSing = context.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+                    var application = context.Applications.Include(app => app.Signs).FirstOrDefault(app => app.Id == sign.IdApplication);
+                    var dbSing = application.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+
                     if (application != null && dbSing != null) {                      
                         if(!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
                         if(!string.IsNullOrEmpty(sign.Detail)) dbSing.Detail = sign.Detail;
@@ -586,6 +587,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                         context.Applications.AddOrUpdate(application);
                         context.Signs.AddOrUpdate(dbSing);
+
+                        if (!application.Signs.Any(s => s.Status != 2)) application.Status = 2;
+
                         context.SaveChanges();
                         transaction.Commit();
 
@@ -612,8 +616,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var application = context.Applications.Find(sign.IdApplication);
-                    var dbSing = context.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+                    var application = context.Applications.Include(app => app.Signs).FirstOrDefault(app => app.Id == sign.IdApplication);
+                    var dbSing = application.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
+
                     if (application != null && dbSing != null)
                     {
                         if (!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
@@ -621,6 +626,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                         dbSing.Status = -1; // Reject = -1
                         dbSing.DateRejected = DateTime.Now;
+                        application.Status = -1;
 
                         context.Applications.AddOrUpdate(application);
                         context.Signs.AddOrUpdate(dbSing);

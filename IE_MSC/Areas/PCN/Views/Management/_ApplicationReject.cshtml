@@ -1,8 +1,8 @@
-﻿<div class="modal fade" id="ApplicationApproveModal" role="dialog" data-bs-backdrop="static" data-bs-focus="false">
+﻿<div class="modal fade" id="ApplicationRejectModal" role="dialog" data-bs-backdrop="static" data-bs-focus="false">
     <div class="modal-dialog modal-dialog-scrollable modal-xxl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-uppercase">APPROVE APPLICATION</h5>
+                <h5 class="modal-title text-uppercase">Reject APPLICATION</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -16,37 +16,37 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">制作人 / Người đề nghị</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-UserCreated" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-UserCreated" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">制作部門 / Bộ phận</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-Department" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-Department" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">日期 / Ngày</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-DateCreated" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-DateCreated" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">審核 / Phê duyệt</label>
-                            <input type="text" class="form-control text-truncate bg-opacity-10" id="ApplicationApproveModal-ApplicationStatus" readonly>
+                            <input type="text" class="form-control text-truncate bg-opacity-10" id="ApplicationRejectModal-ApplicationStatus" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">PCN單號 / Mã số</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-CodePCN" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-CodePCN" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">主題 / Chủ đề</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-Subject" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-Subject" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">过程 / Process</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-Process" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-Process" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">模型 / Model</label>
-                            <input type="text" class="form-control text-truncate" id="ApplicationApproveModal-Model" readonly>
+                            <input type="text" class="form-control text-truncate" id="ApplicationRejectModal-Model" readonly>
                         </div>
                     </div>
                 </div>
@@ -59,13 +59,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">現行作業方式 / Phương thức làm việc hiện hành <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationApproveModal-BeforeChange" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationRejectModal-BeforeChange" style="height: 10rem;"></div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">變更后的方式 / Phương thức sau khi thay đổi <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationApproveModal-AfterChange" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationRejectModal-AfterChange" style="height: 10rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -74,13 +74,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="mb-3">
                             <label class="form-label"> / Tài liệu phương thức làm việc hiện hành</label>
-                            <a class="form-control text-truncate" id="ApplicationApproveModal-BeforeChangeFile"></a>
+                            <a class="form-control text-truncate" id="ApplicationRejectModal-BeforeChangeFile"></a>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="mb-3">
                             <label class="form-label"> / Tài liệu phương thức sau khi thay đổi</label>
-                            <a class="form-control text-truncate" id="ApplicationApproveModal-AfterChangeFile"></a>
+                            <a class="form-control text-truncate" id="ApplicationRejectModal-AfterChangeFile"></a>
                         </div>
                     </div>
                 </div>
@@ -93,13 +93,13 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3 h-100">
                             <label class="form-label">變更原因 / Nguyên nhân thay đổi <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationApproveModal-Reason" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationRejectModal-Reason" style="height: 10rem;"></div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group mb-3">
                             <label class="form-label">制造成本計算 / Tính toán giá thành sản xuất (IE) <span class="text-danger">*</span></label>
-                            <div class="form-control overflow-auto" id="ApplicationApproveModal-CalcCost" style="height: 10rem;"></div>
+                            <div class="form-control overflow-auto" id="ApplicationRejectModal-CalcCost" style="height: 10rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                         <div class="card">
-                            <div class="widget-reminder" id="ApplicationApproveModal-Sign"></div>
+                            <div class="widget-reminder" id="ApplicationRejectModal-Sign"></div>
 
                             <div class="card-arrow">
                                 <div class="card-arrow-top-left"></div>
@@ -137,7 +137,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="Approve_ApplicationSave()"><i class="fa-duotone fa-check"></i> Approve</button>
+                <button type="button" class="btn btn-danger" onclick="Reject_ApplicationSave()"><i class="fa-duotone fa-x"></i> Reject</button>
             </div>
         </div>
     </div>
