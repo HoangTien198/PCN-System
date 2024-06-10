@@ -1,12 +1,6 @@
 ﻿using IE_MSC.Areas.Dashboard.Controllers;
 using IE_MSC.Areas.Entities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http.Results;
 using System.Web.Mvc;
 
 namespace IE_MSC.Areas.PCN.Controllers
@@ -40,11 +34,11 @@ namespace IE_MSC.Areas.PCN.Controllers
             {
                 var result = R_PCN.GetApplication(IdApplication);
 
-                return Json(new {status = true, data = result}, JsonRequestBehavior.AllowGet);
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new {status = false, message = ex.Message}, JsonRequestBehavior.AllowGet);
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
         [HttpGet]
@@ -72,7 +66,7 @@ namespace IE_MSC.Areas.PCN.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new {status = false, message = ex.Message});
+                return Json(new { status = false, message = ex.Message });
             }
         }
         [HttpPost]
@@ -169,7 +163,7 @@ namespace IE_MSC.Areas.PCN.Controllers
             try
             {
                 var result = R_PCN.DeleteApplication(IdApplication);
-                return Json(new { status = true}, JsonRequestBehavior.AllowGet);
+                return Json(new { status = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

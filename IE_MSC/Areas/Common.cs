@@ -1,20 +1,13 @@
-﻿using IE_MSC.Areas.Dashboard.Controllers;
-using IE_MSC.Areas.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Http.Filters;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
 
 namespace IE_MSC.Areas
 {
@@ -22,34 +15,34 @@ namespace IE_MSC.Areas
     {
         public static Entities.User GetSessionUser()
         {
-			try
-			{
-				var user = (Entities.User)HttpContext.Current.Session["UserSession"];
+            try
+            {
+                var user = (Entities.User)HttpContext.Current.Session["UserSession"];
 
-				if (user != null)
-				{
-					return user;
-				}
-				else
-				{
+                if (user != null)
+                {
+                    return user;
+                }
+                else
+                {
                     throw new Exception("Login session expired. Please relogin (F5).");
                 }
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-		public static string UrlDecode(string str)
-		{
-			try
-			{
+        public static string UrlDecode(string str)
+        {
+            try
+            {
                 return HttpUtility.UrlDecode(RemoveStringAccents(str));
             }
-			catch (Exception ex)
-			{
-				return $"Decode Exception: {ex.Message}";
-			}
+            catch (Exception ex)
+            {
+                return $"Decode Exception: {ex.Message}";
+            }
         }
         public static void SendEmail(Email email)
         {
@@ -109,9 +102,9 @@ namespace IE_MSC.Areas
             }
             else
             {
-                return string.Empty ;
+                return string.Empty;
             }
-          
+
         }
         public static string StringToBase64Decode(string base64String)
         {

@@ -2,17 +2,17 @@
 
 namespace IE_MSC.Areas.PCN
 {
-    public class PCNAreaRegistration : AreaRegistration 
+    public class PCNAreaRegistration : AreaRegistration
     {
-        public override string AreaName 
+        public override string AreaName
         {
-            get 
+            get
             {
                 return "PCN";
             }
         }
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(
                 "PCN_default",

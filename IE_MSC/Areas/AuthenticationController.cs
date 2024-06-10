@@ -1,6 +1,5 @@
 ﻿using IE_MSC.Areas.Dashboard.Controllers;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography;
@@ -22,7 +21,7 @@ namespace IE_MSC.Areas
                 if (user != null)
                 {
                     CreateSession(user);
-                    CreateCookieInfo(user);                   
+                    CreateCookieInfo(user);
 
                     return Redirect(Url.Action("Index", "Dashboard", new { area = "Dashboard" }));
                 }

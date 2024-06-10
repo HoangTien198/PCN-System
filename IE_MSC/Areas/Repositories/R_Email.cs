@@ -1,30 +1,8 @@
 ﻿using IE_MSC.Areas.Entities;
-using IE_MSC.Commons;
-using IE_MSC.Models.Entities;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.Configuration;
-using System.Web.Helpers;
-using System.Web.Hosting;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace IE_MSC.Areas.Dashboard.Controllers
 {
@@ -51,7 +29,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                 // make sign url
                 string url = $"{ConfigurationManager.AppSettings["SystemUrl"]}/MSC/SignManagement/DirectSign/?code=";
-                string code= Common.StringToBase64Decode($"{application.Id},{sign.IdUser},{DateTime.Now}");
+                string code = Common.StringToBase64Decode($"{application.Id},{sign.IdUser},{DateTime.Now}");
 
                 // make content
                 htmlBody = htmlBody.Replace("{SystemName}", ConfigurationManager.AppSettings["SystemName"]);
@@ -92,7 +70,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
         private static string CreateDownloadElementPath(string filePath, string fileSize)
         {
-            return  $"<a href=\"{ConfigurationManager.AppSettings["SystemUrl"]}/Data/Files/{filePath}\">{filePath} ({fileSize})</a>";
+            return $"<a href=\"{ConfigurationManager.AppSettings["SystemUrl"]}/Data/Files/{filePath}\">{filePath} ({fileSize})</a>";
         }
     }
 }

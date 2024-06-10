@@ -1,26 +1,10 @@
 ﻿using IE_MSC.Areas.Entities;
-using IE_MSC.Commons;
-using IE_MSC.Models.Entities;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Configuration;
-using System.Web.Hosting;
-using System.Web.Http;
-using System.Web.Http.Results;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace IE_MSC.Areas.Dashboard.Controllers
 {
@@ -52,14 +36,14 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         .FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment.ToUpper());
 
                     application.Signs = application.Signs.OrderBy(s => s.Order).ToList();
-                    foreach(var sign in application.Signs)
+                    foreach (var sign in application.Signs)
                     {
                         sign.Customer = context.Customers
                             .FirstOrDefault(c => c.Id.ToUpper() == sign.IdCustomer.ToUpper());
                         sign.Department = context.Departments
                             .FirstOrDefault(d => d.Id.ToUpper() == sign.IdDepartment.ToUpper());
                     }
-                   
+
 
                     return application;
                 }
@@ -306,7 +290,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         Subject = app.Subject,
                         Status = GetStatusHtml((int)app.Status),
                         SignStatus = GetSignStatusHtml(app),
-                        Button = GetButtonHtml(app, false ,true)
+                        Button = GetButtonHtml(app, false, true)
                     }).ToList();
 
                     // Advanced search
@@ -354,7 +338,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     context.Configuration.LazyLoadingEnabled = false;
 
                     var application = MapCreateApplication(request);
-                    
+
                     // Save to DB
                     context.Applications.Add(application);
                     context.SaveChanges();
@@ -568,7 +552,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         // Approve + Reject
         public static Entities.Application ApproveApplication(Sign sign, string calcCost)
         {
-            using(var context = new PcnEntities())
+            using (var context = new PcnEntities())
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
@@ -578,9 +562,10 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     var application = context.Applications.Include(app => app.Signs).FirstOrDefault(app => app.Id == sign.IdApplication);
                     var dbSing = application.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
 
-                    if (application != null && dbSing != null) {                      
-                        if(!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
-                        if(!string.IsNullOrEmpty(sign.Detail)) dbSing.Detail = sign.Detail;
+                    if (application != null && dbSing != null)
+                    {
+                        if (!string.IsNullOrEmpty(calcCost)) application.CalcCost = calcCost;
+                        if (!string.IsNullOrEmpty(sign.Detail)) dbSing.Detail = sign.Detail;
 
                         dbSing.Status = 2; // Approve = 2
                         dbSing.DateApproved = DateTime.Now;
@@ -745,7 +730,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             bool isRejected = application.Signs.Any(s => s.Status == -1);
             if (isRejected)
             {
-                foreach(var sign in application.Signs)
+                foreach (var sign in application.Signs)
                 {
                     if (sign.Status == 1) sign.Status = 3;
                 }
@@ -779,7 +764,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             }
             else if (IsSessionUser)
             {
-                if(application.Signs.Any(s => s.Status != 1))
+                if (application.Signs.Any(s => s.Status != 1))
                 {
                     return $"<div class=\"btn-group\">" +
                            $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
@@ -795,9 +780,9 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                            $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Delete(this, event)\" title=\"Delete\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-trash\"></i></button>" +
                            $"</div>";
                 }
-                
+
             }
-            else if (IsSessionUserSign) 
+            else if (IsSessionUserSign)
             {
                 var sessionUser = Common.GetSessionUser();
                 if (application.Signs.Any(s => s.IdUser == sessionUser.Id && s.Status != 1))
@@ -812,7 +797,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                            $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                            $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Approve(this, event)\" title=\"Approve\" class=\"btn btn-sm btn-success\"><i class=\"fa-duotone fa-check\"></i></button>" +
                            $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Reject(this, event)\" title=\"Reject\" class=\"btn btn-sm btn-danger\"><i class=\"fa-duotone fa-x\"></i></button>" +
-                           $"</div>";                    
+                           $"</div>";
                 }
             }
             else
@@ -820,7 +805,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 return $"<div class=\"btn-group\">" +
                        $"   <button type=\"button\" data-id=\"{application.Id}\" onclick=\"Detail(this, event)\" title=\"Detail\" class=\"btn btn-sm btn-primary\"><i class=\"fa-duotone fa-info\"></i></button>" +
                        $"</div>";
-            }         
+            }
         }
 
 

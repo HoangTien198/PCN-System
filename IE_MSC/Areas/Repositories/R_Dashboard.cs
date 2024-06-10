@@ -1,14 +1,8 @@
 ﻿using IE_MSC.Areas.Entities;
-using IE_MSC.Models.Entities;
-using IE_MSC.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
-using System.Drawing;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 
 namespace IE_MSC.Areas.Dashboard.Controllers
 {
@@ -45,7 +39,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         {
             try
             {
-                using(PcnEntities context = new PcnEntities())
+                using (PcnEntities context = new PcnEntities())
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
@@ -68,7 +62,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         Total = new List<int>(),
                     };
 
-                    for(int i = 0; i < 7; i++)
+                    for (int i = 0; i < 7; i++)
                     {
                         var currentDate = startDate.AddDays(i);
                         var nextDate = currentDate.AddDays(1);
@@ -90,7 +84,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             {
                 throw ex;
             }
-        }  
+        }
         public static object GetDataByCustomer()
         {
             try
@@ -146,12 +140,12 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     {
                         Date = new List<string>(),
                         Pending = new List<int>(),
-                        Approved = new List<int>(), 
+                        Approved = new List<int>(),
                         Rejected = new List<int>(),
                         Total = new List<int>(),
                     };
 
-                    for(int i = 1; i < 13; i++)
+                    for (int i = 1; i < 13; i++)
                     {
                         DateTime StartDate = thresholdDate.AddMonths(i);
                         StartDate = new DateTime(StartDate.Year, StartDate.Month, 1);
@@ -163,7 +157,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                         data.Date.Add(StartDate.ToString("yyyy-MMM"));
                         data.Pending.Add(currentApplications.Where(p => p.Status == 1).Count());
-                        data.Approved.Add(currentApplications.Where(p => p.Status == 2).Count());                        
+                        data.Approved.Add(currentApplications.Where(p => p.Status == 2).Count());
                         data.Rejected.Add(currentApplications.Where(p => p.Status == -1).Count());
                         data.Total.Add(currentApplications.Count());
                     }
@@ -216,7 +210,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                             serie.name = $"{department.DepartmentName} ({department.CustomerName})";
                             serie.data = new List<int>();
 
-                            var currentDepartments = applications.Where(p =>p.IdDepartment.ToUpper() == department.Id.ToUpper()).ToList();
+                            var currentDepartments = applications.Where(p => p.IdDepartment.ToUpper() == department.Id.ToUpper()).ToList();
 
                             if (currentDepartments.Count > 0)
                             {
@@ -239,7 +233,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                                 }
 
                                 data.Series.Add(serie);
-                            } 
+                            }
                         }
 
                         return data;
@@ -307,7 +301,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         });
 
                     var combinedQuery = pcnsQuery.Concat(confirmsQuery).OrderByDescending(p => p.Date).Take(10).ToList();
-                   
+
                     return combinedQuery;
                 }
             }

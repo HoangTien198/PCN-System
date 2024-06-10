@@ -13,14 +13,14 @@ namespace IE_MSC.Areas.Dashboard.Controllers
         {
             try
             {
-                using(var context = new PcnEntities())
+                using (var context = new PcnEntities())
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    if(IsUsername)
+                    if (IsUsername)
                     {
                         var user = context.Users.FirstOrDefault(u => u.Username.ToUpper() == IdOrUsername.ToUpper());
-                        if(user != null)
+                        if (user != null)
                         {
                             return user;
                         }
@@ -61,7 +61,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                     if (users != null && users.Count > 0)
                     {
                         var user = users.FirstOrDefault(u => u.Password == Password.Trim());
-                        if(user != null)
+                        if (user != null)
                         {
                             return user;
                         }
@@ -86,7 +86,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                         else
                         {
                             return null;
-                        }                      
+                        }
                     }
                 }
             }
@@ -94,7 +94,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
             {
                 throw ex;
             }
-        }       
+        }
         public static Entities.User GetUser(string Id)
         {
             try
@@ -124,7 +124,7 @@ namespace IE_MSC.Areas.Dashboard.Controllers
 
                     var sessionUser = Common.GetSessionUser();
 
-                    if(sessionUser != null)
+                    if (sessionUser != null)
                     {
                         var user = context.Users.Include(u => u.UserDepartments.Select(d => d.Department))
                                                 .Include(u => u.UserDepartments.Select(d => d.Department.Customer))
