@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "USER MANAGEMENT";
+    Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
+
+    var newGuid = Guid.NewGuid();
+}
+
+@section styles{
+    <!-- plugin -->
+    @Styles.Render("~/bundles/datatablesCss")
+    <!-- custom -->
+}
+
+<!-- Breadcrumb -->
+<section>
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard">HOME</a></li>
+        <li class="breadcrumb-item active">USER MANAGEMENT</li>
+    </ul>
+</section>
+
+<!-- Datatable -->
+<section>
+    <div class="card">
+        <div class="card-body">
+            <table id="datatable" class="table table-striped text-nowrap align-middle w-100">
+                <thead>
+                    <tr class="bg-secondary bg-opacity-50">
+                        <th>DATE CREATED</th>
+                        <th>ID</th>
+                        <th></th>
+                        <th>CN NAME</th>
+                        <th>VN NAME</th>
+                        <th>USERNAME</th>
+                        <th>PASSWORD</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Modal -->
+<section>
+    <!-- User Create -->
+    @Html.Partial("~/Areas/User/Views/Management/UserModal/_UserCreateModal.cshtml")
+    <!-- User Update -->
+    @Html.Partial("~/Areas/User/Views/Management/UserModal/_UserUpdateModal.cshtml")
+</section>
+
+@section scripts{
+    <!-- plugin -->
+    @Scripts.Render("~/bundles/datatablesJs")
+    <!-- custom -->
+    <script src="~/Contents/Custom/User/User_Promise.js?v=@newGuid"></script>
+
+    <script src="~/Contents/Custom/User/UserManagement.js"></script>
+
+    <script src="~/Contents/Custom/User/UserModal/_UserCreate.js"></script>
+    <script src="~/Contents/Custom/User/UserModal/_UserUpdate.js"></script>
+    <script src="~/Contents/Custom/User/UserModal/_UserDelete.js"></script>
+
+}

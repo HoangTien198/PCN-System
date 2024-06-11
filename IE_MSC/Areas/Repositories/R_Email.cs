@@ -4,7 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Web;
 
-namespace IE_MSC.Areas.Dashboard.Controllers
+namespace IE_MSC.Areas
 {
     internal class R_Emails
     {

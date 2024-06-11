@@ -1,8 +1,10 @@
-﻿using System;
+﻿using IE_MSC.Areas.Attributes;
+using System;
 using System.Web.Mvc;
 
 namespace IE_MSC.Areas.Dashboard.Controllers
 {
+    [Authentication]
     public class DashboardController : Controller
     {
         // GET: Dashboard/Dashboard

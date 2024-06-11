@@ -131,7 +131,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DepartmentEmployee_Employees">
-          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="DepartmentEmployees" Type="Self.DepartmentEmployees" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employees">
@@ -238,23 +240,6 @@
           <Property Name="IdCustomer" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Customer" Relationship="Self.FK_Departments_Customers" FromRole="Departments" ToRole="Customers" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="36" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="CardId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CnName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="VnName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="IsAdmin" Type="Boolean" />
-          <Property Name="IsBoss" Type="Boolean" />
-          <Property Name="Position" Type="Int32" />
-          <NavigationProperty Name="UserDepartments" Relationship="Self.FK_DepartmentEmployee_Employees" FromRole="Employees" ToRole="DepartmentEmployees" />
-        </EntityType>
         <EntityType Name="Sign">
           <Key>
             <PropertyRef Name="IdUser" />
@@ -267,9 +252,9 @@
           <Property Name="DateApproved" Type="DateTime" Precision="3" />
           <Property Name="DateRejected" Type="DateTime" Precision="3" />
           <Property Name="Detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="User" Relationship="Self.FK_PCNConfirms_Employees" FromRole="PCNConfirms" ToRole="Employees" />
           <Property Name="IdCustomer" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
           <Property Name="IdDepartment" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="User" Relationship="PCN_DataModel.FK_PCNConfirms_Employees" FromRole="Sign" ToRole="Employee" />
         </EntityType>
         <EntityType Name="Application">
           <Key>
@@ -317,30 +302,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DepartmentEmployee_Employees">
-          <End Role="Employees" Type="PCN_DataModel.User" Multiplicity="1" />
-          <End Role="DepartmentEmployees" Type="PCN_DataModel.UserDepartment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Employees">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DepartmentEmployees">
-              <PropertyRef Name="IdUser" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PCNConfirms_Employees">
-          <End Role="Employees" Type="PCN_DataModel.User" Multiplicity="1" />
-          <End Role="PCNConfirms" Type="PCN_DataModel.Sign" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Employees">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PCNConfirms">
-              <PropertyRef Name="IdUser" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PCNConfirms_PCNs">
           <End Role="PCNs" Type="PCN_DataModel.Application" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -359,7 +320,6 @@
           <EntitySet Name="Customers" EntityType="Self.Customer" />
           <EntitySet Name="UserDepartments" EntityType="PCN_DataModel.UserDepartment" />
           <EntitySet Name="Departments" EntityType="Self.Department" />
-          <EntitySet Name="Users" EntityType="PCN_DataModel.User" />
           <EntitySet Name="Signs" EntityType="PCN_DataModel.Sign" />
           <EntitySet Name="Applications" EntityType="PCN_DataModel.Application" />
           <AssociationSet Name="FK_Departments_Customers" Association="Self.FK_Departments_Customers">
@@ -370,19 +330,62 @@
             <End Role="Departments" EntitySet="Departments" />
             <End Role="DepartmentEmployees" EntitySet="UserDepartments" />
           </AssociationSet>
-          <AssociationSet Name="FK_DepartmentEmployee_Employees" Association="Self.FK_DepartmentEmployee_Employees">
-            <End Role="Employees" EntitySet="Users" />
-            <End Role="DepartmentEmployees" EntitySet="UserDepartments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PCNConfirms_Employees" Association="Self.FK_PCNConfirms_Employees">
-            <End Role="Employees" EntitySet="Users" />
-            <End Role="PCNConfirms" EntitySet="Signs" />
-          </AssociationSet>
           <AssociationSet Name="FK_PCNConfirms_PCNs" Association="Self.FK_PCNConfirms_PCNs">
             <End Role="PCNs" EntitySet="Applications" />
             <End Role="PCNConfirms" EntitySet="Signs" />
           </AssociationSet>
+          <EntitySet Name="Users" EntityType="PCN_DataModel.User" />
+          <AssociationSet Name="FK_DepartmentEmployee_Employees" Association="PCN_DataModel.FK_DepartmentEmployee_Employees">
+            <End Role="Employee" EntitySet="Users" />
+            <End Role="UserDepartment" EntitySet="UserDepartments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PCNConfirms_Employees" Association="PCN_DataModel.FK_PCNConfirms_Employees">
+            <End Role="Employee" EntitySet="Users" />
+            <End Role="Sign" EntitySet="Signs" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="CardId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CnName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VnName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="IsAdmin" Type="Boolean" />
+          <NavigationProperty Name="UserDepartments" Relationship="PCN_DataModel.FK_DepartmentEmployee_Employees" FromRole="Employee" ToRole="UserDepartment" />
+        </EntityType>
+        <Association Name="FK_DepartmentEmployee_Employees">
+          <End Type="PCN_DataModel.User" Role="Employee" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="PCN_DataModel.UserDepartment" Role="UserDepartment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserDepartment">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PCNConfirms_Employees">
+          <End Type="PCN_DataModel.User" Role="Employee" Multiplicity="1" />
+          <End Type="PCN_DataModel.Sign" Role="Sign" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sign">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -412,23 +415,6 @@
                 <ScalarProperty Name="Id" ColumnName="DepartmentID" />
                 <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
                 <ScalarProperty Name="IdCustomer" ColumnName="CustomerID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="PCN_DataModel.User">
-              <MappingFragment StoreEntitySet="Employees">
-                <ScalarProperty Name="Id" ColumnName="EmployeeID" />
-                <ScalarProperty Name="CardId" ColumnName="EmployeeCode" />
-                <ScalarProperty Name="CnName" ColumnName="EmployeeCNName" />
-                <ScalarProperty Name="VnName" ColumnName="EmployeeVNName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
-                <ScalarProperty Name="IsBoss" ColumnName="IsBoss" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -466,6 +452,22 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="IdDepartment" ColumnName="IdDepartment" />
                 <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="PCN_DataModel.User">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="VnName" ColumnName="EmployeeVNName" />
+                <ScalarProperty Name="CnName" ColumnName="EmployeeCNName" />
+                <ScalarProperty Name="CardId" ColumnName="EmployeeCode" />
+                <ScalarProperty Name="Id" ColumnName="EmployeeID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

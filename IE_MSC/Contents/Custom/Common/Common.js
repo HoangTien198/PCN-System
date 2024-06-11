@@ -28,7 +28,14 @@ function GetAjaxErrorMessage(error) {
         var extractedContent = match[1];
         return extractedContent;
     } else {
-        return "Something went wrong, please contact to system admin.";
+        if (error.length < 300) {
+            return error;
+        }
+        else {
+            console.error(error);
+            return `Something went wrong, please contact to system admin.`;
+        }
+        
     }
 }
 function CalTableHeight() {
@@ -162,13 +169,13 @@ function CreateWidgetReminderItem(count) {
     `);
 }
 function PopulateCustomerOptions(selectCustomer) {
-    _datas.CustomerDepartments.forEach((customer) => {
+    _datas.Customers.forEach((customer) => {
         selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
     });
 }
 function SetupCustomerChangeEvent(selectCustomer, selectDepartment) {
     selectCustomer.change(() => {
-        const customer = _datas.CustomerDepartments.find(customer => customer.Id === selectCustomer.val());
+        const customer = _datas.Customers.find(customer => customer.Id === selectCustomer.val());
         selectDepartment.empty();
         customer.Departments.forEach((department) => {
             selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);

@@ -47,6 +47,25 @@
                 </div>
             </div>
 
+            @{
+                if ((bool)((IE_MSC.Areas.Entities.User)Session["UserSession"]).IsAdmin)
+                {
+                    <div class="menu-header">ADMIN</div>
+
+                    <div class="menu-item">
+                        <a href="/User/Management/Management" class="menu-link">
+                            <span class="menu-icon"><i class="fa-duotone fa-users"></i></span>
+                            <span class="menu-text">USER MANAGEMENT</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="/Customer/Management/CustomerManagement" class="menu-link">
+                            <span class="menu-icon"><i class="fa-duotone fa-user-crown"></i></span>
+                            <span class="menu-text">CUSTOMER & DEPARTMENT</span>
+                        </a>
+                    </div>
+                }
+            }
         </div>
 
     </div>

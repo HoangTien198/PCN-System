@@ -1,10 +1,13 @@
-﻿using IE_MSC.Areas.Dashboard.Controllers;
+﻿using IE_MSC.Areas.Attributes;
+using IE_MSC.Areas.Dashboard.Controllers;
 using IE_MSC.Areas.Entities;
 using System;
 using System.Web.Mvc;
 
+
 namespace IE_MSC.Areas.PCN.Controllers
 {
+    [Authentication]
     public class ManagementController : Controller
     {
         // GET: PCN/Management

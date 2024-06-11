@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace IE_MSC.Areas.Dashboard.Controllers
+namespace IE_MSC.Areas
 {
     internal class R_Dashboard
     {

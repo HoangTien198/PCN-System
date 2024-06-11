@@ -41,11 +41,11 @@ function Update_SetDepartment() {
         if ($('#ApplicationCreate-Customer option').length === 0) {
             let customerSelect = $('#ApplicationUpdateModal-Customer');
             customerSelect.empty();
-            _datas.CustomerDepartments.forEach(function (customer) {
+            _datas.Customers.forEach(function (customer) {
                 customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
             });
             customerSelect.change(function () {
-                let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+                let departments = _datas.Customers.find(customer => { return customer.Id == customerSelect.val() }).Departments;
                 let departmentSelect = $('#ApplicationUpdateModal-Department');
                 departmentSelect.empty();
                 departments.forEach(function (department) {

@@ -171,8 +171,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Attributes\Authentication.cs" />
     <Compile Include="Areas\AuthenticationController.cs" />
     <Compile Include="Areas\Common.cs" />
+    <Compile Include="Areas\Customer\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Customer\CustomerAreaRegistration.cs" />
+    <Compile Include="Areas\Department\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Department\DepartmentAreaRegistration.cs" />
     <Compile Include="Areas\Entities\Application.cs">
       <DependentUpon>PCN_DataModel.tt</DependentUpon>
     </Compile>
@@ -210,7 +215,9 @@
     <Compile Include="Areas\PCN\PCNAreaRegistration.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
+    <Compile Include="Areas\Repositories\R_Department .cs" />
     <Compile Include="Areas\Repositories\R_Email.cs" />
+    <Compile Include="Areas\Repositories\R_Customer.cs" />
     <Compile Include="Areas\Repositories\R_User.cs" />
     <Compile Include="Areas\Repositories\R_PCN.cs" />
     <Compile Include="Areas\Repositories\R_Dashboard.cs" />
@@ -255,6 +262,16 @@
     <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationUpdate.js" />
     <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationDelete.js" />
     <Content Include="Contents\Custom\PCN\js\ApplicationModal\_ApplicationDetail.js" />
+    <Content Include="Contents\Custom\Customer\CustomerManagement.js" />
+    <Content Include="Contents\Custom\Customer\Customer\_CustomerManagement.js" />
+    <Content Include="Contents\Custom\Department\CustomerDepartment\_DepartmentManagement.js" />
+    <Content Include="Contents\Custom\Department\Department_Promise.js" />
+    <Content Include="Contents\Custom\User\CustomerUser\_UserManagement.js" />
+    <Content Include="Contents\Custom\User\UserManagement.js" />
+    <Content Include="Contents\Custom\User\UserModal\_UserCreate.js" />
+    <Content Include="Contents\Custom\User\UserModal\_UserDelete.js" />
+    <Content Include="Contents\Custom\User\UserModal\_UserUpdate.js" />
+    <Content Include="Contents\Custom\Customer\Customer_Promise.js" />
     <Content Include="Contents\Custom\User\User_Promise.js" />
     <Content Include="Contents\Image\backgound_auto.jpg" />
     <Content Include="Contents\Image\Backgrounds\1.jpg" />
@@ -437,6 +454,14 @@
     <Content Include="Areas\PCN\Views\Management\MySigns.cshtml" />
     <Content Include="Areas\PCN\Views\Management\_ApplicationApprove.cshtml" />
     <Content Include="Areas\PCN\Views\Management\_ApplicationReject.cshtml" />
+    <Content Include="Areas\User\Views\Management\Management.cshtml" />
+    <Content Include="Areas\User\Views\Management\UserModal\_UserCreateModal.cshtml" />
+    <Content Include="Areas\User\Views\Management\UserModal\_UserUpdateModal.cshtml" />
+    <Content Include="Areas\Customer\Views\Manager\Customer\_CustomerCreateModal.cshtml" />
+    <Content Include="Areas\Customer\Views\Manager\Customer\_CustomerDatatable.cshtml" />
+    <Content Include="Areas\Customer\Views\web.config" />
+    <Content Include="Areas\Customer\Views\Manager\Manager.cshtml" />
+    <Content Include="Areas\Department\Views\web.config" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -794,11 +819,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Customer\Data\" />
+    <Folder Include="Areas\Customer\Views\Manager\Department\" />
+    <Folder Include="Areas\Customer\Views\Manager\User\" />
     <Folder Include="Areas\Dashboard\Data\" />
+    <Folder Include="Areas\Department\Data\" />
+    <Folder Include="Areas\Department\Views\Manager\" />
     <Folder Include="Areas\PCN\Data\" />
     <Folder Include="Areas\User\Data\" />
-    <Folder Include="Areas\User\Views\Management\" />
-    <Folder Include="Areas\User\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Contents\plugin\ApexChart\locales\ar.json" />

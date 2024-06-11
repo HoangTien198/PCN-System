@@ -2,14 +2,14 @@
 $(document).ready(async function () {
 	InitDatatable();
 
-	const [sessionUser, customerDepartments, users] = await Promise.all([
+	const [sessionUser, customers, users] = await Promise.all([
 		GetSessionUser(),
-		GetCustomerDepartments(),
+		GetCustomers(),
 		GetUsers()
 	]);
 
 	_datas.SessionUser = sessionUser;
-	_datas.CustomerDepartments = customerDepartments;
+	_datas.Customers = customers;
 	_datas.Users = users;
 
 	$('.dt-buttons button').removeClass('disabled');

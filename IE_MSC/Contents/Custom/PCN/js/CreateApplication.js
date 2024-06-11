@@ -1,18 +1,12 @@
 ﻿var _datas = {};
 var InitApplicationFormCount = 0;
 $(document).ready(async function () {
-    const [sessionUser, customerDepartments, users] = await Promise.all([
-        GetSessionUser(),
-        GetCustomerDepartments(),
-        GetUsers()
-    ]);
+    _datas.Customers = await GetCustomers();
+    _datas.Users = await GetUsers();
+    _datas.SessionUser = await GetSessionUser();
 
-    _datas.SessionUser = sessionUser;
-    _datas.CustomerDepartments = customerDepartments;
-    _datas.Users = users;
-
-    InitCreateSumernote();
-    InitApplicationForm();
+    //InitCreateSumernote();
+    //InitApplicationForm();
 });
 
 function InitCreateSumernote() {
@@ -188,13 +182,13 @@ function CreateWidgetReminderItem(count) {
     `);
 }
 function PopulateCustomerOptions(selectCustomer) {
-    _datas.CustomerDepartments.forEach((customer) => {
+    _datas.Customers.forEach((customer) => {
         selectCustomer.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
     });
 }
 function SetupCustomerChangeEvent(selectCustomer, selectDepartment) {
     selectCustomer.change(() => {
-        const customer = _datas.CustomerDepartments.find(customer => customer.Id === selectCustomer.val());
+        const customer = _datas.Customers.find(customer => customer.Id === selectCustomer.val());
         selectDepartment.empty();
         customer.Departments.forEach((department) => {
             selectDepartment.append(`<option value="${department.Id}">${department.DepartmentName}</option>`);
@@ -299,11 +293,11 @@ function SetCreateCustomerDepartment() {
     if ($('#ApplicationCreate-Customer option').length === 0) {
         let customerSelect = $('#ApplicationCreate-Customer');
         customerSelect.empty();
-        _datas.CustomerDepartments.forEach(function (customer) {
+        _datas.Customers.forEach(function (customer) {
             customerSelect.append(`<option value="${customer.Id}">${customer.CustomerName}</option>`);
         });
         customerSelect.change(function () {
-            let departments = _datas.CustomerDepartments.find(customer => { return customer.Id == customerSelect.val() }).Departments;
+            let departments = _datas.Customers.find(customer => { return customer.Id == customerSelect.val() }).Departments;
             let departmentSelect = $('#ApplicationCreate-Department');
             departmentSelect.empty();
             departments.forEach(function (department) {

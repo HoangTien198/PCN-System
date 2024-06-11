@@ -8,14 +8,14 @@
         <EntityTypeShape EntityType="PCN_DataModel.Customer" Width="1.75" PointX="7" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="PCN_DataModel.UserDepartment" Width="2.375" PointX="9.5" PointY="6.25" IsExpanded="true" />
         <EntityTypeShape EntityType="PCN_DataModel.Department" Width="1.75" PointX="7.125" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="PCN_DataModel.User" Width="2.125" PointX="9.75" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="PCN_DataModel.Sign" Width="2.25" PointX="13.25" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="PCN_DataModel.Application" Width="2.625" PointX="16.5" PointY="2.25" IsExpanded="true" />
         <AssociationConnector Association="PCN_DataModel.FK_Departments_Customers" ManuallyRouted="false" />
         <AssociationConnector Association="PCN_DataModel.FK_DepartmentEmployee_Departments" ManuallyRouted="false" />
-        <AssociationConnector Association="PCN_DataModel.FK_DepartmentEmployee_Employees" ManuallyRouted="false" />
-        <AssociationConnector Association="PCN_DataModel.FK_PCNConfirms_Employees" ManuallyRouted="false" />
         <AssociationConnector Association="PCN_DataModel.FK_PCNConfirms_PCNs" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="PCN_DataModel.User" Width="2.25" PointX="9.625" PointY="1.375" />
+        <AssociationConnector Association="PCN_DataModel.FK_DepartmentEmployee_Employees" />
+        <AssociationConnector Association="PCN_DataModel.FK_PCNConfirms_Employees" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

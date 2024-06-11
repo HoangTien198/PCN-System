@@ -1,0 +1,84 @@
+﻿<div class="modal fade" id="UserCreateModal" role="dialog" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-uppercase">CREATE USER</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Information -->
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control text-truncate" id="UserCreateModal-Username" maxlength="50">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control text-truncate" id="UserCreateModal-Password" maxlength="50">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control text-truncate" id="UserCreateModal-Email" maxlength="100">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select text-truncate" id="UserCreateModal-Status">
+                                <option value="-1">No Active</option>
+                                <option value="1">Avtive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group mb-3 ">
+                            <label class="form-label">VN Name</label>
+                            <input type="text" class="form-control text-truncate" id="UserCreateModal-VnName" maxlength="50">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">CnName</label>
+                            <input type="text" class="form-control text-truncate" id="UserCreateModal-CnName" maxlength="50">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Date Create</label>
+                            <input type="datetime-local" class="form-control text-truncate" id="UserCreateModal-CreatedDate">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Is Admin</label>
+                            <select class="form-select text-truncate" id="UserCreateModal-IsAdmin">
+                                <option value="false">False</option>
+                                <option value="true">True</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department -->
+                <hr class="mb-3">
+
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="form-check">
+                        <label class="form-label text-theme">Department</label>
+                    </div>
+                    <a class="btn btn-sm btn-outline-theme" role="button" onclick="Create_UserDepartmentAdd()"><i class="fa-duotone fa-plus"></i> Add Department</a>
+                </div>
+
+                <div class="card">
+                    <div class="widget-reminder" id="UserCreateModal-Departments"></div>
+                        
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-theme" onclick="Create_UserSave()"><i class="fa-duotone fa-floppy-disk"></i> Create User</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 
-namespace IE_MSC.Areas.Dashboard.Controllers
+namespace IE_MSC.Areas
 {
     internal class R_User
     {
@@ -162,53 +163,117 @@ namespace IE_MSC.Areas.Dashboard.Controllers
                 throw ex;
             }
         }
-        public static object GetCustomerDepartments()
-        {
-            try
-            {
-                using (var context = new PcnEntities())
-                {
-                    context.Configuration.LazyLoadingEnabled = false;
 
-                    var customerDepartments = context.Customers.Select(c => new
-                    {
-                        c.Id,
-                        c.CustomerName,
-                        Departments = context.Departments.Where(d => d.IdCustomer.ToUpper() == c.Id.ToUpper()).ToList()
-                    }).ToList();
-
-                    return customerDepartments;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-        public static object GetDepartments()
-        {
-            try
-            {
-                using (var context = new PcnEntities())
-                {
-                    context.Configuration.LazyLoadingEnabled = false;
-
-                    var departments = context.Departments.ToList();
-
-                    return departments;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
         // POST
+        public static Entities.User CreateUser(Entities.User user)
+        {
 
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
 
-        // Validation
+                    var dbUser = context.Users.FirstOrDefault(u => u.Username == user.Username || u.CardId == user.Username);
+
+                    if (dbUser != null) throw new Exception("User already exists.");
+
+                    user.Id = Guid.NewGuid().ToString();
+                    user.CardId = user.Username;
+
+                    foreach (var userDept in user.UserDepartments)
+                    {
+                        var department = context.Departments.FirstOrDefault(d => d.Id == userDept.IdDepartment);
+                        if (department != null)
+                        {
+                            userDept.IdUser = user.Id;
+                        }
+                    }
+
+                    context.Users.Add(user);
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    return GetUser(user.Id);
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+        public static Entities.User UpdateUser(Entities.User user)
+        {
+
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var dbUser = context.Users.FirstOrDefault(u => u.Id == user.Id);
+                    if (dbUser == null) throw new Exception("User does not exists.");
+
+                    user.CardId = user.Username;
+
+                    var userDepts = context.UserDepartments.Where(ud => ud.IdUser == user.Id);
+                    context.UserDepartments.RemoveRange(userDepts);
+
+                    foreach (var userDept in user.UserDepartments)
+                    {
+                        var department = context.Departments.FirstOrDefault(d => d.Id == userDept.IdDepartment);
+                        if (department != null)
+                        {
+                            userDept.IdUser = user.Id;
+                            context.UserDepartments.Add(userDept);
+                        }
+                    }
+
+                    context.Users.AddOrUpdate(user);
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    return GetUser(user.Id);
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+        public static bool DeleteUser(string IdUser)
+        {
+
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Configuration.LazyLoadingEnabled = false;
+
+                    var dbUser = context.Users.FirstOrDefault(u => u.Id == IdUser);
+                    if (dbUser == null) throw new Exception("User does not exists.");
+
+                    var userDepts = context.UserDepartments.Where(ud => ud.IdUser == dbUser.Id).ToList();
+                    context.UserDepartments.RemoveRange(userDepts);
+
+                    context.Users.Remove(dbUser);
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
 
     }
 }

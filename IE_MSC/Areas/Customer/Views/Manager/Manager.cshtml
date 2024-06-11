@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "CUSTOMER & DEPARTMENT";
+    Layout = "~/Areas/Shared/_PcnLayoutShare.cshtml";
+
+    var newGuid = Guid.NewGuid();
+}
+
+@section styles{
+    <!-- plugin -->
+    @Styles.Render("~/bundles/datatablesCss")
+    <!-- custom -->
+}
+
+<!-- Breadcrumb -->
+<section>
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard">HOME</a></li>
+        <li class="breadcrumb-item active">CUSTOMER & DEPARTMENT</li>
+    </ul>
+</section>
+
+<div class="row">
+    <!-- Customer Datatable -->
+    @Html.Partial("~/Areas/Customer/Views/Manager/Customer/_CustomerDatatable.cshtml")
+    @Html.Partial("~/Areas/Customer/Views/Manager/Customer/_CustomerCreateModal.cshtml")
+
+
+    <!-- Department Datatable -->
+    <section class="col-3">
+        <div class="card">
+            <div class="card-body">
+                <table id="department-datatable" class="table table-striped text-nowrap align-middle w-100">
+                    <thead>
+                        <tr class="bg-secondary bg-opacity-50">
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Datatable -->
+    <section class="col-6">
+        <div class="card">
+            <div class="card-body">
+                <table id="user-datatable" class="table table-striped text-nowrap align-middle w-100">
+                    <thead>
+                        <tr class="bg-secondary bg-opacity-50">
+                            <th>ID</th>
+                            <th>USERNAME</th>
+                            <th>VN NAME</th>
+                            <th>CN NAME</th>
+                            <th>EMAIL</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section scripts{
+    <!-- plugin -->
+    @Scripts.Render("~/bundles/datatablesJs")
+    <!-- custom -->
+
+    <script src="~/Contents/Custom/User/User_Promise.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/User/Customer_Promise.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/User/Department_Promise.js?v=@newGuid"></script>
+
+    <script src="~/Contents/Custom/Customer/CustomerManagement.js"></script>
+
+    <script src="~/Contents/Custom/Customer/Customer/_CustomerManagement.js"></script>
+    <script src="~/Contents/Custom/Department/CustomerDepartment/_DepartmentManagement.js"></script>
+    <script src="~/Contents/Custom/User/CustomerUser/_UserManagement.js"></script>
+
+}
