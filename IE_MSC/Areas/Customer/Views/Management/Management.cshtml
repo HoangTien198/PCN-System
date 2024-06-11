@@ -17,13 +17,16 @@
     <ul class="breadcrumb">
         <li class="breadcrumb-item"><a href="/Dashboard/Dashboard">HOME</a></li>
         <li class="breadcrumb-item active">CUSTOMER & DEPARTMENT</li>
+        <li class="breadcrumb-item" id="CustomerLink"></li>
+        <li class="breadcrumb-item" id="DepartmentLink"></li>
     </ul>
 </section>
 
 <div class="row">
     <!-- Customer Datatable -->
-    @Html.Partial("~/Areas/Customer/Views/Manager/Customer/_CustomerDatatable.cshtml")
-    @Html.Partial("~/Areas/Customer/Views/Manager/Customer/_CustomerCreateModal.cshtml")
+    @Html.Partial("~/Areas/Customer/Views/Management/Customer/_CustomerDatatable.cshtml")
+    @Html.Partial("~/Areas/Customer/Views/Management/Customer/_CustomerCreateModal.cshtml")
+    @Html.Partial("~/Areas/Customer/Views/Management/Customer/_CustomerUpdateModal.cshtml")
 
 
     <!-- Department Datatable -->
@@ -87,8 +90,7 @@
     <!-- custom -->
 
     <script src="~/Contents/Custom/User/User_Promise.js?v=@newGuid"></script>
-    <script src="~/Contents/Custom/User/Customer_Promise.js?v=@newGuid"></script>
-    <script src="~/Contents/Custom/User/Department_Promise.js?v=@newGuid"></script>
+    <script src="~/Contents/Custom/Customer/Customer_Promise.js"></script>
 
     <script src="~/Contents/Custom/Customer/CustomerManagement.js"></script>
 

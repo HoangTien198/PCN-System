@@ -457,11 +457,12 @@
     <Content Include="Areas\User\Views\Management\Management.cshtml" />
     <Content Include="Areas\User\Views\Management\UserModal\_UserCreateModal.cshtml" />
     <Content Include="Areas\User\Views\Management\UserModal\_UserUpdateModal.cshtml" />
-    <Content Include="Areas\Customer\Views\Manager\Customer\_CustomerCreateModal.cshtml" />
-    <Content Include="Areas\Customer\Views\Manager\Customer\_CustomerDatatable.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerCreateModal.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerDatatable.cshtml" />
     <Content Include="Areas\Customer\Views\web.config" />
-    <Content Include="Areas\Customer\Views\Manager\Manager.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\Management.cshtml" />
     <Content Include="Areas\Department\Views\web.config" />
+    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerUpdateModal.cshtml" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -820,8 +821,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Customer\Data\" />
-    <Folder Include="Areas\Customer\Views\Manager\Department\" />
-    <Folder Include="Areas\Customer\Views\Manager\User\" />
+    <Folder Include="Areas\Customer\Views\Management\Department\" />
+    <Folder Include="Areas\Customer\Views\Management\User\" />
     <Folder Include="Areas\Dashboard\Data\" />
     <Folder Include="Areas\Department\Data\" />
     <Folder Include="Areas\Department\Views\Manager\" />

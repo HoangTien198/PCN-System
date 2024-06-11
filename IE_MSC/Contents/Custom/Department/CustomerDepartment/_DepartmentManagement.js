@@ -43,6 +43,7 @@ function CreateDepartmentDatatable() {
 		_DepartmentDatatable.columns.adjust().draw();
 
 		_datas.SelectDepartment = _datas.SelectCustomer.Departments[0];
+		$('#DepartmentLink').text(_datas.SelectDepartment.DepartmentName);
 		CreateUserDatatable();
 
 	} catch (e) {
@@ -73,6 +74,7 @@ function Department_Detail(elm, e) {
 
 		if (selectDepartment) {
 			_datas.SelectDepartment = selectDepartment;
+			$('#DepartmentLink').text(_datas.SelectDepartment.DepartmentName);
 			CreateUserDatatable();
 		}
 

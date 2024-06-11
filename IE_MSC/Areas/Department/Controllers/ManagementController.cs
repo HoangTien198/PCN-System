@@ -1,5 +1,4 @@
-﻿using IE_MSC.Areas.Dashboard.Controllers;
-using System;
+﻿using System;
 using System.Web.Mvc;
 
 namespace IE_MSC.Areas.Department.Controllers
