@@ -130,7 +130,7 @@ namespace IE_MSC.Areas.PCN.Controllers
             }
         }
         [HttpPost]
-        public JsonResult ApproveApplication(Sign sign, string calcCost)
+        public JsonResult ApproveApplication(Entities.Sign sign, string calcCost)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace IE_MSC.Areas.PCN.Controllers
             }
         }
         [HttpPost]
-        public JsonResult RejectApplication(Sign sign, string calcCost)
+        public JsonResult RejectApplication(Entities.Sign sign, string calcCost)
         {
             try
             {

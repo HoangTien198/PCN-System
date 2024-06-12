@@ -13,43 +13,12 @@
         <div style="padding: 20px; background-color: #d3eaff; display: grid; place-items: center; ">
             <div style="padding: 20px; background-color: white; border-radius: 15px; font-family: arial,helvetica,sans-serif; width: 1240px;">
                 <!-- Email Header -->
-                <div style="font-weight: bold; padding-bottom: 10px; font-size: 20px;">Dear {ToEmail},</div>
+                <div style="font-weight: bold; padding-bottom: 10px; font-size: 20px;">Hi {ToEmail},</div>
                 <!-- Email Body -->
                 <div>
-                    <p>We hope this email finds you well. You have a document has been <span style="color: red; font-weight: bold;">rejected</span></p>
-                    <p>Document Detail:</p>
-                    <!-- Email Details-->
-                    <table cellpadding="0" cellspacing="0" style="font-family: arial,helvetica,sans-serif; width: 1200px;">
-                        <tbody>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-top: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Document name</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-top: 2px solid #515151; padding: 5px 10px;">{DocumentName}</td>
-                            </tr>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Type</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{DocumentType}</td>
-                            </tr>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Uploader</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Uploader}</td>
-                            </tr>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">Datetime</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Datetime}</td>
-                            </tr>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">For project</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Project}</td>
-                            </tr>
-                            <tr>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold;">For machine</td>
-                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">{Machine}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <p>Follow this link to [<a href="{LinkDownloadDocument}">Download Document ({DocumentSize})</a>]</p>
-
+                    <p>We hope this email finds you well.</p>
+                    <p>Your PCN application has been <span style="color:red; font-weight: bold">rejected</span>!</p>
+                    <p>Follow this link to [ <a href="{LinkSign}">View detail application</a> ]</p>
                     <!-- End content -->
                     <p>This is an automated email, please no reply. If you have any question or need more information, please contact to email <a href="javascript:;">[you-nan.ruan@mail.foxconn.com]</a> or phone <a href="javascript:;">[37146]</a>. </p>
                 </div>

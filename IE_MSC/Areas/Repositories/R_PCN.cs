@@ -1,5 +1,6 @@
 ﻿using IE_MSC.Areas.Entities;
 using System;
+using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.IO;
@@ -24,6 +25,11 @@ namespace IE_MSC.Areas
                         .Include(m => m.Signs)
                         .Include(m => m.Signs.Select(s => s.User.UserDepartments.Select(ud => ud.Department.Customer)))
                         .FirstOrDefault(m => m.Id.ToUpper() == IdApplication.ToUpper());
+
+                    if(application == null)
+                    {
+                        throw new Exception("Application does not exists.");
+                    }
 
                     application.UserCreated = context.Users
                         .Include(u => u.UserDepartments
@@ -79,7 +85,7 @@ namespace IE_MSC.Areas
                 throw ex;
             }
         }
-        public static string GetApplicationDepartment(string IdApplication)
+        public static string GetApplicationDepartment(Application application)
         {
             try
             {
@@ -87,13 +93,10 @@ namespace IE_MSC.Areas
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-
-                    var application = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == IdApplication.ToUpper());
-
                     application.Department = context.Departments.FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment);
                     application.Customer = context.Customers.FirstOrDefault(d => d.Id.ToUpper() == application.IdCustomer);
 
-                    return $"{application.Department} ({application.Customer.CustomerName})";
+                    return $"{application.Customer.CustomerName} - {application.Department.DepartmentName}";
                 }
             }
             catch (Exception)
@@ -132,12 +135,12 @@ namespace IE_MSC.Areas
                     // Applying custom methods after data is loaded into memory
                     var data = rawData.Select(app => new
                     {
-                        Id = app.Id,
+                        app.Id,
                         Dot = GetDotHtml((int)app.Status),
-                        Code = app.Code,
+                        app.Code,
                         Date = GetDate((DateTime)app.DateCreated),
                         UserCreated = GetUserCreated(context, app.IdUserCreated),
-                        Subject = app.Subject,
+                        app.Subject,
                         Status = GetStatusHtml((int)app.Status),
                         Button = GetButtonHtml(app, false, false)
                     }).ToList();
@@ -206,12 +209,12 @@ namespace IE_MSC.Areas
                     // Applying custom methods after data is loaded into memory
                     var data = rawData.Select(app => new
                     {
-                        Id = app.Id,
+                        app.Id,
                         Dot = GetDotHtml((int)app.Status),
-                        Code = app.Code,
+                        app.Code,
                         Date = GetDate((DateTime)app.DateCreated),
                         UserCreated = GetUserCreated(context, app.IdUserCreated),
-                        Subject = app.Subject,
+                        app.Subject,
                         Status = GetStatusHtml((int)app.Status),
                         Button = GetButtonHtml(app, true, false)
                     }).ToList();
@@ -282,12 +285,12 @@ namespace IE_MSC.Areas
                     // Applying custom methods after data is loaded into memory
                     var data = rawData.Select(app => new
                     {
-                        Id = app.Id,
+                        app.Id,
                         Dot = GetDotHtml((int)app.Status),
-                        Code = app.Code,
+                        app.Code,
                         Date = GetDate((DateTime)app.DateCreated),
                         UserCreated = GetUserCreated(context, app.IdUserCreated),
-                        Subject = app.Subject,
+                        app.Subject,
                         Status = GetStatusHtml((int)app.Status),
                         SignStatus = GetSignStatusHtml(app),
                         Button = GetButtonHtml(app, false, true)
@@ -347,11 +350,20 @@ namespace IE_MSC.Areas
                     var result = GetApplication(application.Id);
 
                     // Send Email
-                    var sign = result.Signs.ToArray()[0];
-                    sign.User.Email = "you-nan.ruan@mail.foxconn.com";
+                    try
+                    {
+                        var IsSendAdmin = bool.Parse(ConfigurationManager.AppSettings["IsSendToAdmin"]);
+                        var IsSendBoss = bool.Parse(request.Form["IsSendBoss"]);
 
-                    var IsSendBoss = bool.Parse(request.Form["IsSendBoss"]);
-                    R_Emails.SendSignRequestEmail(result, sign, IsSendBoss);
+                        if (IsSendBoss) R_Emails.SendBossEmail(result);
+
+                        foreach (var sign in result.Signs)
+                        {
+                            R_Emails.SendSignRequestEmail(result, sign.User);
+                        }
+                    }
+                    catch { }
+                   
 
                     // Return
                     return result;
@@ -408,6 +420,10 @@ namespace IE_MSC.Areas
         {
             var form = request.Form;
 
+            var before = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var after = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var reason = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";           
+
             var application = new Entities.Application
             {
                 Id = Guid.NewGuid().ToString(),
@@ -416,20 +432,20 @@ namespace IE_MSC.Areas
                 Subject = form["Subject"],
                 Process = form["Process"],
                 Model = form["Model"],
-                BeforeChange = form["BeforeChange"],
-                AfterChange = form["AfterChange"],
-                Reason = form["Reason"],
-                CalcCost = form["CalcCost"],
+                BeforeChange = before,
+                AfterChange = after,
+                Reason = reason,
+                CalcCost = null,
                 IdCustomer = form["IdCustomer"],
                 IdDepartment = form["IdDepartment"],
-                Code = $"PCN_{DateTime.Parse(form["DateCreated"]).ToString("yyyyMMddHHmmss")}",
+                Code = $"PCN_{DateTime.Parse(form["DateCreated"]):yyyyMMddHHmmss}",
                 Status = 1,
             };
 
             int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 4;
             for (int i = 0; i < countSigns; i++)
             {
-                var signApplication = new Sign
+                var signApplication = new Entities.Sign
                 {
                     IdApplication = application.Id,
                     IdCustomer = form[$"Signs[{i}].IdCustomer"],
@@ -470,6 +486,11 @@ namespace IE_MSC.Areas
         {
             var form = request.Form;
 
+            var before = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var after = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var reason = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var calcCost = form["CalcCost"] != "undefined" ? form["CalcCost"] : "";
+
             var application = new Entities.Application
             {
                 Id = oldApplication.Id,
@@ -478,10 +499,10 @@ namespace IE_MSC.Areas
                 Subject = form["Subject"],
                 Process = form["Process"],
                 Model = form["Model"],
-                BeforeChange = form["BeforeChange"],
-                AfterChange = form["AfterChange"],
-                Reason = form["Reason"],
-                CalcCost = form["CalcCost"],
+                BeforeChange = before,
+                AfterChange = after,
+                Reason = reason,
+                CalcCost = calcCost,
                 IdCustomer = form["IdCustomer"],
                 IdDepartment = form["IdDepartment"],
                 Code = oldApplication.Code,
@@ -491,7 +512,7 @@ namespace IE_MSC.Areas
             int countSigns = form.AllKeys.Where(k => k.StartsWith("Signs")).Count() / 4;
             for (int i = 0; i < countSigns; i++)
             {
-                var signApplication = new Sign
+                var signApplication = new Entities.Sign
                 {
                     IdApplication = application.Id,
                     IdCustomer = form[$"Signs[{i}].IdCustomer"],
@@ -550,7 +571,7 @@ namespace IE_MSC.Areas
         }
 
         // Approve + Reject
-        public static Entities.Application ApproveApplication(Sign sign, string calcCost)
+        public static Entities.Application ApproveApplication(Entities.Sign sign, string calcCost)
         {
             using (var context = new PcnEntities())
             using (var transaction = context.Database.BeginTransaction())
@@ -559,7 +580,12 @@ namespace IE_MSC.Areas
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var application = context.Applications.Include(app => app.Signs).FirstOrDefault(app => app.Id == sign.IdApplication);
+                    var application = context.Applications
+                        .Include(app => app.Signs)
+                        .FirstOrDefault(app => app.Id == sign.IdApplication);
+
+                    application.UserCreated = R_User.GetUser(application.IdUserCreated);
+
                     var dbSing = application.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
 
                     if (application != null && dbSing != null)
@@ -578,6 +604,16 @@ namespace IE_MSC.Areas
                         context.SaveChanges();
                         transaction.Commit();
 
+                        // Send Email
+                        if(application.Status == 2)
+                        {
+                            try
+                            {
+                                R_Emails.SendApproveEmail(application, application.UserCreated);
+                            }
+                            catch { }
+                        }
+
                         return GetApplication(application.Id);
                     }
                     else
@@ -592,7 +628,7 @@ namespace IE_MSC.Areas
                 }
             }
         }
-        public static Entities.Application RejectApplication(Sign sign, string calcCost)
+        public static Entities.Application RejectApplication(Entities.Sign sign, string calcCost)
         {
             using (var context = new PcnEntities())
             using (var transaction = context.Database.BeginTransaction())
@@ -601,7 +637,12 @@ namespace IE_MSC.Areas
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    var application = context.Applications.Include(app => app.Signs).FirstOrDefault(app => app.Id == sign.IdApplication);
+                    var application = context.Applications
+                        .Include(app => app.Signs)
+                        .FirstOrDefault(app => app.Id == sign.IdApplication);
+
+                    application.UserCreated = R_User.GetUser(application.IdUserCreated);
+
                     var dbSing = application.Signs.FirstOrDefault(s => s.IdUser == sign.IdUser && s.IdApplication == sign.IdApplication);
 
                     if (application != null && dbSing != null)
@@ -617,6 +658,16 @@ namespace IE_MSC.Areas
                         context.Signs.AddOrUpdate(dbSing);
                         context.SaveChanges();
                         transaction.Commit();
+
+                        // Send Email
+                        if (application.Status == -1)
+                        {
+                            try
+                            {
+                                R_Emails.SendRejectEmail(application, application.UserCreated);
+                            }
+                            catch { }
+                        }
 
                         return GetApplication(application.Id);
                     }

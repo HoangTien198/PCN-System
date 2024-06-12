@@ -104,7 +104,6 @@ namespace IE_MSC.Areas
             {
                 return string.Empty;
             }
-
         }
         public static string StringToBase64Decode(string base64String)
         {

@@ -283,24 +283,44 @@ namespace IE_MSC.Areas
                         {
                             p.Id,
                             p.Code,
-                            p.Signs.FirstOrDefault().Status,
+                            Status = (int?)1,
                             Date = p.DateCreated,
                             User = context.Users.FirstOrDefault(e => e.Id.ToUpper() == p.IdUserCreated.ToUpper()),
                         });
-                    var confirmsQuery = context.Signs
+
+                    var approveQuery = context.Signs                    
                         .OrderByDescending(p => p.DateApproved)
-                        .OrderByDescending(p => p.DateRejected)
+                        .Where(p => p.Status == 2)
                         .Take(10)
+                        .Include(s => s.User)
                         .Select(c => new
                         {
-                            Id = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Id,
-                            Code = context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
+                            Id = c.IdApplication,
+                            context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
                             c.Status,
-                            Date = c.DateApproved != null ? c.DateApproved : c.DateRejected != null ? c.DateRejected : null,
-                            User = context.Users.FirstOrDefault(u => u.Id == c.IdUser)
+                            Date = c.DateApproved,
+                            c.User
                         });
 
-                    var combinedQuery = pcnsQuery.Concat(confirmsQuery).OrderByDescending(p => p.Date).Take(10).ToList();
+                    var rejectQuery = context.Signs
+                       .OrderByDescending(p => p.DateRejected)
+                       .Where(p => p.Status == -1)
+                       .Take(10)
+                       .Include(s => s.User)
+                       .Select(c => new
+                       {
+                           Id = c.IdApplication,
+                           context.Applications.FirstOrDefault(m => m.Id.ToUpper() == c.IdApplication.ToUpper()).Code,
+                           c.Status,
+                           Date = c.DateRejected,
+                           c.User
+                       });
+
+                    var combinedQuery = pcnsQuery
+                        .Concat(approveQuery)
+                        .Concat(rejectQuery)
+                        .OrderByDescending(p => p.Date)
+                        .Take(10).ToList();
 
                     return combinedQuery;
                 }

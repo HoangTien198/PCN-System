@@ -3,6 +3,7 @@ $(document).ready(async function () {
 	InitDatatable();
 
 	$('.dt-buttons button').removeClass('disabled');
+	HideLoad();
 });
 
 /* Datatable */

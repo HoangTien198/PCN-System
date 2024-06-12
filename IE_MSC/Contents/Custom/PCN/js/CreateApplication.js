@@ -8,6 +8,8 @@ $(document).ready(async function () {
 
     InitCreateSumernote();
     InitApplicationForm();
+
+    HideLoad();
 });
 
 function InitCreateSumernote() {
@@ -50,7 +52,7 @@ function InitCreateSumernote() {
             ['table', ['table']],
         ],
     });
-    $('#ApplicationCreate-Cost').summernote({
+    $('#ApplicationCreate-CalcCost').summernote({
         height: 200,
         foreColor: 'White',
         fontName: 'Arial',
@@ -77,8 +79,8 @@ function InitApplicationForm() {
     $('#ApplicationCreate-BeforeChange').summernote('reset');
     $('#ApplicationCreate-AfterChange').summernote('reset');
     $('#ApplicationCreate-Reason').summernote('reset');
-    $('#ApplicationCreate-Cost').summernote('reset');
-    $('#ApplicationCreate-Cost').summernote('disable');
+    $('#ApplicationCreate-CalcCost').summernote('reset');
+    $('#ApplicationCreate-CalcCost').summernote('disable');
 
     $('#ApplicationCreate-BeforeChangeFile').val('');
     $('#ApplicationCreate-AfterChangeFile').val('');
@@ -115,6 +117,7 @@ $('#ApplicationCreate-Save').click(async function () {
             BeforeChange: $('#ApplicationCreate-BeforeChange').summernote('code'),
             AfterChange: $('#ApplicationCreate-AfterChange').summernote('code'),
             Reason: $('#ApplicationCreate-Reason').summernote('code'),
+            CalcCost: null,
             IdCustomer: $('#ApplicationCreate-Customer').val(),
             IdDepartment: $('#ApplicationCreate-Department').val(),
             Signs: $('#ApplicationCreate-Sign .widget-reminder-item').map((index, signItem) => {

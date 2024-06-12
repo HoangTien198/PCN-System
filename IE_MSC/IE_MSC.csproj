@@ -221,6 +221,8 @@
     <Compile Include="Areas\Repositories\R_User.cs" />
     <Compile Include="Areas\Repositories\R_PCN.cs" />
     <Compile Include="Areas\Repositories\R_Dashboard.cs" />
+    <Compile Include="Areas\Sign\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Sign\SignAreaRegistration.cs" />
     <Compile Include="Areas\User\Controllers\ManagementController.cs" />
     <Compile Include="Areas\User\UserAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">
@@ -241,6 +243,7 @@
     </Content>
     <Content Include="Areas\Shared\Emails\ApplicationSignApproved.html" />
     <Content Include="Areas\Shared\Emails\ApplicationSignRejected.html" />
+    <Content Include="Areas\Shared\Emails\ApplicationSendBoss.html" />
     <Content Include="Areas\Shared\Emails\ApplicationSignRequest.html" />
     <Content Include="Contents\Custom\Common\_HudAdminNavbar.css" />
     <Content Include="Contents\Custom\Common\_HudAdminNavbar.js" />
@@ -266,6 +269,8 @@
     <Content Include="Contents\Custom\Customer\Customer\_CustomerManagement.js" />
     <Content Include="Contents\Custom\Department\CustomerDepartment\_DepartmentManagement.js" />
     <Content Include="Contents\Custom\Department\Department_Promise.js" />
+    <Content Include="Contents\Custom\Sign\DirectSign.css" />
+    <Content Include="Contents\Custom\Sign\DirectSign.js" />
     <Content Include="Contents\Custom\User\CustomerUser\_UserManagement.js" />
     <Content Include="Contents\Custom\User\UserManagement.js" />
     <Content Include="Contents\Custom\User\UserModal\_UserCreate.js" />
@@ -467,6 +472,8 @@
     <Content Include="Areas\Department\Views\DepartmentModal\_DepartmentDatatable.cshtml" />
     <Content Include="Areas\Department\Views\DepartmentModal\_DepartmentUpdateModal.cshtml" />
     <Content Include="Areas\User\Views\Management\UserModal\_UserDatatable.cshtml" />
+    <Content Include="Areas\Sign\Views\web.config" />
+    <Content Include="Areas\Sign\Views\Management\DirectSign.cshtml" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -828,6 +835,8 @@
     <Folder Include="Areas\Dashboard\Data\" />
     <Folder Include="Areas\Department\Data\" />
     <Folder Include="Areas\PCN\Data\" />
+    <Folder Include="Areas\Sign\Data\" />
+    <Folder Include="Areas\Sign\Views\Shared\" />
     <Folder Include="Areas\User\Data\" />
   </ItemGroup>
   <ItemGroup>

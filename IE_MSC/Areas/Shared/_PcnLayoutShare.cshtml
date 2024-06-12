@@ -25,32 +25,17 @@
     <!-- Common -->
     <link href="~/Contents/Custom/Common/_HudAdminNavbar.css" rel="stylesheet" />
     <link href="~/Contents/Custom/Common/Common.css?v=@newGuid" rel="stylesheet" />
-    <!-- Customm -->
-    <style>
-        .header-glass, .footer-glass, .app-sidebar {
-            background: rgb(30 41 54 / 20%);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        .header-glass {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .footer-glass {
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .app-sidebar {
-            border-right: 1px solid rgba(255, 255, 255, 0.3);
-        }
-    </style>
 
     @RenderSection("styles", required: false)
 
 </head>
 <body class="theme-info">
+    <div class="load-container">
+        <div class="load">
+            <hr /><hr /><hr /><hr />
+        </div>
+    </div>
+   
 
     <input type="hidden" data-id="@userLogin.Id" data-card="@userLogin.CardId" id="SessionUser" />
 

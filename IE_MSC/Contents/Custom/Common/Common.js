@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(function () {  
+    ShowLoad();
     ToartsConfig();
 });
 function ToartsConfig() {
@@ -66,6 +67,15 @@ function CalTableHeight() {
         result.lengthMenu = [[15, 25, 50], [15, 25, 50]]
     }
     return result;
+}
+
+function ShowLoad() {
+    $('.load-container').show();
+    $('body').addClass('overflow-hidden');
+}
+function HideLoad() {
+    $('.load-container').hide();
+    $('body').removeClass('overflow-hidden');
 }
 
 /* PCN Common */

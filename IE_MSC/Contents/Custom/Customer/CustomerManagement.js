@@ -9,4 +9,6 @@ $(document).ready(async function () {
 	InitUserDatatable();
 
 	CreateCustomerDatatable();
+
+	HideLoad();
 });

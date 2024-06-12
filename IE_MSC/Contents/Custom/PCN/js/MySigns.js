@@ -13,6 +13,7 @@ $(document).ready(async function () {
 	_datas.Users = users;
 
 	$('.dt-buttons button').removeClass('disabled');
+	HideLoad();
 });
 
 /* Datatable */

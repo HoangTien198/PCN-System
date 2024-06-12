@@ -25,9 +25,11 @@ async function GetAndInitData() {
 		_datas.Top10Action = await GetTop10Action();
 		CreateTop10ActionTable();
 
+		HideLoad();
 	} catch (e) {
 		Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
 		console.error(e);
+		HideLoad();
     }
 }
 

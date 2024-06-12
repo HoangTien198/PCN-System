@@ -122,7 +122,7 @@ namespace IE_MSC.Areas
         }
         private void DeleteSession()
         {
-            Session["UsserSession"] = null;
+            Session["UserSession"] = null;
             Session.Clear();
             Session.Abandon();
         }
@@ -172,17 +172,6 @@ namespace IE_MSC.Areas
             return ProtectedData.Unprotect(data, entropy, DataProtectionScope.CurrentUser);
         }
 
-        /* OTHER */
-        private void AddOrUpdateCookieValue(string cookieName, string cookieValue, int expireDays)
-        {
-            if (!string.IsNullOrEmpty(cookieValue))
-            {
-                HttpCookie cookie = Request.Cookies[cookieName] ?? new HttpCookie(cookieName);
-                cookie.Value = cookieValue;
-                cookie.Expires = DateTime.Now.AddDays(expireDays);
-                Response.Cookies.Add(cookie);
-            }
-        }
         private void DeleteCookie(string cookieName)
         {
             Response.Cookies[cookieName].Expires = DateTime.Now.AddDays(-1);

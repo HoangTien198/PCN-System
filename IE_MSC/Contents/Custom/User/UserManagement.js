@@ -5,6 +5,8 @@ $(document).ready(async function () {
 
 	InitUserDatatable();
 	CreateUserDatatable();
+
+	HideLoad();
 });
 
 /* DATATABLE */

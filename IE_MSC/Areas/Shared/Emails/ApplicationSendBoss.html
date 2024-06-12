@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; font-size: 16px;">
+    <!-- Header-->
+    <section style="width: 1340px;">
+        <div style="height: 35px; background-color: #212121; color: white; text-align: center; padding: 5px 0 5px 0; line-height: 35px; font-size: 20px; font-weight: bold; font-family: arial,helvetica,sans-serif;">{SystemName}</div>
+    </section>
+    <!-- Body -->
+    <section style="width: 1340px;">
+        <div style="padding: 20px; background-color: #d3eaff; display: grid; place-items: center; ">
+            <div style="padding: 20px; background-color: white; border-radius: 15px; font-family: arial,helvetica,sans-serif; width: 1240px;">
+                <!-- Email Header -->
+                <div style="font-weight: bold; padding-bottom: 10px; font-size: 20px;">Hi {ToEmail},</div>
+                <!-- Email Body -->
+                <div>
+                    <p>We hope this email finds you well. We have PCN application.</p>
+                    <p>Apllication Detail:</p>
+                    <!-- Email Details-->
+                    <table cellpadding="0" cellspacing="0" style="font-family: arial,helvetica,sans-serif; width: 1240px; table-layout: fixed;">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="border-top: 2px solid #515151; border-right: 2px solid #515151; border-bottom: 2px solid #515151; border-left: 2px solid #515151; padding: 5px 10px; font-weight: bold; text-align: center;">
+                                    <h2 class="text-center text-theme">標准方法變更通知書<br />Thong bao thay doi phuong phap lam viec tieu chuan (MSC)</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">日期 / Ngay:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{DateCreated}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">主題 / Chu de:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{Subject}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">制作人 / Nguoi de nghi:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{UserCreated}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">过程 / Process:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{Process}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">制作部門 / Bo phan:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{Department}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">模型 / Model:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{Model}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">現行作業方式 / Phuong thuc lam viec hien hanh:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{BeforeChange}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">變更后的方式 / Phuong thuc sau khi thay doi:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{AfterChange}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">文档現行作業 / Tai lieu phuong thuc lam viec hien hanh:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{BeforeChangeFile}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">變更后的作業 / Tai lieu phuong thuc sau khi thay doi:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{AfterChangeFile}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px; border-left: 2px solid #515151;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">變更原因 / Nguyen nhan thay doi:</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{Reason}</p>
+                                </td>
+                                <td style="border-right: 2px solid #515151; border-bottom: 2px solid #515151; padding: 5px 10px;">
+                                    <p style="margin: 0px; padding-bottom: 5px; font-weight: bold">制造成本計算 / Tinh toan gia thanh san xuat (IE):</p>
+                                    <p style="margin: 0px; padding-bottom: 5px;">{CalcCost}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="margin: 0px; padding-bottom: 5px; text-align: end;">保存期限:二年 / Thoi han bao luu: 5 nam (5 年)</p>
+                    <p style="margin: 0px; padding-bottom: 5px; text-align: end;">表單編號 / Ma bang bieu: FM3NVA002001A</p>
+
+                    <p>Follow this link to [ <a href="{LinkSign}">View detail application</a> ]</p>
+                    <!-- End content -->
+                    <p>This is an automated email, please no reply. If you have any question or need more information, please contact to email <a href="javascript:;">[you-nan.ruan@mail.foxconn.com]</a> or phone <a href="javascript:;">[37146]</a>. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <section style="width: 1340px;">
+        <div style="height: 35px; background-color: #212121; color: white; line-height: 35px; font-size: 15px;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="float: left; font-family: arial,helvetica,sans-serif; padding-left: 10px;">MBD-AUTOMATION-IOT@mail.foxconn.com</div>
+                <div style="float: right; font-family: arial,helvetica,sans-serif; padding-right: 10px;">Copyright &#169 2024. MBD A-IOT</div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
