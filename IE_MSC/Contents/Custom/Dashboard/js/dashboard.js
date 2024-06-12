@@ -545,7 +545,7 @@ function CreateApplicationChart() {
 		if (sum.Pending != _datas.HeaderData.Pending) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-warning"></i>
-						    <div class="flex-1">UNKNOWN</div>
+						    <div class="flex-1">OLD VERSION</div>
 						    <div>${_datas.HeaderData.Pending - sum.Pending}</div>
 						</div>`;
 			textContainer.append(html);
@@ -577,7 +577,7 @@ function CreateApplicationChart() {
 		if (sum.Approved != _datas.HeaderData.Approved) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-success"></i>
-						    <div class="flex-1">UNKNOWN</div>
+						    <div class="flex-1">OLD VERSION</div>
 						    <div>${_datas.HeaderData.Approved - sum.Approved}</div>
 						</div>`;
 			textContainer.append(html);
@@ -608,7 +608,7 @@ function CreateApplicationChart() {
 		if (sum.Rejected != _datas.HeaderData.Rejected) {
 			var html = `<div class="d-flex align-items-center small">
 						    <i class="bi bi-circle-fill fs-6px me-2 text-danger"></i>
-						    <div class="flex-1">UNKNOWN</div>
+						    <div class="flex-1">OLD VERSION</div>
 						    <div>${_datas.HeaderData.Rejected - sum.Rejected}</div>
 						</div>`;
 			textContainer.append(html);

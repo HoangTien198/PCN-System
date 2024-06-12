@@ -1,12 +1,13 @@
 ﻿var _datas = {};
 var InitApplicationFormCount = 0;
 $(document).ready(async function () {
+
     _datas.Customers = await GetCustomers();
     _datas.Users = await GetUsers();
     _datas.SessionUser = await GetSessionUser();
 
-    //InitCreateSumernote();
-    //InitApplicationForm();
+    InitCreateSumernote();
+    InitApplicationForm();
 });
 
 function InitCreateSumernote() {

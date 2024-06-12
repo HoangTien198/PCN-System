@@ -1,0 +1,27 @@
+﻿<div class="modal fade" id="DepartmentUpdateModal" role="dialog" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-uppercase">UPDATE DEPARTMENT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group mb-3">
+                    <label class="form-label">Customer Name</label>
+                    <input type="text" class="form-control text-truncate" id="DepartmentUpdateModal-CustomerName" disabled>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label">Department Name</label>
+                    <input type="text" class="form-control text-truncate" id="DepartmentUpdateModal-DepartmentName">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-theme" onclick="Department_UpdateSave()"><i class="fa-duotone fa-floppy-disk"></i> Save Change</button>
+            </div>
+        </div>
+    </div>
+</div>

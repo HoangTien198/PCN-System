@@ -134,6 +134,9 @@ async function Customer_UpdateSave() {
 
 		if (result) {
 			// save success
+			_datas.Customers.find(c => { return c.Id == result.Id }).CustomerName = result.CustomerName
+			$('#CustomerLink').text(result.CustomerName);
+
 			const rowData = CreateCustomerDatatableRow(result);
 			const rowIndex = $(`button[data-id="${customer.Id}"]`).closest('tr').data('index');
 

@@ -7,11 +7,12 @@ using System.Web.Mvc;
 
 namespace IE_MSC.Areas.User.Controllers
 {
-    [Authentication(IsAdmin = true)]
+    [Authentication]
     public class ManagementController : Controller
     {
         // GET: User/Management
 
+        [Authentication(IsAdmin = true)]
         public ActionResult Management()
         {
             return View();

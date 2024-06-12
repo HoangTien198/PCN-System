@@ -417,11 +417,11 @@
     <Content Include="Areas\Dashboard\Views\Dashboard\Index.cshtml" />
     <Content Include="Areas\PCN\Views\web.config" />
     <Content Include="Areas\PCN\Views\Management\Management.cshtml" />
-    <Content Include="Areas\PCN\Views\Management\_ApplicationDetail.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\PCN_Modal\_ApplicationDetail.cshtml" />
     <Content Include="Areas\Shared\_PcnLayoutShareNavbar.cshtml" />
     <Content Include="Areas\Shared\web.config" />
     <Content Include="Areas\User\Views\web.config" />
-    <Content Include="Areas\PCN\Views\Management\_ApplicationUpdate.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\PCN_Modal\_ApplicationUpdate.cshtml" />
     <Content Include="Contents\template\HUD_Admin\assets\css\fonts\ChakraPetch\ChakraPetch-Bold.woff" />
     <Content Include="Contents\template\HUD_Admin\assets\css\fonts\ChakraPetch\ChakraPetch-Bold.woff2" />
     <Content Include="Contents\template\HUD_Admin\assets\css\fonts\ChakraPetch\ChakraPetch-BoldItalic.woff" />
@@ -452,17 +452,21 @@
       <DependentUpon>PCN_DataModel.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\PCN\Views\Management\MySigns.cshtml" />
-    <Content Include="Areas\PCN\Views\Management\_ApplicationApprove.cshtml" />
-    <Content Include="Areas\PCN\Views\Management\_ApplicationReject.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\PCN_Modal\_ApplicationApprove.cshtml" />
+    <Content Include="Areas\PCN\Views\Management\PCN_Modal\_ApplicationReject.cshtml" />
     <Content Include="Areas\User\Views\Management\Management.cshtml" />
     <Content Include="Areas\User\Views\Management\UserModal\_UserCreateModal.cshtml" />
     <Content Include="Areas\User\Views\Management\UserModal\_UserUpdateModal.cshtml" />
-    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerCreateModal.cshtml" />
-    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerDatatable.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\CustomerModal\_CustomerCreateModal.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\CustomerModal\_CustomerDatatable.cshtml" />
     <Content Include="Areas\Customer\Views\web.config" />
     <Content Include="Areas\Customer\Views\Management\Management.cshtml" />
     <Content Include="Areas\Department\Views\web.config" />
-    <Content Include="Areas\Customer\Views\Management\Customer\_CustomerUpdateModal.cshtml" />
+    <Content Include="Areas\Customer\Views\Management\CustomerModal\_CustomerUpdateModal.cshtml" />
+    <Content Include="Areas\Department\Views\DepartmentModal\_DepartmentCreateModal.cshtml" />
+    <Content Include="Areas\Department\Views\DepartmentModal\_DepartmentDatatable.cshtml" />
+    <Content Include="Areas\Department\Views\DepartmentModal\_DepartmentUpdateModal.cshtml" />
+    <Content Include="Areas\User\Views\Management\UserModal\_UserDatatable.cshtml" />
     <None Include="Contents\plugin\Jquery\jquery-3.4.1.intellisense.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.js" />
     <Content Include="Contents\plugin\Jquery\jquery-3.4.1.min.js" />
@@ -821,11 +825,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Customer\Data\" />
-    <Folder Include="Areas\Customer\Views\Management\Department\" />
-    <Folder Include="Areas\Customer\Views\Management\User\" />
     <Folder Include="Areas\Dashboard\Data\" />
     <Folder Include="Areas\Department\Data\" />
-    <Folder Include="Areas\Department\Views\Manager\" />
     <Folder Include="Areas\PCN\Data\" />
     <Folder Include="Areas\User\Data\" />
   </ItemGroup>

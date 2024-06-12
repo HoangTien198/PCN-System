@@ -49,6 +49,8 @@ async function Update_UserSave() {
             const rowData = CreateUserDatatableRow(result);
             const rowIndex = $(`button[data-id="${result.Id}"]`).closest('tr').data('index');
 
+            _datas.User = result;
+
             _datatable.row(rowIndex).data(rowData).draw(false);
             $('#UserUpdateModal').modal('hide');
             toastr['success'](`User ${user.Username} được cập nhật thành công!`);

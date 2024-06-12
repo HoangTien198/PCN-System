@@ -1,4 +1,4 @@
-﻿var _CustomerDatatable, _DepartmentDatatable, _UserDatatable, _datas = {};
+﻿var _CustomerDatatable, _DepartmentDatatable, _datatable, _datas = {};
 
 $(document).ready(async function () {
 	_datas.Customers = await GetCustomers();

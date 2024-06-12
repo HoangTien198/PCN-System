@@ -4,10 +4,11 @@ using IE_MSC.Areas.Attributes;
 
 namespace IE_MSC.Areas.Customer.Controllers
 {
-    [Authentication(IsAdmin = true)]
+    [Authentication]
     public class ManagementController : Controller
     {
         // GET: Customer/Management
+        [Authentication(IsAdmin = true)]
         public ActionResult Management()
         {
             return View();

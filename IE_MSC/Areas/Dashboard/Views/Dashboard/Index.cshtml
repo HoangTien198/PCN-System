@@ -11,7 +11,7 @@
     <link href="~/Contents/plugin/ApexChart/apexcharts.css" rel="stylesheet" />
 
     <!-- custom -->
-    <link href="~/Contents/Custom/Dashboard/css/dashboard.css" rel="stylesheet" />
+    <link href="~/Contents/Custom/Dashboard/css/dashboard.css?v=@newGuid" rel="stylesheet" />
 
 }
 
@@ -387,7 +387,7 @@
 <!-- Modal -->
 <section>
     <!-- Application Detail -->
-    @Html.Partial("~/Areas/PCN/Views/Management/_ApplicationDetail.cshtml")
+    @Html.Partial("~/Areas/PCN/Views/Management/PCN_Modal/_ApplicationDetail.cshtml")
 
 </section>
 
@@ -397,8 +397,10 @@
     <script src="~/Contents/plugin/MomentJs/moment.min.js"></script>
 
     <!-- custom -->
-    <script src="~/Contents/Custom/Dashboard/js/dashboard.js"></script>
-
     <script src="~/Contents/Custom/PCN/js/Application_Promise.js?v=@newGuid"></script>
     <script src="~/Contents/Custom/PCN/js/ApplicationModal/_ApplicationDetail.js?v=@newGuid"></script>
+
+    <script src="~/Contents/Custom/Dashboard/js/dashboard.js?v=@newGuid"></script>
+
+
 }
