@@ -157,7 +157,7 @@ function Approve_CreateSignItem(sign, isReject) {
             <div class="widget-reminder-content">
                 <div class="fw-bold text-${setup.color}">${setup.user}</div>
                 <div class="fs-10px text-${setup.color}">${setup.dept}</div>
-                <div class="fs-10px text-${setup.color}">${setup.detail}</div>
+                <div class="mt-2 text-${setup.color}">${setup.detail}</div>
             </div>
         </div>`;
 }

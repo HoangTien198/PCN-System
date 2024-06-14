@@ -1,11 +1,7 @@
-﻿function SubmitForm(type) {
+﻿function SubmitForm() {
     var form = document.getElementById('loginForm');
-    if (type === 'normal') {
-        form.action = '@Url.Action("LoginNormal", "Authentication")';
-    } else if (type === 'smartoffice') {
-        form.action = '@Url.Action("LoginSmartOffice", "Authentication")';
-    }
-    form.submit();
+    form.action = '@Url.Action("LoginNormal", "Authentication")';
+    form.submit();   
 }
 
 function GetAjaxErrorMessage(error) {

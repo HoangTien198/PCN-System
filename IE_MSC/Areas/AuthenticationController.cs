@@ -68,6 +68,8 @@ namespace IE_MSC.Areas
             try
             {
                 string code = Request.Params["code"];
+                
+
 
                 var jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(code);
 

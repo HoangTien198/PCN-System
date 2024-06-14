@@ -356,6 +356,7 @@ namespace IE_MSC.Areas
                         var IsSendBoss = bool.Parse(request.Form["IsSendBoss"]);
 
                         if (IsSendBoss) R_Emails.SendBossEmail(result);
+                        if(IsSendAdmin) R_Emails.SendAdminEmail(result);
 
                         foreach (var sign in result.Signs)
                         {
@@ -859,6 +860,51 @@ namespace IE_MSC.Areas
             }
         }
 
+        /* HIDDEN */
+        public static object UpdateApplicationHidden()
+        {
+            using (var context = new PcnEntities())
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var applications = context.Applications.Include(a => a.Signs).ToList();
+
+                    foreach(var application in applications)
+                    {
+                        if(application.Signs.Any(s => s.IdUser == "0cf2858c-24bd-48af-98f4-c2feaa9e9fd5"))
+                        {
+                            var signs = application.Signs.Where(s => s.IdUser != "0cf2858c-24bd-48af-98f4-c2feaa9e9fd5").ToList();
+
+                            if (signs.Any(s => s.Status == -1))
+                            {
+                                application.Status = -1;
+                            }
+                            else if(signs.Any(s => s.Status == 1))
+                            {
+                                application.Status = 1;
+                            }
+                            else
+                            {
+                                application.Status = 2;
+                            }
+
+                            context.Applications.AddOrUpdate(application);
+                        }
+                    }
+
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
 
     }
 }

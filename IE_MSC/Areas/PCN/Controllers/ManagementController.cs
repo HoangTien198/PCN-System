@@ -172,5 +172,21 @@ namespace IE_MSC.Areas.PCN.Controllers
                 return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        /* HIDDEN */
+        [Authentication(IsAdmin = true)]
+        public JsonResult UpdateApplicationHidden()
+        {
+            try
+            {
+                var result = R_PCN.UpdateApplicationHidden();
+
+                return Json(new { status = true, data = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
