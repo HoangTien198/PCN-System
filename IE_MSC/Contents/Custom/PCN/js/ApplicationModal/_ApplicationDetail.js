@@ -15,6 +15,12 @@ function Detail_CreateApplicationModal(application) {
     Detail_SetDetails(application);
     Detail_SetSigns(application);
 
+    if (_datas?.SessionUser) {
+        if (application.IdUserCreated == _datas.SessionUser.Id) {
+            $('#btn-sendremind').show();
+        }
+    }
+
     $('#ApplicationDetailModal').modal('show');
 }
 
@@ -48,7 +54,7 @@ function Detail_SetStatusClass(status) {
             statusElement.addClass('form-control text-truncate bg-opacity-10 text-danger bg-danger');
             break;
         case 1:
-            statusElement.addClass('form-control text-truncate bg-opacity-10 text-warning bg-warning');
+            statusElement.addClass('form-control text-truncate bg-opacity-10 text-warning bg-warning');          
             break;
         case 2:
             statusElement.addClass('form-control text-truncate bg-opacity-10 text-success bg-success');
@@ -137,6 +143,20 @@ function Detail_CreateSignItem(sign, isReject) {
                 <div class="mt-2 text-${setup.color}">${setup.detail}</div>
             </div>
         </div>`;
+}
+
+// Remind Email
+async function SendRemindEmailEvent() {
+    try {
+        const result = await SendRemindEmail(_datas.Application.Id);
+        if (result) {
+            $('#btn-sendremind').hide();
+            toastr['success']('Send remind email success.');
+        }
+    } catch (e) {
+        Swal.fire('error', `${GetAjaxErrorMessage(e)}`, 'error');
+        console.error(e);
+    }
 }
 
 /* Other */

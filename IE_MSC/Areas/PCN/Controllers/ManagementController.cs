@@ -2,6 +2,7 @@
 using IE_MSC.Areas.Entities;
 using System;
 using System.Web.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace IE_MSC.Areas.PCN.Controllers
@@ -188,5 +189,18 @@ namespace IE_MSC.Areas.PCN.Controllers
                 return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+        public JsonResult SendRemindEmail(string IdApplication)
+        {
+            try
+            {
+                var result = R_PCN.SendRemindEmail(IdApplication);              
+                return Json(new { status = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

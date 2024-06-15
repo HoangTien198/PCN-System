@@ -6,6 +6,7 @@ using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Http.Results;
 
 namespace IE_MSC.Areas
 {
@@ -93,10 +94,17 @@ namespace IE_MSC.Areas
                 {
                     context.Configuration.LazyLoadingEnabled = false;
 
-                    application.Department = context.Departments.FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment);
-                    application.Customer = context.Customers.FirstOrDefault(d => d.Id.ToUpper() == application.IdCustomer);
+                    if (application.Department != null && application.Customer != null)
+                    {
+                        application.Department = context.Departments.FirstOrDefault(d => d.Id.ToUpper() == application.IdDepartment);
+                        application.Customer = context.Customers.FirstOrDefault(d => d.Id.ToUpper() == application.IdCustomer);
 
-                    return $"{application.Customer.CustomerName} - {application.Department.DepartmentName}";
+                        return $"{application.Customer.CustomerName} - {application.Department.DepartmentName}";
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
                 }
             }
             catch (Exception)
@@ -680,6 +688,53 @@ namespace IE_MSC.Areas
                 catch (Exception ex)
                 {
                     transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        // Remind Email
+        public static bool SendRemindEmail(string IdApplication)
+        {
+            using (var context = new PcnEntities())
+            {
+                try
+                {
+                    var application = GetApplication(IdApplication);
+
+                    if(application != null)
+                    {
+                        if (application.Status == 1)
+                        {
+                            foreach(var sign in application.Signs)
+                            {
+                                if(sign.Status == 1)
+                                {
+                                    R_Emails.SendSignRequestEmail(application, sign.User);
+                                }                               
+                            }
+                            return true;
+                        }
+                        else if(application.Status == -1)
+                        {
+                            throw new Exception($"Application has been REJECTED.");
+                        }
+                        else if (application.Status == -1)
+                        {
+                            throw new Exception($"Application has been APPROVED.");
+                        }
+                        else
+                        {
+                            throw new Exception($"Application is UNKNOWN.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Application does not exists.");
+                    }                   
+                }
+                catch (Exception ex)
+                {
                     throw ex;
                 }
             }

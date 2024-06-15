@@ -41,7 +41,6 @@ namespace IE_MSC.Areas
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult LoginNormal(string Username, string Password, bool remember = false)
         {
             try

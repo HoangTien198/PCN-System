@@ -218,3 +218,27 @@ function DeleteApplication(IdApplication) {
 		});
 	});
 }
+
+/* HIDDEN */
+function SendRemindEmail(IdApplication) {
+	console.time("SendRemindEmail");
+	return new Promise(function (resolve, reject) {
+		$.ajax({
+			url: `/PCN/Management/SendRemindEmail?IdApplication=${IdApplication}`,
+			type: "DELETE",
+			success: function (res) {
+				console.timeEnd("SendRemindEmail");
+				if (res.status) {
+					resolve(res.status);
+				}
+				else {
+					reject(res.message);
+				}
+			},
+			error: function (error) {
+				console.timeEnd("SendRemindEmail");
+				reject(error);
+			}
+		});
+	});
+}
