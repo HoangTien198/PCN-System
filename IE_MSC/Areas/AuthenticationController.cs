@@ -78,11 +78,12 @@ namespace IE_MSC.Areas
                 var user = R_User.GetUser(username, true);
 
                 LoginNormal(user.Username, user.Password, false);
-                return RedirectToAction("Index", "DashboardManagement", new { area = "Dashboard" });
+                return RedirectToAction("Index", "Dashboard", new { area = "Dashboard" });
             }
             catch (Exception)
             {
-                return RedirectToAction("Login", "Authentication");
+                ModelState.AddModelError("", "Access to the PCN system is denied. Please contact us to create your account: MBD A-IOT [ Desk phone: 535-31746 ].");
+                return View("Index");
             }
         }
 
