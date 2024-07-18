@@ -430,8 +430,8 @@ namespace IE_MSC.Areas
             var form = request.Form;
 
             var before = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
-            var after = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
-            var reason = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";           
+            var after = form["AfterChange"] != "undefined" ? form["AfterChange"] : "";
+            var reason = form["Reason"] != "undefined" ? form["Reason"] : "";           
 
             var application = new Entities.Application
             {
@@ -496,8 +496,8 @@ namespace IE_MSC.Areas
             var form = request.Form;
 
             var before = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
-            var after = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
-            var reason = form["BeforeChange"] != "undefined" ? form["BeforeChange"] : "";
+            var after = form["AfterChange"] != "undefined" ? form["AfterChange"] : "";
+            var reason = form["Reason"] != "undefined" ? form["Reason"] : "";
             var calcCost = form["CalcCost"] != "undefined" ? form["CalcCost"] : "";
 
             var application = new Entities.Application

@@ -160,7 +160,7 @@ namespace IE_MSC.Areas.PCN.Controllers
         }
 
         /* DELETE */
-        [HttpDelete]
+        [HttpPost]
         public JsonResult DeleteApplication(string IdApplication)
         {
             try

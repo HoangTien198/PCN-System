@@ -2,6 +2,8 @@
 $(document).ready(async function () {
 	InitDatatable();
 
+	_datas.Customers = await GetCustomers();
+	_datas.Users = await GetUsers();
 	_datas.SessionUser = await GetSessionUser();
 
 	$('.dt-buttons button').removeClass('disabled');

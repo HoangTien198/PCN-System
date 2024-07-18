@@ -201,7 +201,9 @@ function DeleteApplication(IdApplication) {
 	return new Promise(function (resolve, reject) {
 		$.ajax({
 			url: `/PCN/Management/DeleteApplication?IdApplication=${IdApplication}`,
-			type: "DELETE",
+			type: "POST",
+			contentType: "application/json;charset=utf-8",
+			dataType: "json",
 			success: function (res) {
 				console.timeEnd("DeleteApplication");
 				if (res.status) {

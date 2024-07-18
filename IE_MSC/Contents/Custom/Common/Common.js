@@ -106,6 +106,9 @@ function GetUserSignDepartment(sign) {
     else if (sign.User && sign.User.UserDepartments.length > 0) {
         return GetUserDept(sign.User);
     }
+    else {
+        return '';
+    }
 }
 function IsUserHasDepartment(departmentName) {
     if (_datas.SessionUser.UserDepartments.some(dept => { return dept.Department.DepartmentName.toUpperCase().includes(departmentName) })) {
